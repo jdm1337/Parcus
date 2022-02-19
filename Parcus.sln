@@ -3,9 +3,60 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{05930AC9-97C6-47BA-9031-AE72A61164AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastucture", "Infrastucture", "{BFD6CC79-A074-425D-8C4E-9106A358023B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{D811E685-DA01-41C0-A792-4A4D09566E4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{217A294D-A56F-4133-AF1D-1B1651824A4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Domain", "Parcus.Domain\Parcus.Domain.csproj", "{8A7D7A27-3236-40C4-8966-7B2FE4B6B8E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Application", "Parcus.Application\Parcus.Application.csproj", "{D753C5CB-5FB1-4B39-BE2A-5BED4C990665}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Persistence", "Notes.Persistence\Parcus.Persistence.csproj", "{C2F0AADF-D173-48BF-B8E6-88BC50713F88}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Api", "Parcus.Api\Parcus.Api.csproj", "{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{282F2FDB-DF61-47CC-86A7-021C2140EEBE}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A7D7A27-3236-40C4-8966-7B2FE4B6B8E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A7D7A27-3236-40C4-8966-7B2FE4B6B8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A7D7A27-3236-40C4-8966-7B2FE4B6B8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A7D7A27-3236-40C4-8966-7B2FE4B6B8E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D753C5CB-5FB1-4B39-BE2A-5BED4C990665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D753C5CB-5FB1-4B39-BE2A-5BED4C990665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D753C5CB-5FB1-4B39-BE2A-5BED4C990665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D753C5CB-5FB1-4B39-BE2A-5BED4C990665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F0AADF-D173-48BF-B8E6-88BC50713F88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F0AADF-D173-48BF-B8E6-88BC50713F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F0AADF-D173-48BF-B8E6-88BC50713F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F0AADF-D173-48BF-B8E6-88BC50713F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{282F2FDB-DF61-47CC-86A7-021C2140EEBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{282F2FDB-DF61-47CC-86A7-021C2140EEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{282F2FDB-DF61-47CC-86A7-021C2140EEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{282F2FDB-DF61-47CC-86A7-021C2140EEBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A7D7A27-3236-40C4-8966-7B2FE4B6B8E5} = {05930AC9-97C6-47BA-9031-AE72A61164AC}
+		{D753C5CB-5FB1-4B39-BE2A-5BED4C990665} = {05930AC9-97C6-47BA-9031-AE72A61164AC}
+		{C2F0AADF-D173-48BF-B8E6-88BC50713F88} = {BFD6CC79-A074-425D-8C4E-9106A358023B}
+		{1E0A5FE8-0679-4E53-B348-71B4A8074BB7} = {D811E685-DA01-41C0-A792-4A4D09566E4F}
+		{282F2FDB-DF61-47CC-86A7-021C2140EEBE} = {217A294D-A56F-4133-AF1D-1B1651824A4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CB3F72B-11FA-491E-9998-24E68D2FF241}
