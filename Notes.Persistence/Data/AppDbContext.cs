@@ -6,9 +6,10 @@ using Parcus.Domain;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 
+
 namespace Parcus.Persistence.Data
 {
-    public class AppDbContext : IdentityDbContext, IDbContext
+    public class AppDbContext : IdentityDbContext<User, Role, int>, IDbContext
     {
         public virtual DbSet<User> Users { get; set;}
         public virtual DbSet<BrokeragePortfolio> BrokeragePortfolios { get; set; }

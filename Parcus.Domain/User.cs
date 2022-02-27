@@ -11,7 +11,7 @@ namespace Parcus.Domain
 {
     public class User : IdentityUser<int>
     {
-        public string UserName { get; set; }    
-        public ICollection<BrokeragePortfolio> BrokPortfolios { get; set; }
+        
+        public ICollection<BrokeragePortfolio>? BrokPortfolios { get; set; }
     }
 }

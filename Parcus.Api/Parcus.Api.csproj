@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Parcus.Application\Parcus.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\DTO\Outgoing\" />
+  </ItemGroup>
+
 </Project>
