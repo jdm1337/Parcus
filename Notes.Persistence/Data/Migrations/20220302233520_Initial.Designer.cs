@@ -12,8 +12,8 @@ using Parcus.Persistence.Data;
 namespace Parcus.Persistence.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220227000544_wtf1")]
-    partial class wtf1
+    [Migration("20220302233520_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -529,6 +529,12 @@ namespace Parcus.Persistence.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

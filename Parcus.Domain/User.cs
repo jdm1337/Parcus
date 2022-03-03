@@ -13,5 +13,7 @@ namespace Parcus.Domain
     {
         
         public ICollection<BrokeragePortfolio>? BrokPortfolios { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }

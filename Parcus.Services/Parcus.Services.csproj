@@ -7,18 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\**" />
-    <EmbeddedResource Remove="Services\**" />
-    <None Remove="Services\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Parcus.Domain\Parcus.Domain.csproj" />
+    <ProjectReference Include="..\Parcus.Application\Parcus.Application.csproj" />
   </ItemGroup>
 
 </Project>

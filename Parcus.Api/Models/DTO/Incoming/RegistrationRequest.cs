@@ -2,7 +2,7 @@
 
 namespace Parcus.Api.Models.DTO.Incoming
 {
-    public class UserRegistrationRequestDto
+    public class RegistrationRequest
     {
         [Required]
         [MaxLength(50)]
