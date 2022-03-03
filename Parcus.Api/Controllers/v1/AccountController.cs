@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Parcus.Api.Authentication.Permission;
 using Parcus.Api.Models.DTO.Incoming;
 using Parcus.Api.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
@@ -50,7 +51,7 @@ namespace Parcus.Api.Controllers.v1
             var newUser = new User
             {
                 Email = registrationRequest.Email,
-                UserName = registrationRequest.Email,
+                UserName = registrationRequest.UserName,
                 EmailConfirmed = true, // Todo build fuctionallity to send email
             };
             var isCreated = await _userManager.CreateAsync(newUser, registrationRequest.Password);
@@ -140,14 +141,14 @@ namespace Parcus.Api.Controllers.v1
                 RefreshToken = newRefreshToken
             });
         }
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Permissions.Users.AddToRole)]
         [HttpGet]
         [Route("ua")]
         public async Task<IActionResult> Ua()
         {
             return Ok();
         }
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize]
         [HttpPost]
         [Route("revoke/{id}")]
         public async Task<IActionResult> Revoke(string id)
@@ -160,7 +161,7 @@ namespace Parcus.Api.Controllers.v1
 
             return NoContent();
         }
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize]
         [HttpPost]
         [Route("revoke-all")]
         public async Task<IActionResult> RevokeAll()

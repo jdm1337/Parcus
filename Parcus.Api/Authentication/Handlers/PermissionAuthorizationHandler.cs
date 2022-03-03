@@ -2,34 +2,62 @@
 using Microsoft.AspNetCore.Identity;
 using Parcus.Api.Authentication.Claims;
 using Parcus.Api.Authentication.Requirments;
+using Parcus.Application.Interfaces.IServices;
 using Parcus.Domain;
 
 namespace Parcus.Api.Authentication.Handlers
 {
     internal class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {
-        UserManager<User> _userManager;
-        RoleManager<Role> _roleManager;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IAuthService _authService;
+        
 
-        public PermissionAuthorizationHandler(UserManager<User> userManager, RoleManager<Role> roleManager)
+
+        public PermissionAuthorizationHandler(
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager,
+            IHttpContextAccessor httpContextAccessor,
+            IAuthService authService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _contextAccessor = httpContextAccessor;
+            _authService = authService;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
-            if (context.User == null)
+            var request = _contextAccessor.HttpContext.Request;
+            var auth = request.Headers.Authorization;
+            string[] authTypeAndToken;
+            try
+            {
+                authTypeAndToken = auth.ToString().Split(" ");
+            }
+            catch
             {
                 return;
             }
+           
+            var token = authTypeAndToken[1];
 
+            var user = await _authService.GetUserFromToken(token);
+
+            
+            if (user == null)
+            {
+                return;
+            }
+            
             // Get all the roles the user belongs to and check if any of the roles has the permission required
             // for the authorization to succeed.
-            var user = await _userManager.GetUserAsync(context.User);
+              
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
-
+            
             foreach (var role in userRoles)
             {
                 var roleClaims = await _roleManager.GetClaimsAsync(role);

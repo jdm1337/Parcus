@@ -24,6 +24,7 @@ namespace Parcus.Api.Authentication.Providers
         {
             if (policyName.StartsWith("Permissions", StringComparison.OrdinalIgnoreCase))
             {
+                
                 var policy = new AuthorizationPolicyBuilder();
                 policy.AddRequirements(new PermissionRequirement(policyName));
                 return Task.FromResult(policy.Build());
