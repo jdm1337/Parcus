@@ -1,4 +1,5 @@
-﻿using Parcus.Domain.Invest.Brokers;
+﻿using Parcus.Domain.Identity;
+using Parcus.Domain.Invest.Brokers;
 using Parcus.Domain.Invest.InstrumentModels.Bonds;
 using Parcus.Domain.Invest.InstrumentModels.Funds;
 using Parcus.Domain.Invest.InstrumentModels.Shares;

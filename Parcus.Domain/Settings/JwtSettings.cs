@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parcus.Domain.Security
+namespace Parcus.Domain.Settings
 {
     public class JwtSettings
     {

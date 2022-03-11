@@ -2,15 +2,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Parcus.Api.Authentication.Permission;
+using Parcus.Domain.Permission;
 using Parcus.Api.Models.DTO.Incoming;
 using Parcus.Api.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain;
-using Parcus.Domain.Security;
+
+using Parcus.Domain.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Parcus.Domain.Identity;
 
 namespace Parcus.Api.Controllers.v1
 {
@@ -20,12 +22,20 @@ namespace Parcus.Api.Controllers.v1
         private readonly RoleManager<Role> _roleManager;
         private readonly JwtSettings _jwtSettings;
         private readonly IAuthService _authService;
-        public AccountController(UserManager<User> userManager, RoleManager<Role> roleManager, IUnitOfWork unitOfWork, IOptionsMonitor<JwtSettings> optionsMonitor, IAuthService authService) : base(unitOfWork)
+        private readonly ITokenService _tokenService;
+        public AccountController(
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager,
+            IUnitOfWork unitOfWork,
+            IOptionsMonitor<JwtSettings> optionsMonitor,
+            IAuthService authService,
+            ITokenService tokenService) : base(unitOfWork)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwtSettings = optionsMonitor.CurrentValue;
             _authService = authService;
+            _tokenService = tokenService;
         }
 
         [AllowAnonymous]
@@ -63,28 +73,16 @@ namespace Parcus.Api.Controllers.v1
             return Ok();
         }
         [HttpPost]
-        [Route("login")]
+        [Route("Login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, loginRequest.Password))
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
-
-                var authClaims = new List<Claim>
-                {
-                    new Claim("id", Convert.ToString(user.Id) ),
-                    new Claim(ClaimTypes.Email, user.Email),
-
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-                var token = await _authService.CreateTokenAsync(authClaims);
-                var refreshToken = await _authService.GenerateRefreshTokenAsync();
+                var userClaims = await _authService.GetUsersClaimsForTokenAsync(user);
+                var token = await _tokenService.CreateTokenAsync(userClaims);
+                var refreshToken = await _tokenService.GenerateRefreshTokenAsync();
                 _ = int.TryParse(_jwtSettings.RefreshTokenValidityInDays, out int refreshTokenValidityInDays);
 
                 user.RefreshToken = refreshToken;
@@ -100,81 +98,20 @@ namespace Parcus.Api.Controllers.v1
             }
             return BadRequest();
         }
-
-        [HttpPost]
-        [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            string? accessToken = refreshTokenRequest.AccessToken;
-            string? refreshToken = refreshTokenRequest.RefreshToken;
-
-            var principal = await _authService.GetPrincipalFromExpiredToken(accessToken);
-            if (principal == null)
-            {
-                return BadRequest("Invalid access token or refresh token");
-            }
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            var emailClaim = principal.Claims.FirstOrDefault(x=>x.Type == ClaimTypes.Email);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-
-            var user = await _userManager.FindByEmailAsync(emailClaim.Value);
-
-            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return BadRequest("Invalid access token or refresh token");
-            }
-
-            var newAccessToken = await _authService.CreateTokenAsync(principal.Claims.ToList());
-            var newRefreshToken = await _authService.GenerateRefreshTokenAsync();
-
-            user.RefreshToken = newRefreshToken;
-            await _userManager.UpdateAsync(user);
-            return new ObjectResult(new RefreshTokenResponse
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                RefreshToken = newRefreshToken
-            });
-        }
-        [Authorize(Permissions.Users.AddToRole)]
+        [Authorize(Permissions.Users.GetUser)]
         [HttpGet]
-        [Route("ua")]
-        public async Task<IActionResult> Ua()
+        [Route("")]
+         public async Task<IActionResult> GetUserData()
         {
-            return Ok();
-        }
-        [Authorize]
-        [HttpPost]
-        [Route("revoke/{id}")]
-        public async Task<IActionResult> Revoke(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return BadRequest("Invalid userId");
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var user = await _userManager.FindByIdAsync(userId);
 
-            user.RefreshToken = null;
-            await _userManager.UpdateAsync(user);
-
-            return NoContent();
-        }
-        [Authorize]
-        [HttpPost]
-        [Route("revoke-all")]
-        public async Task<IActionResult> RevokeAll()
-        {
-            var users = _userManager.Users.ToList();
-            foreach (var user in users)
+            return Ok(new UserDataResponse
             {
-                user.RefreshToken = null;
-                await _userManager.UpdateAsync(user);
-            }
-
-            return NoContent();
-        }
-
+                UserId = userId,
+                Email = user.Email,
+                Username = user.UserName
+            });
+        }  
     }
 }

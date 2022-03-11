@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Parcus.Api.Authentication.Claims;
+using Parcus.Domain.Claims;
 using Parcus.Api.Authentication.Requirments;
 using Parcus.Application.Interfaces.IServices;
-using Parcus.Domain;
+
+using Parcus.Domain.Identity;
 
 namespace Parcus.Api.Authentication.Handlers
 {
@@ -12,39 +13,43 @@ namespace Parcus.Api.Authentication.Handlers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IAuthService _authService;
+        private readonly ITokenService _tokenService;
         
-
-
         public PermissionAuthorizationHandler(
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
             IHttpContextAccessor httpContextAccessor,
-            IAuthService authService)
+            ITokenService tokenService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _contextAccessor = httpContextAccessor;
-            _authService = authService;
+            _tokenService = tokenService;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
+            
             var request = _contextAccessor.HttpContext.Request;
             var auth = request.Headers.Authorization;
             string[] authTypeAndToken;
             try
             {
                 authTypeAndToken = auth.ToString().Split(" ");
+                if(authTypeAndToken.Length != 2)
+                {
+                    return;
+                }
             }
             catch
             {
                 return;
             }
+            
            
             var token = authTypeAndToken[1];
 
-            var user = await _authService.GetUserFromToken(token);
+            var user = await _tokenService.GetUserFromToken(token);
 
             
             if (user == null)

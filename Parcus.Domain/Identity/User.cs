@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parcus.Domain
+namespace Parcus.Domain.Identity
 {
     public class User : IdentityUser<int>
     {
@@ -15,6 +15,6 @@ namespace Parcus.Domain
 
         public ICollection<BrokeragePortfolio>? BrokPortfolios { get; set; }
         public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

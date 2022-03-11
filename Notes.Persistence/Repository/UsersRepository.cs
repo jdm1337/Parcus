@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Parcus.Persistence.Data;
 using Parcus.Application.Interfaces.IRepository;
-using Parcus.Domain;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Parcus.Domain.Identity;
 
 namespace Parcus.Persistence.Repository
 {

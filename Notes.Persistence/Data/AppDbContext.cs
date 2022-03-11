@@ -2,20 +2,28 @@
 using Microsoft.EntityFrameworkCore;
 using Parcus.Persistence.EntityTypeConfiguration;
 using Parcus.Application.Interfaces;
-using Parcus.Domain;
+using Parcus.Domain.Identity;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Parcus.Persistence.Data
 {
-    public class AppDbContext : IdentityDbContext<User, Role, int>, IDbContext
+    public class AppDbContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>,
+        IdentityUserRole<int>, IdentityUserLogin<int>, RoleClaim, IdentityUserToken<int>>, IDbContext
     {
         public virtual DbSet<User> Users { get; set;}
         public virtual DbSet<BrokeragePortfolio> BrokeragePortfolios { get; set; }
         public virtual DbSet<InvestTransaction> InvestTransactions { get; set; }
+        
+        
+        
         public AppDbContext(DbContextOptions<AppDbContext> options) 
-            : base(options) { }
+            : base(options) 
+        {
+           
+        }
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());

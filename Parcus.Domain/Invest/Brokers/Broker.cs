@@ -10,7 +10,7 @@ namespace Parcus.Domain.Invest.Brokers
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public double Percentage { get; set;}
+        public double? Percentage { get; set;}
         // Broker logo image
     }
 }

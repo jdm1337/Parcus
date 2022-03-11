@@ -5,9 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parcus.Domain
+namespace Parcus.Domain.Identity
 {
     public class Role : IdentityRole<int>
     {
+        
+        public string? Description { get; set; }
+        
     }
 }

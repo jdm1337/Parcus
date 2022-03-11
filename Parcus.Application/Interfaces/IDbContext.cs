@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Parcus.Domain;
+using Parcus.Domain.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

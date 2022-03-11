@@ -7,25 +7,32 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Parcus.Api.Authentication.Handlers;
 using Parcus.Api.Authentication.Providers;
-using Parcus.Domain.Security;
+using Parcus.Domain.Settings;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
+using Parcus.Persistence.DataSeed;
+using Parcus.Domain.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 string connection = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
+builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
+builder.Services.AddTransient<DataSeeder>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connection));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -60,8 +67,7 @@ builder.Services.AddCors();
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<IAuthenticationSchemeProvider, CustomAuthenticationSchemeProvider>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 
 
@@ -84,7 +90,19 @@ builder.Services.AddApiVersioning(options =>
 });
 
 var app = builder.Build();
+SeedData(app);
 
+async Task<bool> SeedData(IHost app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<DataSeeder>();
+        
+        return await service.Seed();
+    }
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -101,3 +119,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+

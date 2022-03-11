@@ -1,4 +1,4 @@
-﻿namespace Parcus.Api.Authentication.Claims
+﻿namespace Parcus.Domain.Claims
 {
     public class CustomClaimTypes
     {
