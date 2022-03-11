@@ -11,8 +11,8 @@ namespace Parcus.Domain.Invest.InstrumentModels.Shares
     {
         public string ShareName { get; set;}
         
-        public double Dividends { get; set; }
-        public double DividendYield { get; set; }
+        public double? Dividends { get; set; }
+        public double? DividendYield { get; set; }
 
     }
 }

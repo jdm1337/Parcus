@@ -33,6 +33,7 @@ builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IPortfolioOperationService, PortfolioOperationService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

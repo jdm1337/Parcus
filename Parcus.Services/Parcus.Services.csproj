@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Notes.Persistence\Parcus.Persistence.csproj" />
     <ProjectReference Include="..\Parcus.Application\Parcus.Application.csproj" />
   </ItemGroup>
 

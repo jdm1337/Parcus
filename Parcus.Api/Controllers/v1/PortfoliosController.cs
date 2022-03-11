@@ -1,4 +1,8 @@
-﻿using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Parcus.Api.Models.DTO.Incoming;
+using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
+using Parcus.Domain.Permission;
 
 namespace Parcus.Api.Controllers.v1
 {
@@ -6,6 +10,15 @@ namespace Parcus.Api.Controllers.v1
     {
         public PortfoliosController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
+            
+        }
+        [HttpPost]
+        [Route("Add")]
+        [Authorize(Permissions.Portfolios.Add)]
+        public async Task<IActionResult> Add([FromBody]AddPortfolioRequest addPortfolioRequest)
+        {
+
+            return Ok();
         }
         
     }

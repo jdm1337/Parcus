@@ -22,17 +22,7 @@ namespace Parcus.Persistence.Repository
             _context = context;
             dbSet = context.Set<T>();
         }
-        public virtual async Task<bool> Add(T entity)
-        {
-            await dbSet.AddAsync(entity);
-            return true;
-        }
-
-        public Task<bool> Delete(int itemId, string userId)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await dbSet.ToListAsync();
@@ -43,7 +33,18 @@ namespace Parcus.Persistence.Repository
             return await dbSet.FindAsync(id);
         }
 
-        public Task<bool> Update(T entity)
+        public async Task<bool> AddAsync(T entity)
+        {
+            await dbSet.AddAsync(entity);
+            return true;
+        }
+
+        public async Task<bool> DeleteAsync(int itemId, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateAsync(T entity)
         {
             throw new NotImplementedException();
         }

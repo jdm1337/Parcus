@@ -17,6 +17,7 @@ namespace Parcus.Persistence.Data
 
         //Repository of each entities keeping here.
         public IUsersRepository Users { get; private set; }
+        public IPortfoliosRepository Portfolios { get; private set; }   
 
         public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory)
         {
@@ -24,6 +25,7 @@ namespace Parcus.Persistence.Data
             _logger = loggerFactory.CreateLogger("db_logs");
 
             Users = new UsersRepository(context, _logger);
+            Portfolios = new PortfoliosRepository(context, _logger);
         }
 
         public async Task CompleteAsync()

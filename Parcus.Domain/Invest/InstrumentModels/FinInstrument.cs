@@ -10,12 +10,12 @@ namespace Parcus.Domain.Invest.InstrumentModels
     public class FinInstrument
     {
         public int Id { get; set; }
-        public string Isin { get; set; }
+        public string? Isin { get; set; }
 
         public string CompanyName { get; set; }
-        public string Tiker { get; set; }
-        public string Country { get; set; }
-        public Currency Currency { get; set; }
-        public double CurrentPrice { get; set; }
+        public string? Tiker { get; set; }
+        public string? Country { get; set; }
+        public Currency? Currency { get; set; }
+        public double? CurrentPrice { get; set; }
     }
 }
