@@ -22,12 +22,20 @@ namespace Parcus.Api.Controllers.v1
         [HttpPost]
         [Route("Add")]
         [Authorize(Permissions.Portfolios.Add)]
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(AddPortfolioRequest addPortfolioRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+
             var portfolio = new BrokeragePortfolio
             {
-                UserId = Convert.ToInt32(userId)   
+                UserId = Convert.ToInt32(userId),
+                CreatedDate = DateTime.Now,
+                Name = addPortfolioRequest.PortfolioName
+
             };
             _unitOfWork.Portfolios.AddAsync(portfolio);
             _unitOfWork.CompleteAsync();
@@ -38,6 +46,11 @@ namespace Parcus.Api.Controllers.v1
         [Authorize(Permissions.Portfolios.Add)]
         public async Task<IActionResult> AddBroker([FromBody]AddBrokerRequest addBrokerRequest)
         {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest();
+            }
+
             return Ok();
         }
         [HttpPost]
