@@ -11,12 +11,12 @@ namespace Parcus.Domain.Invest.InstrumentModels.Shares
     public class SharesInPortfolio : Share
     {
         
-        public int Amount { get; set; }
-        public double AveragePrice { get; set; }
-        public double InvestedValue { get; set; }
-        public double CurrentSharesValue { get; set; }
-        public double Profit { get; set; } 
-        public double DailyProfit { get; set; }
+        public int? Amount { get; set; }
+        public double? AveragePrice { get; set; }
+        public double? InvestedValue { get; set; }
+        public double? CurrentSharesValue { get; set; }
+        public double? Profit { get; set; } 
+        public double? DailyProfit { get; set; }
         public int BrokeragePortfolioId { get; set; }
         public BrokeragePortfolio BrokeragePortfolio { get; set; }
 

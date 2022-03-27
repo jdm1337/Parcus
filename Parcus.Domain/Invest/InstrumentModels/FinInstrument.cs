@@ -11,6 +11,7 @@ namespace Parcus.Domain.Invest.InstrumentModels
     {
         public int Id { get; set; }
         public string? Isin { get; set; }
+        public string Figi { get; set; }
 
         public string CompanyName { get; set; }
         public string? Tiker { get; set; }

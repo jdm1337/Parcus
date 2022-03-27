@@ -10,7 +10,7 @@ namespace Parcus.Application.Interfaces.IRepository
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);
-        Task<bool> AddAsync(T entity);
+        Task<T> AddAsync(T entity);
         Task<bool> DeleteAsync(int itemId, string userId);
         Task<bool> UpdateAsync(T entity);
     }

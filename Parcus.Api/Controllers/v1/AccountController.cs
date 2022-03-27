@@ -43,7 +43,7 @@ namespace Parcus.Api.Controllers.v1
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationRequest)
         {
-
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(new Response
@@ -112,6 +112,7 @@ namespace Parcus.Api.Controllers.v1
                 Email = user.Email,
                 Username = user.UserName
             });
-        }  
+        }
+        
     }
 }

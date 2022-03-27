@@ -505,7 +505,7 @@ namespace Parcus.Persistence.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("PortfolioBrokerId")
                         .HasColumnType("int");
@@ -516,6 +516,9 @@ namespace Parcus.Persistence.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("PortfolioBrokerId");

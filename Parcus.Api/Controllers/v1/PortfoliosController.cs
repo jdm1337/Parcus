@@ -11,11 +11,14 @@ namespace Parcus.Api.Controllers.v1
     public class PortfoliosController : BaseController
     {
         private readonly IAuthService _authService;
+        private readonly IPortfolioOperationService _portfolioOperationService;
         public PortfoliosController(
             IUnitOfWork unitOfWork,
+            IPortfolioOperationService portfolioOperationService,
             IAuthService authService) : base(unitOfWork)
         {
             _authService = authService;
+            _portfolioOperationService = portfolioOperationService;
         }
         // Add portfolio method included in prime version and here need to implement
         // system of checking current amount of portfolios
@@ -28,17 +31,26 @@ namespace Parcus.Api.Controllers.v1
             {
                 return BadRequest(ModelState);
             }
-            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity); 
+            var userPortfolios = await _unitOfWork.Portfolios.GetByUserIdAsync(userId);
+            var existedPortfolio = userPortfolios.Any(p => p.Name == addPortfolioRequest.PortfolioName);
 
+            if (existedPortfolio)
+            {
+                return BadRequest();
+            }
             var portfolio = new BrokeragePortfolio
             {
                 UserId = Convert.ToInt32(userId),
                 CreatedDate = DateTime.Now,
                 Name = addPortfolioRequest.PortfolioName
-
             };
-            _unitOfWork.Portfolios.AddAsync(portfolio);
-            _unitOfWork.CompleteAsync();
+            var createdPortfolio =  await _unitOfWork.Portfolios.AddAsync(portfolio);
+            if(createdPortfolio == null)
+            { 
+                return BadRequest();
+            }
+            await _unitOfWork.CompleteAsync();
             return Ok();
         }
         [HttpPost]
@@ -51,12 +63,26 @@ namespace Parcus.Api.Controllers.v1
                 return BadRequest();
             }
 
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var userPortfolio = await _unitOfWork.Portfolios.GetByUserIdAndNameAsync(userId, addBrokerRequest.PortfolioName);
+
+            if(userPortfolio == null)
+            {
+                return BadRequest();
+            }
+            var isSucceeded = await _portfolioOperationService.AddBroker(userPortfolio, addBrokerRequest.BrokerName, addBrokerRequest.Percentage);
+
+            if (!isSucceeded)
+            {
+                return BadRequest();
+            }
+
             return Ok();
         }
         [HttpPost]
         [Route("AddTransaction")]
         [Authorize(Permissions.Portfolios.Add)]
-        public async Task<IActionResult> AddTranscation([FromBody] AddTransactionRequest addTransactionRequest)
+        public async Task<IActionResult> AddTransaction([FromBody] AddTransactionRequest addTransactionRequest)
         {
             return Ok();
         }

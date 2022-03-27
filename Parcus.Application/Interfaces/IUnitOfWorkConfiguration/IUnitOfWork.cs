@@ -12,6 +12,7 @@ namespace Parcus.Application.Interfaces.IUnitOfWorkConfiguration
         // Interfaces of repositories adding here.
         IUsersRepository Users { get; }
         IPortfoliosRepository Portfolios { get; }
+        IBrokersRepository Brokers { get; }
 
         Task CompleteAsync();
     }

@@ -1,4 +1,5 @@
-﻿using Parcus.Domain.Invest.Transactions;
+﻿using Parcus.Domain.Invest.PortfolioModels;
+using Parcus.Domain.Invest.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Parcus.Application.Interfaces.IServices
 {
     public interface IPortfolioOperationService
     {
-        Task<bool> AddAsync();
-        Task<bool> DeleteAsync(string id);
+        Task<bool> AddBroker(BrokeragePortfolio brokeragePortfolio, string brokerName, double percentage);
+        
         Task<bool> AddTransactionAsync(InvestTransaction transaction);
     }
 }

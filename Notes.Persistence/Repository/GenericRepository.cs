@@ -33,10 +33,10 @@ namespace Parcus.Persistence.Repository
             return await dbSet.FindAsync(id);
         }
 
-        public async Task<bool> AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            await dbSet.AddAsync(entity);
-            return true;
+            var TObject = await dbSet.AddAsync(entity);
+            return TObject.Entity;
         }
 
         public async Task<bool> DeleteAsync(int itemId, string userId)
@@ -48,5 +48,6 @@ namespace Parcus.Persistence.Repository
         {
             throw new NotImplementedException();
         }
+
     }
 }

@@ -6,9 +6,10 @@ namespace Parcus.Api.Models.DTO.Incoming
     {
         [Required]
         public string BrokerName { get; set; }
-
         [Required]
-        public double Percentage { get; set; }
+        public string PortfolioName { get; set; }
+        [Required]
+        public double Percentage { get; set; } = 0;
 
     }
 }
