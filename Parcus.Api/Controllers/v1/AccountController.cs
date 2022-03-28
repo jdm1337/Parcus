@@ -103,12 +103,13 @@ namespace Parcus.Api.Controllers.v1
         [Route("")]
          public async Task<IActionResult> GetUserData()
         {
+            
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 
             return Ok(new UserDataResponse
             {
-                UserId = userId,
+                UserId = Convert.ToString(user.Id),
                 Email = user.Email,
                 Username = user.UserName
             });

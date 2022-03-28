@@ -63,20 +63,22 @@ namespace Parcus.Api.Authentication.Handlers
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
             
-            foreach (var role in userRoles)
-            {
-                var roleClaims = await _roleManager.GetClaimsAsync(role);
-                var permissions = roleClaims.Where(x => x.Type == CustomClaimTypes.Permission &&
-                                                        x.Value == requirement.Permission &&
-                                                        x.Issuer == "LOCAL AUTHORITY")
-                                            .Select(x => x.Value);
-
-                if (permissions.Any())
+                foreach (var role in userRoles)
                 {
-                    context.Succeed(requirement);
-                    return;
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+                Console.WriteLine("123");
+                    var permissions = roleClaims.Where(x => x.Type == CustomClaimTypes.Permission &&
+                                                            x.Value == requirement.Permission &&
+                                                            x.Issuer == "LOCAL AUTHORITY")
+                                                .Select(x => x.Value);
+
+                    if (permissions.Any())
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
                 }
-            }
+           
         }
     }
 }

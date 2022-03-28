@@ -9,6 +9,7 @@ namespace Parcus.Domain.Invest.InstrumentModels.Shares
 {
     public class Share : FinInstrument
     {
+
         public string ShareName { get; set;}
         
         public double? Dividends { get; set; }

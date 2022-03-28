@@ -25,15 +25,19 @@ var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
+
 builder.Services.AddTransient<DataSeeder>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connection));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IPortfolioOperationService, PortfolioOperationService>();
+builder.Services.AddTransient<IFindInstrumentService, FindInstrumentService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

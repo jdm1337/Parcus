@@ -26,7 +26,7 @@ namespace Parcus.Persistence.Repository
         public async Task<bool> UpdateAsync(BrokeragePortfolio portfolio)
         {
             _context.Entry( await _context.BrokeragePortfolios.FirstOrDefaultAsync(p => p.Id == portfolio.Id)).CurrentValues.SetValues(portfolio);
-           
+            
             return (await _context.SaveChangesAsync()) > 0;
         }
       

@@ -13,8 +13,8 @@ namespace Parcus.Domain.Invest.Transactions
     public class InvestTransaction
     {
         public long Id { get; set; }
-        public DateTime TransactionDate { get; set; }
-        public Transactions TransactionType { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public Transactions? TransactionType { get; set; }
 
 
 

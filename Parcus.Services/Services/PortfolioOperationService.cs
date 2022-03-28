@@ -1,8 +1,11 @@
 ﻿using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Invest.Brokers;
+using Parcus.Domain.Invest.InstrumentModels;
+using Parcus.Domain.Invest.InstrumentModels.Shares;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
+using Parcus.Domain.Results;
 using Parcus.Persistence.Repository;
 using System;
 using System.Collections.Generic;
@@ -22,39 +25,40 @@ namespace Parcus.Services.Services
         
         public async Task<bool> AddBroker(BrokeragePortfolio brokeragePortfolio, string brokerName, double percentage)
         {
-            var brokers = await _unitOfWork.Brokers.GetAllAsync();
-            var existBroker = brokers.Where(broker => broker.Name == brokerName && broker.Percentage == percentage).FirstOrDefault();
-
+            var existBroker = (await _unitOfWork.Brokers.GetAllAsync()).Where(broker => broker.Name == brokerName && broker.Percentage == percentage).FirstOrDefault();
+            
             if(existBroker == null)
             {
-                var broker = await _unitOfWork.Brokers.AddAsync(new Broker
+                var newBroker = await _unitOfWork.Brokers.AddAsync(new Broker
                 {
                     Name = brokerName,
                     Percentage = percentage
                 });
-                if(broker == null)
+                if(newBroker == null)
                 {
                     return false;
                 }
-                brokeragePortfolio.PortfolioBroker = broker;
-                await _unitOfWork.Portfolios.UpdateAsync(brokeragePortfolio);
-                await _unitOfWork.CompleteAsync();
-                return true;
+                brokeragePortfolio.PortfolioBroker = newBroker;
             }
             else
             {
                 brokeragePortfolio.PortfolioBroker = existBroker;
-                await _unitOfWork.Portfolios.UpdateAsync(brokeragePortfolio);
-                await _unitOfWork.CompleteAsync();
-                return true;
             }
+            await _unitOfWork.Portfolios.UpdateAsync(brokeragePortfolio);
+            await _unitOfWork.CompleteAsync();
+            return true;
         }
 
-        public Task<bool> AddTransactionAsync(InvestTransaction transaction)
+        public Task<InstrumentResult> AddTransactionAsync(InvestTransaction transaction, FinInstrumentInPortfolio instrumentInPortfolio, string instrumentType, double istrumentPrice)
         {
-            // short describe of method
-            // 1. Define type of
+            
+            
             throw new NotImplementedException();
+            
+        }
+        public async Task<bool> ValidateTransaction()
+        {
+            throw new NotImplementedException(); ;
         }
 
     }

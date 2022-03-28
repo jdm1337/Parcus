@@ -9,6 +9,7 @@ namespace Parcus.Domain.Invest.InstrumentModels.Bonds
     public class Bond : FinInstrument
     {
         public string BondName { get; set; }
+        //Current profit in percents from the moment of publishing 
         public double? CurrentProfit { get; set; }
         public double? CancelProfit { get; set; }
         public DateTime? CancelDate { get; set; }
