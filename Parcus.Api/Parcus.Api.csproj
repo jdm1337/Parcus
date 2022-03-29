@@ -21,6 +21,7 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
+    <PackageReference Include="Tinkoff.InvestApi" Version="0.1.4" />
   </ItemGroup>
 
   <ItemGroup>

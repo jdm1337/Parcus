@@ -7,6 +7,8 @@ using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Parcus.Domain.Permission;
+using Tinkoff.InvestApi;
+using Tinkoff.InvestApi.V1;
 
 namespace Parcus.Api.Controllers.v1
 {
@@ -96,8 +98,8 @@ namespace Parcus.Api.Controllers.v1
             {
                 return BadRequest();
             }
-            var instrumentSearchResult = await _findInstrumentService.SearchAsync(addTransactionRequest.Figi);
-            if (!instrumentSearchResult.Successed)
+            var typeResult = await _findInstrumentService.GetByFigiAsync(addTransactionRequest.Figi);
+            if (!typeResult.Successed)
             {
                 return NotFound("Finance instrument not found.");
             }
@@ -127,15 +129,22 @@ namespace Parcus.Api.Controllers.v1
             {
                 TransactionType = transactionType,
                 TransactionDate = transactionDate,
+                BrokeragePortfolioId = userPortfolio.Id,
+                
 
             };
             var transactionResult = await _portfolioOperationService.AddTransactionAsync
                 (
                 investTransaction,
                 finInstrument,
-                instrumentSearchResult.InstrumentType,
+                typeResult.InstrumentType,
                 addTransactionRequest.Price
                 );
+            if (!transactionResult.Successed)
+            {
+                return BadRequest();
+            }
+            return Ok();
 
             // use service for getting an instrument by figi ( 1. go to your db if this is not exist them go to api)
             // get from instrument type
@@ -145,6 +154,46 @@ namespace Parcus.Api.Controllers.v1
             // user operation service for add transaction, validate etc
 
         }
-        
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("tinkoff-api/GetTypeByFigi{figi}")]
+        public async Task<IActionResult> Test(string figi)
+        {
+            await _findInstrumentService.GetByFigiAsync(figi);
+            /*
+            Console.WriteLine(figi);
+            var investApiClient = new ServiceCollection()
+            .AddInvestApiClient((_, x) => x.AccessToken = "t.eq74p1ZM83imCpMPAdoBvqWeExQMwA0WTesE4KngWN6YbDQIR2v-0vX0qR9eZJAX_1j8_M4wp_93xpvoNKRNSA")
+            .BuildServiceProvider()
+                .GetService<InvestApiClient>();
+            var instrumentRequest = new InstrumentRequest();
+            instrumentRequest.Id = figi;
+            string instrumentType;
+            var instrument = investApiClient.Instruments.Etfs();
+            foreach(var p in instrument.Instruments)
+                Console.WriteLine(p.Name);
+            */
+            /*
+            try
+            {
+                var shares = await investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest);
+                instrumentType = shares.Instrument.InstrumentType;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest();
+            }
+            // var type = await _findInstrumentService.GetTypeByFigiAsync(figi);
+            if (instrumentType == null)
+            {
+                return NotFound();
+            }
+            */
+            return Ok();
+        }
+
+
+
     }
 }

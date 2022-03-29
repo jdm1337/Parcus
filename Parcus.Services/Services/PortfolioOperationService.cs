@@ -2,6 +2,8 @@
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Invest.Brokers;
 using Parcus.Domain.Invest.InstrumentModels;
+using Parcus.Domain.Invest.InstrumentModels.Bonds;
+using Parcus.Domain.Invest.InstrumentModels.Funds;
 using Parcus.Domain.Invest.InstrumentModels.Shares;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
@@ -49,16 +51,39 @@ namespace Parcus.Services.Services
             return true;
         }
 
-        public Task<InstrumentResult> AddTransactionAsync(InvestTransaction transaction, FinInstrumentInPortfolio instrumentInPortfolio, string instrumentType, double istrumentPrice)
+        public async Task<InstrumentResult> AddTransactionAsync(InvestTransaction transaction, FinInstrumentInPortfolio instrumentInPortfolio, string instrumentType, double instrumentPrice)
         {
+            var result = new InstrumentResult();
+            var finInstrument = new FinInstrumentInPortfolio();
+
+            if(instrumentType == "share")
+            {
+                finInstrument = new SharesInPortfolio();
+
+
+            }
+            else if(instrumentType == "bond"){
+                finInstrument = new BondsInPortfolio();
+
+            }
+            else if(instrumentType == "fund")
+            {
+                finInstrument = new FundsInPortfolio();
+            }
+            else
+            {
+                result.Successed = false;
+                return result;
+            }
             
-            
-            throw new NotImplementedException();
+
+
+
             
         }
-        public async Task<bool> ValidateTransaction()
+        private async Task<bool> ValidateTransactionAsync(int portfolioId, Transactions transactionType, FinInstrumentInPortfolio instrument)
         {
-            throw new NotImplementedException(); ;
+            var portfolio = await _unitOfWork.Inve
         }
 
     }
