@@ -1,5 +1,4 @@
-﻿using Parcus.Domain.Invest.PortfolioModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +16,5 @@ namespace Parcus.Domain.Invest.InstrumentModels
         public double? CurrentFundsValue { get; set; }
         public double? Profit { get; set; }
         public double? DailyProfit { get; set; }
-        public string? Currency { get; set; }
-
-        public int BrokeragePortfolioId { get; set; }
-        public BrokeragePortfolio BrokeragePortfolio { get; set; }
     }
 }

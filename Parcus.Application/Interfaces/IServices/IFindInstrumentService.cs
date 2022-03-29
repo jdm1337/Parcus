@@ -9,12 +9,9 @@ namespace Parcus.Application.Interfaces.IServices
 {
     public interface IFindInstrumentService
     {
-        
         Task<FindInstrumentResult> GetByFigiAsync(string instrumentCode);
-        Task<FindInstrumentResult> GetTypeByFigiAsync(string instrumentCode);
+        Task<FindInstrumentResult> ApiSearchAsync(string instrumentCode);
+        Task<FindInstrumentResult> SearchAsync(string instrumentCode);
         
-        //Task<string> GetTypeByFigiAsync(string instrumentCode);
-
-
     }
 }

@@ -8,6 +8,5 @@ namespace Parcus.Domain.Invest.InstrumentModels.Funds
 {
     public class Fund : FinInstrument
     {
-        public string? FundName { get; set; }
     }
 }

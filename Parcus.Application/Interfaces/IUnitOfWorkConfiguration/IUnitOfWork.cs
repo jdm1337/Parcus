@@ -1,7 +1,4 @@
 ﻿using Parcus.Application.Interfaces.IRepository;
-using Parcus.Domain.Invest.InstrumentModels.Bonds;
-using Parcus.Domain.Invest.InstrumentModels.Funds;
-using Parcus.Domain.Invest.InstrumentModels.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +13,6 @@ namespace Parcus.Application.Interfaces.IUnitOfWorkConfiguration
         IUsersRepository Users { get; }
         IPortfoliosRepository Portfolios { get; }
         IBrokersRepository Brokers { get; }
-        IInstrumentRepository<SharesInPortfolio> SharesInPortfolio { get; }
-        IInstrumentRepository<FundsInPortfolio> FundsInPortfolio { get; }
-        IInstrumentRepository<BondsInPortfolio> BondsInPortfolio { get; }
 
         Task CompleteAsync();
     }

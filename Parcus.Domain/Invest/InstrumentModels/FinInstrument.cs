@@ -1,4 +1,4 @@
-﻿
+﻿using Parcus.Domain.Invest.InstrumentModels.Currencies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Parcus.Domain.Invest.InstrumentModels
         public string? CompanyName { get; set; }
         public string? Tiker { get; set; }
         public string? Country { get; set; }
-        public string? Currency { get; set; }
+        public Currency? Currency { get; set; }
         public double? CurrentPrice { get; set; }
     }
 }

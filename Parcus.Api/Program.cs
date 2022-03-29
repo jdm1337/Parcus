@@ -16,7 +16,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Parcus.Persistence.DataSeed;
 using Parcus.Domain.Identity;
-using Parcus.Domain.Token;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 string connection = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
-builder.Services.Configure<TinkoffApiTokens>(builder.Configuration.GetSection("TinkoffApiTokens"));
 builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
 
 builder.Services.AddTransient<DataSeeder>();
@@ -40,9 +38,6 @@ builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IPortfolioOperationService, PortfolioOperationService>();
 builder.Services.AddTransient<IFindInstrumentService, FindInstrumentService>();
-
-//builder.Services.AddInvestApiClient((_, settings) => 
-//    settings.AccessToken = builder.Configuration["TinkoffApiTokens:ReadonlyToken"]);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -99,9 +94,8 @@ builder.Services.AddApiVersioning(options =>
 
 });
 
-
 var app = builder.Build();
-await SeedData(app);
+SeedData(app);
 
 async Task<bool> SeedData(IHost app)
 {
