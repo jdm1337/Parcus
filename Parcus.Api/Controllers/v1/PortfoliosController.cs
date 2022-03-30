@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Parcus.Api.Models.DTO.Incoming;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
+using Parcus.Domain.Invest.Brokers;
 using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
@@ -75,9 +76,14 @@ namespace Parcus.Api.Controllers.v1
             {
                 return BadRequest();
             }
-            var isSucceeded = await _portfolioOperationService.AddBroker(userPortfolio, addBrokerRequest.BrokerName, addBrokerRequest.Percentage);
+            var broker = new Broker
+            {
+                Name = addBrokerRequest.BrokerName,
+                Percentage = addBrokerRequest.Percentage
+            };
+            var addBrokerResult = await _portfolioOperationService.AddBroker(userPortfolio, broker);
 
-            if (!isSucceeded)
+            if (!addBrokerResult.Succeeded)
             {
                 return BadRequest();
             }
@@ -89,6 +95,7 @@ namespace Parcus.Api.Controllers.v1
         [Authorize(Permissions.Portfolios.Add)]
         public async Task<IActionResult> AddTransaction([FromBody] AddTransactionRequest addTransactionRequest)
         {
+
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var userPortfolio = await _unitOfWork.Portfolios.GetByUserIdAndNameAsync(userId, addTransactionRequest.PortfolioName);
 

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Parcus.Domain.Invest.InstrumentModels
 {
-    enum InstrumentTypes
+    public enum InstrumentTypes
     {
-        Share,
-        Bond,
-        Fund
+        share,
+        bond,
+        etf,
+        future
     }
 }

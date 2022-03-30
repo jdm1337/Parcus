@@ -1,4 +1,6 @@
-﻿using Parcus.Domain.Invest.InstrumentModels;
+﻿using Parcus.Domain.Invest;
+using Parcus.Domain.Invest.Brokers;
+using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Parcus.Domain.Results;
@@ -12,8 +14,8 @@ namespace Parcus.Application.Interfaces.IServices
 {
     public interface IPortfolioOperationService
     {
-        Task<bool> AddBroker(BrokeragePortfolio brokeragePortfolio, string brokerName, double percentage);
+        Task<Result<Broker>> AddBroker(BrokeragePortfolio brokeragePortfolio, Broker broker);
         
-        Task<InstrumentResult> AddTransactionAsync(InvestTransaction transaction, FinInstrumentInPortfolio instrumentInPortfolio, string instrumentType, double instrumentPrice);
+        Task<Result<InvestTransaction>> AddTransactionAsync(InvestTransaction transaction);
     }
 }

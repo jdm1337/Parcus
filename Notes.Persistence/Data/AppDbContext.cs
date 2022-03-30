@@ -7,6 +7,7 @@ using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Microsoft.AspNetCore.Identity;
 using Parcus.Domain.Invest.InstrumentModels.Shares;
+using Parcus.Domain.Invest.InstrumentModels;
 
 namespace Parcus.Persistence.Data
 {
@@ -16,6 +17,9 @@ namespace Parcus.Persistence.Data
         public virtual DbSet<User> Users { get; set;}
         public virtual DbSet<BrokeragePortfolio> BrokeragePortfolios { get; set; }
         public virtual DbSet<InvestTransaction> InvestTransactions { get; set; }
+        public virtual DbSet<InstrumentsInPortfolio> InstrumentsInPortfolio { get; set; }
+        public virtual DbSet<Instrument> Instruments { get; set; }
+
            
         
         
@@ -32,14 +36,6 @@ namespace Parcus.Persistence.Data
             modelBuilder.ApplyConfiguration(new BrokeragePortfolioConfiguration());
 
             modelBuilder.ApplyConfiguration(new InvestTransactionConfiguration());
-
-            modelBuilder.ApplyConfiguration(new SharesInPortfolioConfiguration());
-            modelBuilder.ApplyConfiguration(new FundsInPortfolioConfiguration());
-            modelBuilder.ApplyConfiguration(new BondsInPortfolioConfiguration());
-
-            modelBuilder.ApplyConfiguration(new SharesConfiguration());
-            modelBuilder.ApplyConfiguration(new FundsConfiguration());
-            modelBuilder.ApplyConfiguration(new BondsConfiguration());
 
             base.OnModelCreating(modelBuilder);
             

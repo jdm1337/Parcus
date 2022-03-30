@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Parcus.Application.Interfaces.IRepository;
-using Parcus.Domain.Invest.InstrumentModels.Bonds;
+using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Persistence.Data;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Parcus.Persistence.Repository
 {
-    public class BondsInPortfolioRepository : GenericRepository<BondsInPortfolio>, IInstrumentRepository<BondsInPortfolio>
+    public class InstrumentRepository : GenericRepository<Instrument>, IInstrumentRepository
     {
-        public BondsInPortfolioRepository(AppDbContext context, ILogger logger) : base(context, logger)
+        public InstrumentRepository(AppDbContext context, ILogger logger) : base(context, logger)
         {
         }
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Parcus.Persistence.EntityTypeConfiguration
 {
-    public class SharesInPortfolioConfiguration : IEntityTypeConfiguration<SharesInPortfolio>
+    public class InstrumentsInPortfolioConfiguration : IEntityTypeConfiguration<InstrumentsInPortfolio>
     {
         public void Configure(EntityTypeBuilder<SharesInPortfolio> builder)
         {

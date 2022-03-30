@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Parcus.Domain\Parcus.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Extensions\" />
+  </ItemGroup>
+
 </Project>

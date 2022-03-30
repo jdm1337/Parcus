@@ -1,8 +1,6 @@
 ﻿using Parcus.Domain.Identity;
 using Parcus.Domain.Invest.Brokers;
-using Parcus.Domain.Invest.InstrumentModels.Bonds;
-using Parcus.Domain.Invest.InstrumentModels.Funds;
-using Parcus.Domain.Invest.InstrumentModels.Shares;
+using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.Transactions;
 
 namespace Parcus.Domain.Invest.PortfolioModels
@@ -15,18 +13,13 @@ namespace Parcus.Domain.Invest.PortfolioModels
         
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        //public ICollection<>
-        public ICollection<SharesInPortfolio>? Shares { get; set; }
-        public ICollection<FundsInPortfolio>? Funds { get; set; }
-        public ICollection<BondsInPortfolio>? Bonds { get; set; }
+        public ICollection<InstrumentsInPortfolio>? Instruments { get; set; }
 
-
-        //Transaction history
         public ICollection<InvestTransaction>? Transactions { get; set; }
 
 
         public int UserId { get; set; }
-        public User User { get; set; } 
+        public User? User { get; set; } 
         
     }
 }

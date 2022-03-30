@@ -8,7 +8,7 @@ namespace Parcus.Domain.Invest.Transactions
 {
     public enum Transactions
     {
-        Purchaise,
+        Buy,
         Sale
     }
 }

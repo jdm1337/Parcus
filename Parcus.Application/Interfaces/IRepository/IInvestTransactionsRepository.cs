@@ -1,4 +1,4 @@
-﻿using Parcus.Domain.Invest.InstrumentModels;
+﻿using Parcus.Domain.Invest.Transactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Parcus.Application.Interfaces.IRepository
 {
-    public interface IInstrumentRepository: IGenericRepository<Instrument>
+    public interface IInvestTransactionsRepository : IGenericRepository<InvestTransaction>
     {
-        
+
     }
 }

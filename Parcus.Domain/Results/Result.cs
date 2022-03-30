@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Parcus.Domain.Results
 {
-    public class InstrumentResult
+    public class Result<T>
     {
-        public bool Successed { get; set; }
+        public bool Succeeded { get; set; }= false;
+        public T? Item { get; set; }
+        public List<T>? Items { get; set; }
+
     }
 }

@@ -1,12 +1,6 @@
-﻿using Parcus.Domain.Invest.PortfolioModels;
-using Parcus.Domain.Invest.InstrumentModels.Shares;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Parcus.Domain.Invest.InstrumentModels.Funds;
-using Parcus.Domain.Invest.InstrumentModels.Bonds;
+﻿using Parcus.Domain.Invest.InstrumentModels;
+using Parcus.Domain.Invest.PortfolioModels;
+
 
 namespace Parcus.Domain.Invest.Transactions
 {
@@ -17,13 +11,10 @@ namespace Parcus.Domain.Invest.Transactions
         public Transactions? TransactionType { get; set; }
 
 
-
-        
-        public SharesInPortfolio? Share { get; set; }
-        public FundsInPortfolio? Fund { get; set; }
-        public BondsInPortfolio? Bond { get; set; }
-
-
+        public int? InstrumentsInPortfolioId { get; set; }   
+        public InstrumentsInPortfolio? Instrument { get; set; }
+        public double? InstrumentPrice { get; set; }
+       
         public int? BrokeragePortfolioId { get; set; }
         public BrokeragePortfolio? BrokeragePortfolio { get; set; }
     }

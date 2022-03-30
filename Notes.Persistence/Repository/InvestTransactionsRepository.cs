@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Parcus.Application.Interfaces.IRepository;
-using Parcus.Domain.Invest.InstrumentModels.Shares;
+using Parcus.Domain.Invest.Transactions;
 using Parcus.Persistence.Data;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Parcus.Persistence.Repository
 {
-    public class SharesInPortfolioRepository : GenericRepository<SharesInPortfolio>, IInstrumentRepository<SharesInPortfolio>
+    public class InvestTranasctionsRepository : GenericRepository<InvestTransaction>, IInvestTransactionsRepository
     {
-        public SharesInPortfolioRepository(AppDbContext context, ILogger logger) : base(context, logger)
+        public InvestTranasctionsRepository(AppDbContext context, ILogger logger) : base(context, logger)
         {
         }
     }

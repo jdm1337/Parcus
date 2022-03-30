@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parcus.Domain.Invest.InstrumentModels.Bonds
 {
-    public class Bond : FinInstrument
+    public class Bond : Instrument
     {
         public string BondName { get; set; }
         //Current profit in percents from the moment of publishing 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parcus.Domain.Invest.InstrumentModels.Funds
+namespace Parcus.Domain.Invest.InstrumentModels
 {
-    public class Fund : FinInstrument
+    public class Etf
     {
     }
 }

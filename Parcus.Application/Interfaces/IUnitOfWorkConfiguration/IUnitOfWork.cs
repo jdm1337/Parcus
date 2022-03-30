@@ -1,4 +1,5 @@
 ﻿using Parcus.Application.Interfaces.IRepository;
+using Parcus.Domain.Invest.InstrumentModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace Parcus.Application.Interfaces.IUnitOfWorkConfiguration
         IUsersRepository Users { get; }
         IPortfoliosRepository Portfolios { get; }
         IBrokersRepository Brokers { get; }
+        IInstrumentRepository Instruments { get; }
+        IInstrumentsInPortfolioRepository InstrumentsInPortfolio { get; }
+        IInvestTransactionsRepository InvestTransactions { get; }
 
         Task CompleteAsync();
     }
