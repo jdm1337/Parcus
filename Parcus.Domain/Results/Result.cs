@@ -8,7 +8,7 @@ namespace Parcus.Domain.Results
 {
     public class Result<T>
     {
-        public bool Succeeded { get; set; }= false;
+        public bool Succeeded { get; set; } = false;
         public T? Item { get; set; }
         public List<T>? Items { get; set; }
 

@@ -15,16 +15,16 @@ namespace Parcus.Api.Controllers.v1
     {
         private readonly IAuthService _authService;
         private readonly IPortfolioOperationService _portfolioOperationService;
-        private readonly IFindInstrumentService _findInstrumentService;
+        private readonly IDataInstrumentService _dataInstrumentService;
         public PortfoliosController(
             IUnitOfWork unitOfWork,
             IPortfolioOperationService portfolioOperationService,
             IAuthService authService,
-            IFindInstrumentService findInstrumentService) : base(unitOfWork)
+            IDataInstrumentService findInstrumentService) : base(unitOfWork)
         {
             _authService = authService;
             _portfolioOperationService = portfolioOperationService;
-            _findInstrumentService = findInstrumentService;
+            _dataInstrumentService = findInstrumentService;
         }
         // Add portfolio method included in prime version and here need to implement
         // system of checking current amount of portfolios
@@ -103,23 +103,25 @@ namespace Parcus.Api.Controllers.v1
             {
                 return BadRequest();
             }
-            var instrumentSearchResult = await _findInstrumentService.SearchAsync(addTransactionRequest.Figi);
-            if (!instrumentSearchResult.Successed)
+            var defineTypeResult = await _dataInstrumentService.DefineTypeByFigi(addTransactionRequest.Figi);
+            if (!defineTypeResult.Succeeded)
             {
                 return NotFound("Finance instrument not found.");
             }
-            var finInstrument = new FinInstrumentInPortfolio
+            var finInstrument = new InstrumentsInPortfolio
             {
                 Figi = addTransactionRequest.Figi,
                 Amount = addTransactionRequest.Amount,
+                InstrumentType = defineTypeResult.Item,
+                BrokeragePortfolioId = userPortfolio.Id
             };
-
-            Enum.TryParse(addTransactionRequest.TransactionType, out Transactions transactionType);
+            var transactionType = (Transactions)Enum.Parse(typeof(Transactions), addTransactionRequest.TransactionType);
             if(transactionType == null)
             {
-                return BadRequest($"Invalid transaction format{addTransactionRequest.TransactionType}");
+                return BadRequest($"Invalid transaction format {addTransactionRequest.TransactionType}.");
             }
-
+            
+            Console.WriteLine(transactionType.ToString());
             // example of datetime "2009-05-08 14:40:52,531"
             DateTime transactionDate; 
             try
@@ -134,23 +136,26 @@ namespace Parcus.Api.Controllers.v1
             {
                 TransactionType = transactionType,
                 TransactionDate = transactionDate,
-
+                InstrumentPrice = addTransactionRequest.Price,
+                BrokeragePortfolioId = userPortfolio.Id,
+                BrokeragePortfolio = userPortfolio,
+                Instrument = finInstrument
             };
-            var transactionResult = await _portfolioOperationService.AddTransactionAsync
-                (
-                investTransaction,
-                finInstrument,
-                instrumentSearchResult.InstrumentType,
-                addTransactionRequest.Price
-                );
-
-            // use service for getting an instrument by figi ( 1. go to your db if this is not exist them go to api)
-            // get from instrument type
-            //create and mapping share or bond or fundInAccount with gotted instrument
-            //save created somethinginaccount - save id of this entity
-            //create invest transaction by mapping request and edding figi to field of transaction entity
-            // user operation service for add transaction, validate etc
-
+            var transactionResult = await _portfolioOperationService.AddTransactionAsync(investTransaction);
+           
+            if (!transactionResult.Succeeded)
+            {
+                return BadRequest("Invalid Transaction");
+            }
+            return Ok();
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("test/{figi}")]
+        public async Task<IActionResult> AddTransaction(string figi)
+        {
+            var res = await _dataInstrumentService.DefineTypeByFigi(figi);
+            return Ok(res.Item.ToString());
         }
         
     }

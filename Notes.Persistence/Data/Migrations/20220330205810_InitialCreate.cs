@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Parcus.Persistence.Data.Migrations
 {
-    public partial class _001 : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -217,158 +217,58 @@ namespace Parcus.Persistence.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bond",
+                name: "Instruments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BondName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Isin = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Tiker = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CurrencyId = table.Column<int>(type: "int", nullable: true),
+                    CurrentPrice = table.Column<double>(type: "float", nullable: true),
+                    Dividends = table.Column<double>(type: "float", nullable: true),
+                    DividendYield = table.Column<double>(type: "float", nullable: true),
                     CurrentProfit = table.Column<double>(type: "float", nullable: true),
                     CancelProfit = table.Column<double>(type: "float", nullable: true),
                     CancelDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Denomination = table.Column<double>(type: "float", nullable: true),
-                    PayingPeriod = table.Column<int>(type: "int", nullable: true),
-                    Isin = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Tiker = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CurrencyId = table.Column<int>(type: "int", nullable: true),
-                    CurrentPrice = table.Column<double>(type: "float", nullable: true)
+                    PayingPeriod = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bond", x => x.Id);
+                    table.PrimaryKey("PK_Instruments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bond_Currency_CurrencyId",
+                        name: "FK_Instruments_Currency_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currency",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fund",
+                name: "InstrumentsInPortfolio",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Isin = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Tiker = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CurrencyId = table.Column<int>(type: "int", nullable: true),
-                    CurrentPrice = table.Column<double>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Fund", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Fund_Currency_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currency",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Share",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ShareName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dividends = table.Column<double>(type: "float", nullable: true),
-                    DividendYield = table.Column<double>(type: "float", nullable: true),
-                    Isin = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Tiker = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CurrencyId = table.Column<int>(type: "int", nullable: true),
-                    CurrentPrice = table.Column<double>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Share", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Share_Currency_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currency",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BondsInPortfolio",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BrokeragePortfolioId = table.Column<int>(type: "int", nullable: false),
-                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InstrumentType = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: true),
                     AveragePrice = table.Column<double>(type: "float", nullable: true),
                     InvestedValue = table.Column<double>(type: "float", nullable: true),
-                    CurrentFundsValue = table.Column<double>(type: "float", nullable: true),
+                    CurrentValue = table.Column<double>(type: "float", nullable: true),
+                    CurrentPrice = table.Column<double>(type: "float", nullable: true),
                     Profit = table.Column<double>(type: "float", nullable: true),
-                    DailyProfit = table.Column<double>(type: "float", nullable: true)
+                    DailyProfit = table.Column<double>(type: "float", nullable: true),
+                    BrokeragePortfolioId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BondsInPortfolio", x => x.Id);
+                    table.PrimaryKey("PK_InstrumentsInPortfolio", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BondsInPortfolio_BrokeragePortfolios_BrokeragePortfolioId",
-                        column: x => x.BrokeragePortfolioId,
-                        principalTable: "BrokeragePortfolios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FundsInPortfolio",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BrokeragePortfolioId = table.Column<int>(type: "int", nullable: false),
-                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<int>(type: "int", nullable: true),
-                    AveragePrice = table.Column<double>(type: "float", nullable: true),
-                    InvestedValue = table.Column<double>(type: "float", nullable: true),
-                    CurrentFundsValue = table.Column<double>(type: "float", nullable: true),
-                    Profit = table.Column<double>(type: "float", nullable: true),
-                    DailyProfit = table.Column<double>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FundsInPortfolio", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FundsInPortfolio_BrokeragePortfolios_BrokeragePortfolioId",
-                        column: x => x.BrokeragePortfolioId,
-                        principalTable: "BrokeragePortfolios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SharesInPortfolio",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BrokeragePortfolioId = table.Column<int>(type: "int", nullable: false),
-                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Amount = table.Column<int>(type: "int", nullable: true),
-                    AveragePrice = table.Column<double>(type: "float", nullable: true),
-                    InvestedValue = table.Column<double>(type: "float", nullable: true),
-                    CurrentFundsValue = table.Column<double>(type: "float", nullable: true),
-                    Profit = table.Column<double>(type: "float", nullable: true),
-                    DailyProfit = table.Column<double>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SharesInPortfolio", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SharesInPortfolio_BrokeragePortfolios_BrokeragePortfolioId",
+                        name: "FK_InstrumentsInPortfolio_BrokeragePortfolios_BrokeragePortfolioId",
                         column: x => x.BrokeragePortfolioId,
                         principalTable: "BrokeragePortfolios",
                         principalColumn: "Id",
@@ -381,35 +281,24 @@ namespace Parcus.Persistence.Data.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TransactionType = table.Column<int>(type: "int", nullable: false),
-                    ShareId = table.Column<int>(type: "int", nullable: true),
-                    FundId = table.Column<int>(type: "int", nullable: true),
-                    BondId = table.Column<int>(type: "int", nullable: true),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TransactionType = table.Column<int>(type: "int", nullable: true),
+                    InstrumentsInPortfolioId = table.Column<int>(type: "int", nullable: true),
+                    InstrumentPrice = table.Column<double>(type: "float", nullable: true),
                     BrokeragePortfolioId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InvestTransactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InvestTransactions_BondsInPortfolio_BondId",
-                        column: x => x.BondId,
-                        principalTable: "BondsInPortfolio",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_InvestTransactions_BrokeragePortfolios_BrokeragePortfolioId",
                         column: x => x.BrokeragePortfolioId,
                         principalTable: "BrokeragePortfolios",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_InvestTransactions_FundsInPortfolio_FundId",
-                        column: x => x.FundId,
-                        principalTable: "FundsInPortfolio",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_InvestTransactions_SharesInPortfolio_ShareId",
-                        column: x => x.ShareId,
-                        principalTable: "SharesInPortfolio",
+                        name: "FK_InvestTransactions_InstrumentsInPortfolio_InstrumentsInPortfolioId",
+                        column: x => x.InstrumentsInPortfolioId,
+                        principalTable: "InstrumentsInPortfolio",
                         principalColumn: "Id");
                 });
 
@@ -459,22 +348,6 @@ namespace Parcus.Persistence.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bond_CurrencyId",
-                table: "Bond",
-                column: "CurrencyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BondsInPortfolio_BrokeragePortfolioId",
-                table: "BondsInPortfolio",
-                column: "BrokeragePortfolioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BondsInPortfolio_Id",
-                table: "BondsInPortfolio",
-                column: "Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BrokeragePortfolios_Id",
                 table: "BrokeragePortfolios",
                 column: "Id",
@@ -491,25 +364,14 @@ namespace Parcus.Persistence.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fund_CurrencyId",
-                table: "Fund",
+                name: "IX_Instruments_CurrencyId",
+                table: "Instruments",
                 column: "CurrencyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FundsInPortfolio_BrokeragePortfolioId",
-                table: "FundsInPortfolio",
+                name: "IX_InstrumentsInPortfolio_BrokeragePortfolioId",
+                table: "InstrumentsInPortfolio",
                 column: "BrokeragePortfolioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FundsInPortfolio_Id",
-                table: "FundsInPortfolio",
-                column: "Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InvestTransactions_BondId",
-                table: "InvestTransactions",
-                column: "BondId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvestTransactions_BrokeragePortfolioId",
@@ -517,30 +379,9 @@ namespace Parcus.Persistence.Data.Migrations
                 column: "BrokeragePortfolioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InvestTransactions_FundId",
+                name: "IX_InvestTransactions_InstrumentsInPortfolioId",
                 table: "InvestTransactions",
-                column: "FundId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InvestTransactions_ShareId",
-                table: "InvestTransactions",
-                column: "ShareId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Share_CurrencyId",
-                table: "Share",
-                column: "CurrencyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SharesInPortfolio_BrokeragePortfolioId",
-                table: "SharesInPortfolio",
-                column: "BrokeragePortfolioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SharesInPortfolio_Id",
-                table: "SharesInPortfolio",
-                column: "Id",
-                unique: true);
+                column: "InstrumentsInPortfolioId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -561,31 +402,19 @@ namespace Parcus.Persistence.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Bond");
-
-            migrationBuilder.DropTable(
-                name: "Fund");
+                name: "Instruments");
 
             migrationBuilder.DropTable(
                 name: "InvestTransactions");
 
             migrationBuilder.DropTable(
-                name: "Share");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "BondsInPortfolio");
-
-            migrationBuilder.DropTable(
-                name: "FundsInPortfolio");
-
-            migrationBuilder.DropTable(
-                name: "SharesInPortfolio");
-
-            migrationBuilder.DropTable(
                 name: "Currency");
+
+            migrationBuilder.DropTable(
+                name: "InstrumentsInPortfolio");
 
             migrationBuilder.DropTable(
                 name: "BrokeragePortfolios");

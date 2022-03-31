@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Parcus.Persistence.Repository
 {
-    public class InvestTranasctionsRepository : GenericRepository<InvestTransaction>, IInvestTransactionsRepository
+    public class InvestTransactionsRepository : GenericRepository<InvestTransaction>, IInvestTransactionsRepository
     {
-        public InvestTranasctionsRepository(AppDbContext context, ILogger logger) : base(context, logger)
+        public InvestTransactionsRepository(AppDbContext context, ILogger logger) : base(context, logger)
         {
         }
     }

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Parcus.Persistence.Data;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
-using Parcus.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Parcus.Api.Authentication.Handlers;
@@ -13,7 +12,6 @@ using Parcus.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
 using Parcus.Persistence.DataSeed;
 using Parcus.Domain.Identity;
 
@@ -35,9 +33,11 @@ builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
+#pragma warning disable CS0436 // Type conflicts with imported type
 builder.Services.AddTransient<ITokenService, TokenService>();
+#pragma warning restore CS0436 // Type conflicts with imported type
 builder.Services.AddTransient<IPortfolioOperationService, PortfolioOperationService>();
-builder.Services.AddTransient<IFindInstrumentService, FindInstrumentService>();
+builder.Services.AddTransient<IDataInstrumentService, DataInstrumentService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

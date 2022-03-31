@@ -12,8 +12,8 @@ using Parcus.Persistence.Data;
 namespace Parcus.Persistence.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220327204436_001")]
-    partial class _001
+    [Migration("20220330205810_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -260,103 +260,6 @@ namespace Parcus.Persistence.Data.Migrations
                     b.ToTable("Broker");
                 });
 
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Bonds.Bond", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("BondName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CancelDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double?>("CancelProfit")
-                        .HasColumnType("float");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("CurrentPrice")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("CurrentProfit")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Denomination")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Figi")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Isin")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PayingPeriod")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tiker")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.ToTable("Bond");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Bonds.BondsInPortfolio", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("AveragePrice")
-                        .HasColumnType("float");
-
-                    b.Property<int>("BrokeragePortfolioId")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("CurrentFundsValue")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("DailyProfit")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Figi")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("InvestedValue")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Profit")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BrokeragePortfolioId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("BondsInPortfolio");
-                });
-
             modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Currencies.Currency", b =>
                 {
                     b.Property<int>("Id")
@@ -382,7 +285,7 @@ namespace Parcus.Persistence.Data.Migrations
                     b.ToTable("Currency");
                 });
 
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Funds.Fund", b =>
+            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Instrument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -390,8 +293,11 @@ namespace Parcus.Persistence.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("CancelProfit")
+                        .HasColumnType("float");
 
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
@@ -402,82 +308,10 @@ namespace Parcus.Persistence.Data.Migrations
                     b.Property<double?>("CurrentPrice")
                         .HasColumnType("float");
 
-                    b.Property<string>("Figi")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Isin")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tiker")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.ToTable("Fund");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Funds.FundsInPortfolio", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("AveragePrice")
+                    b.Property<double?>("CurrentProfit")
                         .HasColumnType("float");
 
-                    b.Property<int>("BrokeragePortfolioId")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("CurrentFundsValue")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("DailyProfit")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Figi")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("InvestedValue")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Profit")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BrokeragePortfolioId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("FundsInPortfolio");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Shares.Share", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("CurrentPrice")
+                    b.Property<double?>("Denomination")
                         .HasColumnType("float");
 
                     b.Property<double?>("DividendYield")
@@ -492,9 +326,11 @@ namespace Parcus.Persistence.Data.Migrations
                     b.Property<string>("Isin")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ShareName")
-                        .IsRequired()
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PayingPeriod")
+                        .HasColumnType("int");
 
                     b.Property<string>("Tiker")
                         .HasColumnType("nvarchar(max)");
@@ -503,10 +339,10 @@ namespace Parcus.Persistence.Data.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.ToTable("Share");
+                    b.ToTable("Instruments");
                 });
 
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Shares.SharesInPortfolio", b =>
+            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.InstrumentsInPortfolio", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -520,10 +356,13 @@ namespace Parcus.Persistence.Data.Migrations
                     b.Property<double?>("AveragePrice")
                         .HasColumnType("float");
 
-                    b.Property<int>("BrokeragePortfolioId")
+                    b.Property<int?>("BrokeragePortfolioId")
                         .HasColumnType("int");
 
-                    b.Property<double?>("CurrentFundsValue")
+                    b.Property<double?>("CurrentPrice")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("CurrentValue")
                         .HasColumnType("float");
 
                     b.Property<double?>("DailyProfit")
@@ -531,6 +370,9 @@ namespace Parcus.Persistence.Data.Migrations
 
                     b.Property<string>("Figi")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InstrumentType")
+                        .HasColumnType("int");
 
                     b.Property<double?>("InvestedValue")
                         .HasColumnType("float");
@@ -542,10 +384,7 @@ namespace Parcus.Persistence.Data.Migrations
 
                     b.HasIndex("BrokeragePortfolioId");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.ToTable("SharesInPortfolio");
+                    b.ToTable("InstrumentsInPortfolio");
                 });
 
             modelBuilder.Entity("Parcus.Domain.Invest.PortfolioModels.BrokeragePortfolio", b =>
@@ -589,33 +428,26 @@ namespace Parcus.Persistence.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<int?>("BondId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("BrokeragePortfolioId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FundId")
+                    b.Property<double?>("InstrumentPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("InstrumentsInPortfolioId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShareId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TransactionDate")
+                    b.Property<DateTime?>("TransactionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TransactionType")
+                    b.Property<int?>("TransactionType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BondId");
-
                     b.HasIndex("BrokeragePortfolioId");
 
-                    b.HasIndex("FundId");
-
-                    b.HasIndex("ShareId");
+                    b.HasIndex("InstrumentsInPortfolioId");
 
                     b.ToTable("InvestTransactions");
                 });
@@ -671,7 +503,7 @@ namespace Parcus.Persistence.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Bonds.Bond", b =>
+            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Instrument", b =>
                 {
                     b.HasOne("Parcus.Domain.Invest.InstrumentModels.Currencies.Currency", "Currency")
                         .WithMany()
@@ -680,53 +512,12 @@ namespace Parcus.Persistence.Data.Migrations
                     b.Navigation("Currency");
                 });
 
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Bonds.BondsInPortfolio", b =>
+            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.InstrumentsInPortfolio", b =>
                 {
                     b.HasOne("Parcus.Domain.Invest.PortfolioModels.BrokeragePortfolio", "BrokeragePortfolio")
-                        .WithMany("Bonds")
+                        .WithMany("Instruments")
                         .HasForeignKey("BrokeragePortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BrokeragePortfolio");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Funds.Fund", b =>
-                {
-                    b.HasOne("Parcus.Domain.Invest.InstrumentModels.Currencies.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId");
-
-                    b.Navigation("Currency");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Funds.FundsInPortfolio", b =>
-                {
-                    b.HasOne("Parcus.Domain.Invest.PortfolioModels.BrokeragePortfolio", "BrokeragePortfolio")
-                        .WithMany("Funds")
-                        .HasForeignKey("BrokeragePortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BrokeragePortfolio");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Shares.Share", b =>
-                {
-                    b.HasOne("Parcus.Domain.Invest.InstrumentModels.Currencies.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId");
-
-                    b.Navigation("Currency");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Shares.SharesInPortfolio", b =>
-                {
-                    b.HasOne("Parcus.Domain.Invest.PortfolioModels.BrokeragePortfolio", "BrokeragePortfolio")
-                        .WithMany("Shares")
-                        .HasForeignKey("BrokeragePortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("BrokeragePortfolio");
                 });
@@ -750,33 +541,18 @@ namespace Parcus.Persistence.Data.Migrations
 
             modelBuilder.Entity("Parcus.Domain.Invest.Transactions.InvestTransaction", b =>
                 {
-                    b.HasOne("Parcus.Domain.Invest.InstrumentModels.Bonds.BondsInPortfolio", "Bond")
-                        .WithMany("Transactions")
-                        .HasForeignKey("BondId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Parcus.Domain.Invest.PortfolioModels.BrokeragePortfolio", "BrokeragePortfolio")
                         .WithMany("Transactions")
                         .HasForeignKey("BrokeragePortfolioId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Parcus.Domain.Invest.InstrumentModels.Funds.FundsInPortfolio", "Fund")
+                    b.HasOne("Parcus.Domain.Invest.InstrumentModels.InstrumentsInPortfolio", "Instrument")
                         .WithMany("Transactions")
-                        .HasForeignKey("FundId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Parcus.Domain.Invest.InstrumentModels.Shares.SharesInPortfolio", "Share")
-                        .WithMany("Transactions")
-                        .HasForeignKey("ShareId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Bond");
+                        .HasForeignKey("InstrumentsInPortfolioId");
 
                     b.Navigation("BrokeragePortfolio");
 
-                    b.Navigation("Fund");
-
-                    b.Navigation("Share");
+                    b.Navigation("Instrument");
                 });
 
             modelBuilder.Entity("Parcus.Domain.Identity.User", b =>
@@ -784,28 +560,14 @@ namespace Parcus.Persistence.Data.Migrations
                     b.Navigation("BrokPortfolios");
                 });
 
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Bonds.BondsInPortfolio", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Funds.FundsInPortfolio", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.Shares.SharesInPortfolio", b =>
+            modelBuilder.Entity("Parcus.Domain.Invest.InstrumentModels.InstrumentsInPortfolio", b =>
                 {
                     b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Parcus.Domain.Invest.PortfolioModels.BrokeragePortfolio", b =>
                 {
-                    b.Navigation("Bonds");
-
-                    b.Navigation("Funds");
-
-                    b.Navigation("Shares");
+                    b.Navigation("Instruments");
 
                     b.Navigation("Transactions");
                 });

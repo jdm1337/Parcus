@@ -16,18 +16,18 @@ namespace Parcus.Domain.Invest.InstrumentModels
         public string? Tiker { get; set; }
         public string? Country { get; set; }
         public Currency? Currency { get; set; }
-        public double? CurrentPrice { get; set; }
+        public double? CurrentPrice { get; set; } = 0;
 
         //shares extra fields
-        public double? Dividends { get; set; }
-        public double? DividendYield { get; set; }
-        
+        public double? Dividends { get; set; } = 0;
+        public double? DividendYield { get; set; } = 0;
+
         //bond extra fields
-        public double? CurrentProfit { get; set; }
-        public double? CancelProfit { get; set; }
+        public double? CurrentProfit { get; set; } = 0;
+        public double? CancelProfit { get; set; } = 0;
         public DateTime? CancelDate { get; set; }
-        public double? Denomination { get; set; }
-        public int? PayingPeriod { get; set; }
+        public double? Denomination { get; set; } = 0;
+        public int? PayingPeriod { get; set; } = 0;
 
 
     }
