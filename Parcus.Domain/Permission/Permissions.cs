@@ -23,7 +23,6 @@
             public const string Add = "Permissions.Portfolios.Add";
             public const string Get = "Permissions.Portfolios.Get";
             public const string GetInstruments = "Permissions.Portfolios.GetInstruments";
-            public const string Fly = "Permissions.Portfolios.Fly";
 
         }
         public static class Roles

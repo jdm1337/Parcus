@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Parcus.Domain.Claims;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
+using Parcus.Domain.Results;
 using Parcus.Domain.Settings;
 using Parcus.Persistence.Data;
 
@@ -32,20 +33,19 @@ namespace Parcus.Persistence.DataSeed
             _roleManager = roleManager;
             _appDbContext = appDbContext;
         }
-        public async Task<bool> Seed()
+        public async Task<Result<IdentityResult>> Seed()
         {
-            var isSeed = true;
+            var seedResult = new Result<IdentityResult>();
             if (!_appDbContext.Users.Any())
             {
-                Role role = new Role 
+                Role adminRole = new Role 
                 { 
                     Name = _initializeSettings.Role,
-                    Description = "FFF"
+                    Description = "Main role"
                 };
-                var result = await _roleManager.CreateAsync(role);
-                Console.WriteLine(result.Succeeded);
-                
-                var adminRole = await _roleManager.FindByNameAsync(_initializeSettings.Role);
+                await _roleManager.CreateAsync(adminRole);
+
+                adminRole = await _roleManager.FindByNameAsync(_initializeSettings.Role);
                 
                 await _roleManager.AddClaimAsync(adminRole,
                     new Claim(CustomClaimTypes.Permission, Permissions.Roles.AddPermission));
@@ -56,12 +56,34 @@ namespace Parcus.Persistence.DataSeed
                     UserName = _initializeSettings.Username,
                     EmailConfirmed = true
                 };
-                
-                await _userManager.CreateAsync(adminUser, _initializeSettings.Password);
-                await _userManager.AddToRoleAsync(adminUser, _initializeSettings.Role);
-                return isSeed;
+                //seed common user role and base permissions
+                var commonRole = new Role()
+                {
+                    Name = "CommonUser",
+                    Description = "Common user of application"
+                };
+                await _roleManager.CreateAsync(commonRole);
+
+                commonRole = await _roleManager.FindByNameAsync("CommonUser");
+
+                await _roleManager.AddClaimAsync(commonRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Account.Base));
+                await _roleManager.AddClaimAsync(commonRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Add));
+                await _roleManager.AddClaimAsync(commonRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Get));
+                await _roleManager.AddClaimAsync(commonRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
+
+
+                var createResult = await _userManager.CreateAsync(adminUser, _initializeSettings.Password);
+                var addResult = await _userManager.AddToRoleAsync(adminUser, _initializeSettings.Role);
+                if(createResult.Succeeded && addResult.Succeeded)
+                {
+                    seedResult.Succeeded = true;
+                }
             }
-            return !isSeed ;
+            return seedResult ;
         }
     }
 }
