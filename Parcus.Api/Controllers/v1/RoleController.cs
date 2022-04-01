@@ -25,10 +25,6 @@ namespace Parcus.Api.Controllers.v1
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] CreateRoleRequest createRoleRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
             Role newRole = new Role
             {
                 Name = createRoleRequest.RoleName,

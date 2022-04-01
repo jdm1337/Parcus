@@ -35,15 +35,10 @@ namespace Parcus.Services.Services
             string instrumentType;
             try
             {
-                Console.WriteLine("mark");
+                
                 instrumentType = (await investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest))
                     .Instrument
                     .InstrumentType;
-                Console.WriteLine(instrumentType);
-                Console.WriteLine(InstrumentTypes.share.ToString());
-                Console.WriteLine("mark2");
-                
-                Console.WriteLine("mark3");
                 result.Succeeded = true;
                 result.Item = (InstrumentTypes)Enum.Parse(typeof(InstrumentTypes), instrumentType);
                 return result;
@@ -51,6 +46,29 @@ namespace Parcus.Services.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return result;
+            }
+        }
+        public async Task<Result<string>> DefineInstrumentNameByFigi(string figi)
+        {
+            var result = new Result<string>();
+
+            var instrumentRequest = new InstrumentRequest
+            {
+                Id = figi,
+                IdType = InstrumentIdType.Figi
+            };
+            try
+            {
+                var instrumentName = (await investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest))
+                    .Instrument
+                    .Name;
+                result.Succeeded = true;
+                result.Item = instrumentName;
+                return result;
+            }
+            catch(Exception ex)
+            {
                 return result;
             }
         }

@@ -43,15 +43,6 @@ namespace Parcus.Api.Controllers.v1
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationRequest)
         {
-            
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new Response
-                {
-                    Status = "Fail",
-                    Message = "Invalid statement"
-                });
-            }
 
             var existingUser = await _userManager.FindByEmailAsync(registrationRequest.Email);
             if (existingUser != null)
@@ -98,7 +89,7 @@ namespace Parcus.Api.Controllers.v1
             }
             return BadRequest();
         }
-        [Authorize(Permissions.Users.GetUser)]
+        [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("")]
          public async Task<IActionResult> GetUserData()
@@ -107,13 +98,47 @@ namespace Parcus.Api.Controllers.v1
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 
+            if(user == null)
+            {
+                return NotFound();
+            }
             return Ok(new UserDataResponse
             {
-                UserId = Convert.ToString(user.Id),
+                Id = user.Id,
                 Email = user.Email,
                 Username = user.UserName
             });
         }
-        
+        [HttpGet]
+        [Authorize(Permissions.Account.Base)]
+        [Route("Portfolios")]
+        public async Task<IActionResult> GetPortfolios()
+        {
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            var portfolios = await _unitOfWork.Portfolios.GetByUserIdAsync(userId);
+            Console.WriteLine("here");
+            return Ok(portfolios);
+        }
+        [Authorize(Permissions.Account.Base)]
+        [HttpGet]
+        [Route("Permissions")]
+        public async Task<IActionResult> Permission()
+        {
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) { return BadRequest(); }
+
+            var userPermissions = await _authService.GetPermissionsFromUserAsync(user);
+            return Ok(userPermissions);
+        }
+
+
     }
 }

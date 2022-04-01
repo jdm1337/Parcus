@@ -28,9 +28,9 @@ namespace Parcus.Persistence.Repository
             return await dbSet.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(string id)
         {
-            return await dbSet.FindAsync(id);
+            return await dbSet.FindAsync(Convert.ToInt32(id));
         }
 
         public async Task<T> AddAsync(T entity)

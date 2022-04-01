@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Parcus.Api.Models.DTO.Incoming;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
+using Parcus.Domain.Identity;
 using Parcus.Domain.Invest.Brokers;
 using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.PortfolioModels;
@@ -16,12 +18,15 @@ namespace Parcus.Api.Controllers.v1
         private readonly IAuthService _authService;
         private readonly IPortfolioOperationService _portfolioOperationService;
         private readonly IDataInstrumentService _dataInstrumentService;
+        private readonly UserManager<User> _userManager;
         public PortfoliosController(
+            UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             IPortfolioOperationService portfolioOperationService,
             IAuthService authService,
             IDataInstrumentService findInstrumentService) : base(unitOfWork)
         {
+            _userManager = userManager;
             _authService = authService;
             _portfolioOperationService = portfolioOperationService;
             _dataInstrumentService = findInstrumentService;
@@ -33,11 +38,9 @@ namespace Parcus.Api.Controllers.v1
         [Authorize(Permissions.Portfolios.Add)]
         public async Task<IActionResult> Add(AddPortfolioRequest addPortfolioRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var userId = await _authService.GetUserIdFromRequest(this.User.Identity); 
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            if (userId == null) { return BadRequest(); }
+
             var userPortfolios = await _unitOfWork.Portfolios.GetByUserIdAsync(userId);
             var existedPortfolio = userPortfolios.Any(p => p.Name == addPortfolioRequest.PortfolioName);
 
@@ -52,25 +55,24 @@ namespace Parcus.Api.Controllers.v1
                 Name = addPortfolioRequest.PortfolioName
             };
             var createdPortfolio =  await _unitOfWork.Portfolios.AddAsync(portfolio);
+            
             if(createdPortfolio == null)
             { 
                 return BadRequest();
             }
             await _unitOfWork.CompleteAsync();
-            return Ok();
+            return Ok(createdPortfolio.Id);
         }
         [HttpPost]
         [Route("AddBroker")]
         [Authorize(Permissions.Portfolios.Add)]
         public async Task<IActionResult> AddBroker([FromBody]AddBrokerRequest addBrokerRequest)
         {
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest();
-            }
-            
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
-            var userPortfolio = await _unitOfWork.Portfolios.GetByUserIdAndNameAsync(userId, addBrokerRequest.PortfolioName);
+
+            if(userId == null) { return BadRequest(); }
+
+            var userPortfolio = await _unitOfWork.Portfolios.GetByIdAsync(addBrokerRequest.PortfolioId);
 
             if(userPortfolio == null)
             {
@@ -97,7 +99,7 @@ namespace Parcus.Api.Controllers.v1
         {
 
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
-            var userPortfolio = await _unitOfWork.Portfolios.GetByUserIdAndNameAsync(userId, addTransactionRequest.PortfolioName);
+            var userPortfolio = await _unitOfWork.Portfolios.GetByIdAsync(addTransactionRequest.PortfolioId);
 
             if (userPortfolio == null)
             {
@@ -108,26 +110,38 @@ namespace Parcus.Api.Controllers.v1
             {
                 return NotFound("Finance instrument not found.");
             }
+            var instrumentNameResult = await _dataInstrumentService.DefineInstrumentNameByFigi(addTransactionRequest.Figi);
+            Console.WriteLine("stock name: " + instrumentNameResult.Item);
             var finInstrument = new InstrumentsInPortfolio
             {
+                UserId = Convert.ToInt32(userId),
+
                 Figi = addTransactionRequest.Figi,
                 Amount = addTransactionRequest.Amount,
                 InstrumentType = defineTypeResult.Item,
-                BrokeragePortfolioId = userPortfolio.Id
+                BrokeragePortfolioId = userPortfolio.Id,
+                Name = instrumentNameResult.Item,
+
+
             };
-            var transactionType = (Transactions)Enum.Parse(typeof(Transactions), addTransactionRequest.TransactionType);
-            if(transactionType == null)
+            Transactions transactionType;
+            try
+            {
+                transactionType = (Transactions)Enum.Parse(typeof(Transactions), addTransactionRequest.TransactionType);
+            }
+            catch(Exception ex)
             {
                 return BadRequest($"Invalid transaction format {addTransactionRequest.TransactionType}.");
             }
-            
+
             Console.WriteLine(transactionType.ToString());
             // example of datetime "2009-05-08 14:40:52,531"
             DateTime transactionDate; 
             try
             {
-                transactionDate = DateTime.ParseExact(addTransactionRequest.TransactionDate, "yyyy-MM-dd HH:mm:ss,fff",
-                                           System.Globalization.CultureInfo.InvariantCulture);
+                transactionDate = DateTime.ParseExact(addTransactionRequest.TransactionDate, 
+                    "yyyy-MM-dd HH:mm:ss,fff",
+                    System.Globalization.CultureInfo.InvariantCulture);
             }catch (FormatException)
             {
                 return BadRequest("Invalid DateTimeFormat.");
@@ -139,7 +153,8 @@ namespace Parcus.Api.Controllers.v1
                 InstrumentPrice = addTransactionRequest.Price,
                 BrokeragePortfolioId = userPortfolio.Id,
                 BrokeragePortfolio = userPortfolio,
-                Instrument = finInstrument
+                Instrument = finInstrument,
+                Amount = addTransactionRequest.Amount,
             };
             var transactionResult = await _portfolioOperationService.AddTransactionAsync(investTransaction);
            
@@ -150,13 +165,23 @@ namespace Parcus.Api.Controllers.v1
             return Ok();
         }
         [HttpGet]
-        [AllowAnonymous]
-        [Route("test/{figi}")]
-        public async Task<IActionResult> AddTransaction(string figi)
+        [Authorize(Permissions.Portfolios.GetInstruments)]
+        [Route("Instruments/{portfolioId}")]
+        public async Task<IActionResult> GetInstruments(string portfolioId)
         {
-            var res = await _dataInstrumentService.DefineTypeByFigi(figi);
-            return Ok(res.Item.ToString());
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return NotFound();
+
+            var portfolio = await _unitOfWork.Portfolios.GetByIdAsync(portfolioId);
+
+            if (userId != Convert.ToString(portfolio.UserId)) { return BadRequest(); }
+
+            var instruments = await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioId(portfolio.Id);
+            return Ok(instruments);
         }
-        
+
+
     }
 }

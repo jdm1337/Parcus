@@ -2,10 +2,15 @@
 {
     public static class Permissions
     {
+        public static class Account
+        {
+            public const string Base = "Permissions.Account.Base";
+            
+        }
         public static class Users
         {
             public const string Add = "Permissions.Users.Add";
-            public const string Edit = "Permissions.Users.Edit";
+            public const string Update = "Permissions.Users.Update";
             public const string Delete = "Permissions.Users.Delete";
             public const string AddToRole = "Permissions.Users.AddToRole";
             public const string RemoveFromRole = "Permissions.Users.RemoveFromRole";
@@ -17,6 +22,7 @@
         {
             public const string Add = "Permissions.Portfolios.Add";
             public const string Get = "Permissions.Portfolios.Get";
+            public const string GetInstruments = "Permissions.Portfolios.GetInstruments";
             public const string Fly = "Permissions.Portfolios.Fly";
 
         }

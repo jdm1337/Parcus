@@ -11,6 +11,7 @@ namespace Parcus.Application.Interfaces.IServices
     public interface IDataInstrumentService
     {
         Task<Result<InstrumentTypes>> DefineTypeByFigi(string figi);
+        Task<Result<string>> DefineInstrumentNameByFigi (string figi);
         
     }
 }

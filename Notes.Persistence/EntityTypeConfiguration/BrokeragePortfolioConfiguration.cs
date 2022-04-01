@@ -20,7 +20,7 @@ namespace Parcus.Persistence.EntityTypeConfiguration
 
             builder.HasMany(acc => acc.Transactions)
                    .WithOne(Transaction => Transaction.BrokeragePortfolio)
-                   .OnDelete(DeleteBehavior.NoAction);
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

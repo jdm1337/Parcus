@@ -136,11 +136,8 @@ namespace Parcus.Services.Services
             
             if (transaction.TransactionType is Transactions.Buy)
             {
-                Console.WriteLine("Buy in provide");
                 if(instrumentInPortfolio == null)
                 {
-                    Console.WriteLine("instrument - new");
-                    Console.WriteLine("transaction active price -" + transaction.InstrumentPrice);
                     transaction.Instrument.AveragePrice = transaction.InstrumentPrice;
                     transaction.Instrument.InvestedValue = transaction.InstrumentPrice * transaction.Instrument.Amount;
                     var addedInstrument = await _unitOfWork.InstrumentsInPortfolio.AddAsync(transaction.Instrument);
@@ -152,10 +149,9 @@ namespace Parcus.Services.Services
                 }
                 else
                 {
-                    Console.WriteLine("buy next time");
                     instrumentInPortfolio.Amount += transaction.Instrument.Amount;
                     instrumentInPortfolio.InvestedValue += transaction.InstrumentPrice * transaction.Instrument.Amount;
-                    instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / transaction.Instrument.Amount;
+                    instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
 
                     var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
 
@@ -173,7 +169,7 @@ namespace Parcus.Services.Services
                 {
                     instrumentInPortfolio.Amount -= transaction.Instrument.Amount;
                     instrumentInPortfolio.InvestedValue -= transaction.InstrumentPrice * transaction.Instrument.Amount;
-                    //instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / transaction.Instrument.Amount;
+                    instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
 
                     var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
 

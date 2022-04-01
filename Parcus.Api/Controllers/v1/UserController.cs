@@ -69,5 +69,19 @@ namespace Parcus.Api.Controllers.v1
             });
             
         }
+        [Authorize(Permissions.Users.Delete)]
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok();
+        }
+        [Authorize(Permissions.Users.Update)]
+        [HttpPost]
+        [Route("{id}")]
+        public async Task<IActionResult> Update(int id)
+        {
+            return Ok();
+        }
     }
 }

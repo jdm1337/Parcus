@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Parcus.Services\Parcus.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\DTO\Entities\" />
+  </ItemGroup>
+
 </Project>

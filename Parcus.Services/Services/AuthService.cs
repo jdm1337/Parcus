@@ -37,7 +37,11 @@ namespace Parcus.Services.Services
         {
             var claimsIdentity = userIdentity as ClaimsIdentity;
             var userId = claimsIdentity.FindFirst("id")?.Value;
-            return userId;
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user == null) { return null; }
+
+            return userId; 
         }
 
         public async Task<List<Claim>> GetUsersClaimsForTokenAsync(User user)
