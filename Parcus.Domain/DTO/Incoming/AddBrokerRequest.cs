@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Parcus.Api.Models.DTO.Incoming
+namespace Parcus.Domain.DTO.Incoming
 {
     public class AddBrokerRequest
     {
         [Required]
+        [MaxLength(64)]
         public string BrokerName { get; set; }
         [Required]
         public string PortfolioId { get; set; }    

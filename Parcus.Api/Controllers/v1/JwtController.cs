@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Parcus.Api.Models.DTO.Incoming;
-using Parcus.Api.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
-using Parcus.Domain;
+using Parcus.Domain.DTO.Incoming;
+using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
 using Parcus.Domain.Settings;
@@ -25,8 +25,9 @@ namespace Parcus.Api.Controllers.v1
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
             IUnitOfWork unitOfWork,
+            IMapper mapper,
             IOptionsMonitor<JwtSettings> optionsMonitor,
-            ITokenService tokenService) : base(unitOfWork)
+            ITokenService tokenService) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -38,10 +39,6 @@ namespace Parcus.Api.Controllers.v1
             [Route("refresh-token")]
             public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest();
-                }
                 string? accessToken = refreshTokenRequest.AccessToken;
                 string? refreshToken = refreshTokenRequest.RefreshToken;
 
@@ -80,6 +77,7 @@ namespace Parcus.Api.Controllers.v1
             public async Task<IActionResult> Revoke(string id)
             {
                 var user = await _userManager.FindByIdAsync(id);
+
                 if (user == null) return BadRequest("Invalid userId");
 
                 user.RefreshToken = null;
@@ -87,7 +85,7 @@ namespace Parcus.Api.Controllers.v1
 
                 return NoContent();
             }
-            [Authorize]
+            [Authorize(Permissions.Jwt.RevokeAccessToken)]
             [HttpPost]
             [Route("revoke-all")]
             public async Task<IActionResult> RevokeAll()

@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Parcus.Persistence.DataSeed;
 using Parcus.Domain.Identity;
+using Parcus.Domain.Results;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
+builder.Services.Configure<InvestApiSettings>(builder.Configuration.GetSection("InvestApi"));
 
 builder.Services.AddTransient<DataSeeder>();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -93,11 +95,12 @@ builder.Services.AddApiVersioning(options =>
 
 
 });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 SeedData(app);
 
-async Task<bool> SeedData(IHost app)
+async Task<Result<IdentityResult>> SeedData(IHost app)
 {
     var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 

@@ -1,24 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tinkoff.InvestApi;
 using Tinkoff.InvestApi.V1;
+
 
 namespace Parcus.Services.Services
 {
     public class DataInstrumentService : IDataInstrumentService
     {
-        private readonly InvestApiClient? investApiClient;
-        public DataInstrumentService()
+        private readonly Domain.Settings.InvestApiSettings _investApiSettings ;
+        private readonly InvestApiClient? _investApiClient;
+        public DataInstrumentService(IOptionsMonitor<Domain.Settings.InvestApiSettings> optionsMonitor)
         {
-            investApiClient = investApiClient = new ServiceCollection()
-            .AddInvestApiClient((_, x) => x.AccessToken = "t.eq74p1ZM83imCpMPAdoBvqWeExQMwA0WTesE4KngWN6YbDQIR2v-0vX0qR9eZJAX_1j8_M4wp_93xpvoNKRNSA")
+            _investApiSettings = optionsMonitor.CurrentValue;
+            _investApiClient = new ServiceCollection()
+            .AddInvestApiClient((_, x) => x.AccessToken = _investApiSettings.ReadonlyToken)
             .BuildServiceProvider()
             .GetService<InvestApiClient>();
         }
@@ -35,8 +34,7 @@ namespace Parcus.Services.Services
             string instrumentType;
             try
             {
-                
-                instrumentType = (await investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest))
+                instrumentType = (await _investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest))
                     .Instrument
                     .InstrumentType;
                 result.Succeeded = true;
@@ -60,7 +58,7 @@ namespace Parcus.Services.Services
             };
             try
             {
-                var instrumentName = (await investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest))
+                var instrumentName = (await _investApiClient.Instruments.GetInstrumentByAsync(instrumentRequest))
                     .Instrument
                     .Name;
                 result.Succeeded = true;

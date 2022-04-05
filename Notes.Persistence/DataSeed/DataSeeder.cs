@@ -76,6 +76,7 @@ namespace Parcus.Persistence.DataSeed
                     new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
 
 
+
                 var createResult = await _userManager.CreateAsync(adminUser, _initializeSettings.Password);
                 var addResult = await _userManager.AddToRoleAsync(adminUser, _initializeSettings.Role);
                 if(createResult.Succeeded && addResult.Succeeded)

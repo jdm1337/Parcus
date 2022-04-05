@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Parcus.Api.Models.DTO.Incoming
+namespace Parcus.Domain.DTO.Incoming
 {
     public class AddPortfolioRequest
     {
         [Required]
-        public string PortfolioName { get; set; }
+        [MaxLength(64)]
+        public string Name { get; set; }
     }
 }

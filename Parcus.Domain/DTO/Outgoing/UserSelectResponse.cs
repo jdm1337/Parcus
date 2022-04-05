@@ -1,6 +1,6 @@
 ﻿using Parcus.Domain.Identity;
 
-namespace Parcus.Api.Models.DTO.Outgoing
+namespace Parcus.Domain.DTO.Outgoing
 {
     public class UserSelectResponse
     {

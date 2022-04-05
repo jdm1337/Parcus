@@ -13,14 +13,26 @@ namespace Parcus.Persistence.Repository
         {
         }
 
-        public async Task<List<InstrumentsInPortfolio>> GetByPortfolioId(int portfolioId)
+        public async Task<IEnumerable<InstrumentsInPortfolio>> GetByPortfolioId(int portfolioId)
         {
             
             var instrumentInPortfolio = (from instrument in _context.InstrumentsInPortfolio
                                         where instrument.BrokeragePortfolioId == portfolioId
-                                        select instrument).ToList();
+                                        select instrument);
             return instrumentInPortfolio;
         }
+
+        public async Task<IEnumerable<InstrumentsInPortfolio>> GetByPortfolioIdAndType(int portfolioId, InstrumentTypes type)
+        {
+            var instrumentInPortfolio = (from instrument in _context.InstrumentsInPortfolio
+                                         where (instrument.BrokeragePortfolioId == portfolioId && instrument.InstrumentType == type)
+                                         
+                                         select instrument);
+            return instrumentInPortfolio;
+        }
+
+        
+
         public async Task<bool> UpdateAsync(InstrumentsInPortfolio instrument)
         {
             _context.Entry(await _context.InstrumentsInPortfolio

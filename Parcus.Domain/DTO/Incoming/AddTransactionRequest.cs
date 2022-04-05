@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Parcus.Api.Models.DTO.Incoming
+namespace Parcus.Domain.DTO.Incoming
 {
     public class AddTransactionRequest
     {

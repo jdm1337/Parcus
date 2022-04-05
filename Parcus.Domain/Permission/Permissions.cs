@@ -5,7 +5,9 @@
         public static class Account
         {
             public const string Base = "Permissions.Account.Base";
-            
+            public const string ChangePassword = "Permissions.Account.ChangePassword";
+
+
         }
         public static class Users
         {
@@ -34,7 +36,9 @@
             public const string GetRole = "Permissions.Roles.GetRole";
             public const string AddPermission = "Permissions.Roles.AddPermission";
             public const string GetPermissions = "Permissions.Roles.GetPermissions";
-            
+            public const string DeletePermission = "Permissions.Roles.DeletePermission";
+
+
         }
         public static class Jwt
         {

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Parcus.Api.Models.DTO.Incoming;
+
 using Parcus.Api.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
+using Parcus.Domain.DTO.Incoming;
+using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
 
@@ -18,8 +21,9 @@ namespace Parcus.Api.Controllers.v1
         public UsersController(
             IUnitOfWork unitOfWork,
             UserManager<User> userManager,
+            IMapper mapper,
             RoleManager<Role> roleManager,
-            IAuthService authService) : base(unitOfWork)
+            IAuthService authService) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
