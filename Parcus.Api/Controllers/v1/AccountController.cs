@@ -38,11 +38,12 @@ namespace Parcus.Api.Controllers.v1
             _tokenService = tokenService;
         }
 
-        public AccountController(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
-        {
-        }
+        
 
-        //
+        /// <summary>
+        /// Регистрация пользователя
+        /// </summary>
+       
         [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
@@ -70,7 +71,9 @@ namespace Parcus.Api.Controllers.v1
             return Ok(_mapper.Map<UserDto>(createdUser));
         }
 
-        //loginResponse
+        /// <summary>
+        /// Идентификация пользователя
+        /// </summary>
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
@@ -97,6 +100,10 @@ namespace Parcus.Api.Controllers.v1
             }
             return BadRequest();
         }
+
+        /// <summary>
+        /// Смена пароля
+        /// </summary>
         [Authorize(Permissions.Account.ChangePassword)]
         [HttpPost]
         [Route("Password")]
@@ -119,7 +126,9 @@ namespace Parcus.Api.Controllers.v1
             return Ok(result);  
 
         }
-        
+        /// <summary>
+        /// Получение данных пользователя
+        /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("")]
@@ -135,7 +144,10 @@ namespace Parcus.Api.Controllers.v1
 
             return Ok(_mapper.Map<UserDto>(user));
         }
-        //getportfolios response
+        
+        /// <summary>
+        /// Получение портфелей пользователя
+        /// </summary>
         [HttpGet]
         [Authorize(Permissions.Account.Base)]
         [Route("Portfolios")]
@@ -158,12 +170,11 @@ namespace Parcus.Api.Controllers.v1
 
             return Ok(response);
         }
-        [HttpGet]
-        [Authorize(Permissions.Account.Base)]
-        [Route("Portfolio/{id}")]
 
 
-        //getpermissions response
+        /// <summary>
+        /// Получение разрешений пользователя
+        /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("Permissions")]
@@ -176,6 +187,13 @@ namespace Parcus.Api.Controllers.v1
 
             var userPermissions = await _authService.GetPermissionsFromUserAsync(user);
             return Ok(userPermissions);
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("test")]
+        public async Task<IActionResult> Test()
+        {
+            return Ok("Get out asshole");
         }
 
 

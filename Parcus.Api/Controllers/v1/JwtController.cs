@@ -35,70 +35,80 @@ namespace Parcus.Api.Controllers.v1
             _tokenService = tokenService;
         }
 
-            [HttpPost]
-            [Route("refresh-token")]
-            public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
-            {
-                string? accessToken = refreshTokenRequest.AccessToken;
-                string? refreshToken = refreshTokenRequest.RefreshToken;
+        /// <summary>
+        /// Обновление access и refresh токенов
+        /// </summary>
+        [HttpPost]
+         [Route("refresh-token")]
+         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
+         {
+             string? accessToken = refreshTokenRequest.AccessToken;
+             string? refreshToken = refreshTokenRequest.RefreshToken;
 
-                var principal = await _tokenService.GetPrincipalFromExpiredToken(accessToken);
-                if (principal == null)
-                {
-                    return BadRequest("Invalid access token or refresh token");
-                }
+             var principal = await _tokenService.GetPrincipalFromExpiredToken(accessToken);
+             if (principal == null)
+             {
+                 return BadRequest("Invalid access token or refresh token");
+             }
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                var emailClaim = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+             var emailClaim = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-                var user = await _userManager.FindByEmailAsync(emailClaim.Value);
+             var user = await _userManager.FindByEmailAsync(emailClaim.Value);
 
-                if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-                {
-                    return BadRequest("Invalid access token or refresh token");
-                }
+             if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+             {
+                 return BadRequest("Invalid access token or refresh token");
+             }
 
-                var newAccessToken = await _tokenService.CreateTokenAsync(principal.Claims.ToList());
-                var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync();
+             var newAccessToken = await _tokenService.CreateTokenAsync(principal.Claims.ToList());
+             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync();
 
-                user.RefreshToken = newRefreshToken;
-                await _userManager.UpdateAsync(user);
-                return new ObjectResult(new RefreshTokenResponse
-                {
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                    RefreshToken = newRefreshToken
-                });
-            }
-            [Authorize(Permissions.Jwt.RevokeAccessToken)]
-            [HttpPost]
-            [Route("revoke/{id}")]
-            public async Task<IActionResult> Revoke(string id)
-            {
-                var user = await _userManager.FindByIdAsync(id);
+             user.RefreshToken = newRefreshToken;
+             await _userManager.UpdateAsync(user);
+             return new ObjectResult(new RefreshTokenResponse
+             {
+                 AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                 RefreshToken = newRefreshToken
+             });
+         }
 
-                if (user == null) return BadRequest("Invalid userId");
+        /// <summary>
+        /// Отзыв access токена
+        /// </summary>
+        [Authorize(Permissions.Jwt.RevokeAccessToken)]
+         [HttpPost]
+         [Route("revoke/{id}")]
+         public async Task<IActionResult> Revoke(string id)
+         {
+             var user = await _userManager.FindByIdAsync(id);
 
-                user.RefreshToken = null;
-                await _userManager.UpdateAsync(user);
+             if (user == null) return BadRequest("Invalid userId");
 
-                return NoContent();
-            }
-            [Authorize(Permissions.Jwt.RevokeAccessToken)]
-            [HttpPost]
-            [Route("revoke-all")]
-            public async Task<IActionResult> RevokeAll()
-            {
-                var users = _userManager.Users.ToList();
-                foreach (var user in users)
-                {
-                    user.RefreshToken = null;
-                    await _userManager.UpdateAsync(user);
-                }
+             user.RefreshToken = null;
+             await _userManager.UpdateAsync(user);
 
-                return NoContent();
-            }
-        }
-    }
+             return NoContent();
+         }
+        /// <summary>
+        /// Отзыв access токенов
+        /// </summary>
+        [Authorize(Permissions.Jwt.RevokeAccessToken)]
+         [HttpPost]
+         [Route("revoke-all")]
+         public async Task<IActionResult> RevokeAll()
+         {
+             var users = _userManager.Users.ToList();
+             foreach (var user in users)
+             {
+                 user.RefreshToken = null;
+                 await _userManager.UpdateAsync(user);
+             }
+
+             return NoContent();
+         }
+     }
+ }
 

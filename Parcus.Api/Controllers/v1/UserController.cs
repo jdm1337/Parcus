@@ -29,7 +29,9 @@ namespace Parcus.Api.Controllers.v1
             _roleManager = roleManager;
             _authService = authService;
         }
-
+        /// <summary>
+        /// Получение разрешений пользователя по id
+        /// </summary>
         [Authorize(Permissions.Users.GetPermissions)]
         [HttpGet]
         [Route("Permissions/{id}")]
@@ -37,13 +39,16 @@ namespace Parcus.Api.Controllers.v1
         {
             var user = await _userManager.FindByIdAsync(id);
 
+            if(user == null) return NotFound();
 
             return Ok(new GetPermissionsFromUserResponse
             {
                 Permissions = await _authService.GetPermissionsFromUserAsync(user)
             });
         }
-
+        /// <summary>
+        /// Добавление пользователя к роли
+        /// </summary>
         [Authorize(Permissions.Users.AddToRole)]
         [HttpPost]
         [Route("AddToRole")]
@@ -61,7 +66,9 @@ namespace Parcus.Api.Controllers.v1
             return Ok();
 
         }
-
+        /// <summary>
+        /// Получение пользователей
+        /// </summary>
         [Authorize(Permissions.Users.GetUsers)]
         [HttpGet]
         [Route("Select")]
@@ -73,17 +80,33 @@ namespace Parcus.Api.Controllers.v1
             });
             
         }
+        /// <summary>
+        /// Удаление пользователя
+        /// </summary>
         [Authorize(Permissions.Users.Delete)]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest();
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded) return BadRequest();
+
             return Ok();
         }
+
+        /// <summary>
+        /// Обновление информации о пользователе
+        /// </summary>
         [Authorize(Permissions.Users.Update)]
         [HttpPost]
         [Route("{id}")]
-        public async Task<IActionResult> Update(int id)
+        public async Task<IActionResult> Update(UpdateUserRequest request)
         {
             return Ok();
         }

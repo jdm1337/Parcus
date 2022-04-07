@@ -22,10 +22,19 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Production": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_DETAILEDERRORS": "1",
+        "ASPNETCORE_ENVIROMENT": "Production"
+      },
+      "applicationUrl": "http:parcusinvest.somee.com"
     }
   }
 }

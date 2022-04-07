@@ -35,8 +35,10 @@ namespace Parcus.Api.Controllers.v1
             _portfolioOperationService = portfolioOperationService;
             _dataInstrumentService = findInstrumentService;
         }
-        // Add portfolio method included in prime version and here need to implement
-        // system of checking current amount of portfolios
+
+        /// <summary>
+        /// Добавление инвестиционного портфеля
+        /// </summary>
         [HttpPost]
         [Route("Add/")]
         [Authorize(Permissions.Portfolios.Add)]
@@ -66,6 +68,9 @@ namespace Parcus.Api.Controllers.v1
 
             return Ok(_mapper.Map<AddPortfolioResponse>(createdPortfolio));
         }
+        /// <summary>
+        /// Добавление брокера
+        /// </summary>
         [HttpPost]
         [Route("AddBroker")]
         [Authorize(Permissions.Portfolios.Add)]
@@ -91,6 +96,10 @@ namespace Parcus.Api.Controllers.v1
 
             return Ok();
         }
+
+        /// <summary>
+        /// Добавление транзакции по портфелю
+        /// </summary>
         [HttpPost]
         [Route("AddTransaction")]
         [Authorize(Permissions.Portfolios.Add)]
@@ -135,7 +144,9 @@ namespace Parcus.Api.Controllers.v1
             }
             return Ok();
         }
-        
+        /// <summary>
+        /// Получение активов портфеля
+        /// </summary>
         [HttpGet]
         [Authorize(Permissions.Portfolios.GetInstruments)]
         [Route("GetInstruments/{id}")]

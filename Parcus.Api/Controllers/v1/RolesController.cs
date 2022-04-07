@@ -11,10 +11,10 @@ using System.Security.Claims;
 
 namespace Parcus.Api.Controllers.v1
 {
-    public class RoleController : BaseController
+    public class RolesController : BaseController
     {
         private readonly RoleManager<Role> _roleManager;
-        public RoleController(
+        public RolesController(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             RoleManager<Role> roleManager
@@ -22,7 +22,9 @@ namespace Parcus.Api.Controllers.v1
         {
             _roleManager = roleManager;
         }
-
+        /// <summary>
+        /// Создание роли
+        /// </summary>
         [Authorize(Permissions.Roles.Create)]
         [HttpPost]
         [Route("Create")]
@@ -45,7 +47,9 @@ namespace Parcus.Api.Controllers.v1
             }
             return BadRequest();
         }
-
+        /// <summary>
+        /// Удаление роли
+        /// </summary>
         [Authorize(Permissions.Roles.Delete)]
         [HttpDelete]
         [Route("Delete/{roleName}")]
@@ -59,7 +63,9 @@ namespace Parcus.Api.Controllers.v1
             await _roleManager.DeleteAsync(role);
             return Ok();
         }
-
+        /// <summary>
+        /// Получение разрешений роли
+        /// </summary>
         [Authorize(Permissions.Roles.GetPermissions)]
         [HttpGet]
         [Route("Permissions/{roleName}")]
@@ -83,7 +89,9 @@ namespace Parcus.Api.Controllers.v1
             }
             return Ok(permissions);
         }
-
+        /// <summary>
+        /// Добавление разрешения к роли
+        /// </summary>
         [Authorize(Permissions.Roles.AddPermission)]
         [HttpPost]
         [Route("AddPermission")]
@@ -110,7 +118,9 @@ namespace Parcus.Api.Controllers.v1
             
             return BadRequest();
         }
-
+        /// <summary>
+        /// Удаление разрешение у роли
+        /// </summary>
         [Authorize(Permissions.Roles.DeletePermission)]
         [HttpDelete]
         [Route("DeletePermission")]

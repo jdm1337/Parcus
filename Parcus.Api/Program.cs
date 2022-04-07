@@ -15,6 +15,9 @@ using System.Text;
 using Parcus.Persistence.DataSeed;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Results;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,9 +82,26 @@ builder.Services.AddEndpointsApiExplorer();
 
 
 
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ParcusApi", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "ParcusApi",
+        Description = "Parcus API - REST API для учета, анализа и управления <b>инвестиционным</b> портфелем.",
+        Contact = new OpenApiContact
+        {
+            Name = "",
+
+            Email = "taramalys@gmail.com"
+        },
+
+
+    });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+   
 });
 builder.Services.AddApiVersioning(options =>
 {
@@ -112,12 +132,35 @@ async Task<Result<IdentityResult>> SeedData(IHost app)
     }
 }
 // Configure the HTTP request pipeline.
+/*
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
+*/
 
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;
+});
+app.UseDeveloperExceptionPage();
+
+app.UseExceptionHandler(c => c.Run(async context =>
+{
+    var exception = context.Features
+        .Get<IExceptionHandlerPathFeature>()
+        .Error;
+    var response = new { error = exception.Message };
+    await context.Response.WriteAsJsonAsync(response);
+}));
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
