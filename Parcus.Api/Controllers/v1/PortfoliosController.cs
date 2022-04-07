@@ -152,6 +152,7 @@ namespace Parcus.Api.Controllers.v1
         [Route("GetInstruments/{id}")]
         public async Task<IActionResult> GetInstruments(string Id)
         {
+            Console.WriteLine("WORK");
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 

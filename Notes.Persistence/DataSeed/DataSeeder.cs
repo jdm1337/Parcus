@@ -49,7 +49,15 @@ namespace Parcus.Persistence.DataSeed
                 
                 await _roleManager.AddClaimAsync(adminRole,
                     new Claim(CustomClaimTypes.Permission, Permissions.Roles.AddPermission));
-                
+                await _roleManager.AddClaimAsync(adminRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Account.Base));
+                await _roleManager.AddClaimAsync(adminRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Add));
+                await _roleManager.AddClaimAsync(adminRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Get));
+                await _roleManager.AddClaimAsync(adminRole,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
+
                 var adminUser = new User()
                 {
                     Email = _initializeSettings.Email,
