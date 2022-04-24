@@ -44,7 +44,7 @@ namespace Parcus.Services.Services
             return userId; 
         }
 
-        public async Task<List<Claim>> GetUsersClaimsForTokenAsync(User user)
+        public async Task<List<Claim>> GetClaimsForTokenAsync(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
 

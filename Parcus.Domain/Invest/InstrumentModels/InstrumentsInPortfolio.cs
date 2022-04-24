@@ -7,15 +7,12 @@ namespace Parcus.Domain.Invest.InstrumentModels
     public class InstrumentsInPortfolio
     {
         public int Id { get; set; }
-        public string? Figi { get; set; }
-        public string? Tiker { get; set; }
-        public string? Name { get; set; }
-        public InstrumentTypes InstrumentType { get; set; }
+        public int? InstrumentId { get; set; }
+        public Instrument? Instrument { get; set; }
         public int? Amount { get; set; } = 0;
         public double? AveragePrice { get; set; }
         public double? InvestedValue { get; set; } =0;
         public double? CurrentValue { get; set; } = 0;
-        public double? CurrentPrice { get; set; } = 0;
         public double? Profit { get; set; } = 0;
         public double? DailyProfit { get; set; } = 0;
 

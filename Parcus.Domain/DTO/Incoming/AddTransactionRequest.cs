@@ -7,7 +7,8 @@ namespace Parcus.Domain.DTO.Incoming
         [Required]
         public string PortfolioId { get; set; }
         [Required]
-        public string Figi { get; set; }
+        public string Figi { get; set; } 
+        
         [Required]
         public string TransactionType { get; set; }
         [Required]

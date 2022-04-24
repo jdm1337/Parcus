@@ -11,7 +11,7 @@ namespace Parcus.Persistence.Repository
         public PortfoliosRepository(AppDbContext context, ILogger logger) : base(context, logger)
         {
         }
-
+        
         public async Task<IEnumerable<BrokeragePortfolio>> GetByUserIdAsync(string userId)
         {
             var userPortfolios = _context.BrokeragePortfolios.Where(portfolio => portfolio.UserId == (Convert.ToInt32(userId))); ;

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.DTO.Entities;
@@ -13,6 +14,7 @@ using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Parcus.Domain.Permission;
+using Parcus.Persistence.Data;
 
 namespace Parcus.Api.Controllers.v1
 {
@@ -22,18 +24,21 @@ namespace Parcus.Api.Controllers.v1
         private readonly IPortfolioOperationService _portfolioOperationService;
         private readonly IDataInstrumentService _dataInstrumentService;
         private readonly UserManager<User> _userManager;
+        protected AppDbContext _context;
         public PortfoliosController(
             UserManager<User> userManager,
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IPortfolioOperationService portfolioOperationService,
             IAuthService authService,
-            IDataInstrumentService findInstrumentService) : base(unitOfWork, mapper)
+            IDataInstrumentService findInstrumentService,
+            AppDbContext context) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _authService = authService;
             _portfolioOperationService = portfolioOperationService;
             _dataInstrumentService = findInstrumentService;
+            _context = context;
         }
 
         /// <summary>
@@ -109,31 +114,26 @@ namespace Parcus.Api.Controllers.v1
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var userPortfolio = await _unitOfWork.Portfolios.GetByIdAsync(addTransactionRequest.PortfolioId);
 
-            if (userPortfolio == null)
-            {
-                return BadRequest();
-            }
-            var defineTypeResult = await _dataInstrumentService.DefineTypeByFigi(addTransactionRequest.Figi);
-            if (!defineTypeResult.Succeeded)
+            if (userPortfolio == null) return BadRequest("Portfolio does not exist.");
+
+            var findedInstrument = await _unitOfWork.Instruments.GetByFigi(addTransactionRequest.Figi);
+
+            if (findedInstrument == null)
             {
                 return NotFound("Finance instrument not found.");
             }
-            var instrumentNameResult = await _dataInstrumentService.DefineInstrumentNameByFigi(addTransactionRequest.Figi);
-            Console.WriteLine("stock name: " + instrumentNameResult.Item);
 
-            var finInstrument = _mapper.Map<InstrumentsInPortfolio>(addTransactionRequest);
-            finInstrument.UserId = Convert.ToInt32(userId);
-            finInstrument.InstrumentType = defineTypeResult.Item;
-            finInstrument.BrokeragePortfolioId = userPortfolio.Id;
-            finInstrument.Name = instrumentNameResult.Item;
+            InstrumentsInPortfolio instrumentInPortfolio = new InstrumentsInPortfolio()
+            { 
+                InstrumentId = findedInstrument.Id,
+                UserId = Convert.ToInt32(userId),
+                BrokeragePortfolioId = userPortfolio.Id
+            };
 
-            // example of datetime "2009-05-08 14:40:52,531"
+            // datetime "2009-05-08 14:40:52,531"
             
             var investTransaction = _mapper.Map<InvestTransaction>(addTransactionRequest);
-            investTransaction.BrokeragePortfolioId = userPortfolio.Id;
-            investTransaction.BrokeragePortfolio = userPortfolio;
-            investTransaction.Instrument = finInstrument;
-
+            investTransaction.Instrument = instrumentInPortfolio;
             if(investTransaction.TransactionDate == null || investTransaction.TransactionType == null) return BadRequest("Invalid transaction.");
 
             var transactionResult = await _portfolioOperationService.AddTransactionAsync(investTransaction);
@@ -150,7 +150,7 @@ namespace Parcus.Api.Controllers.v1
         [HttpGet]
         [Authorize(Permissions.Portfolios.GetInstruments)]
         [Route("GetInstruments/{id}")]
-        public async Task<IActionResult> GetInstruments(string Id)
+        public async Task<IActionResult> GetInstruments(string id)
         {
             Console.WriteLine("WORK");
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
@@ -158,12 +158,35 @@ namespace Parcus.Api.Controllers.v1
 
             if (user == null) return NotFound();
 
-            var portfolio = await _unitOfWork.Portfolios.GetByIdAsync(Id);
+            var portfolio = await _unitOfWork.Portfolios.GetByIdAsync(id);
 
             if (userId != Convert.ToString(portfolio.UserId) || portfolio == null) { return BadRequest(); }
 
             var response = new GetInstrumentsResponse();
-            
+            response.Shares = await _context.InstrumentsInPortfolio
+                                    .Include(i => i.Instrument)
+                                    .Where(i => i.BrokeragePortfolioId == portfolio.Id)
+                                    .Where(i => i.Instrument.Type == InstrumentTypes.Share)
+                                    .Select(x => _mapper.Map<InstrumentInPortfolioDto>(x))
+                                    .ToListAsync();
+
+            response.SharesAmount = response.Shares.Count();
+            response.Bonds = await _context.InstrumentsInPortfolio
+                                    .Include(i => i.Instrument)
+                                    .Where(i => i.BrokeragePortfolioId == portfolio.Id)
+                                    .Where(i => i.Instrument.Type == InstrumentTypes.Bond)
+                                    .Select(x => _mapper.Map<InstrumentInPortfolioDto>(x))
+                                    .ToListAsync();
+
+            response.BondsAmount = response.Bonds.Count();
+            response.Etf = await _context.InstrumentsInPortfolio
+                                    .Include(i => i.Instrument)
+                                    .Where(i => i.BrokeragePortfolioId == portfolio.Id)
+                                    .Where(i => i.Instrument.Type == InstrumentTypes.Etf)
+                                    .Select(x => _mapper.Map<InstrumentInPortfolioDto>(x))
+                                    .ToListAsync();
+            response.EtfAmount = response.Etf.Count();
+            /*
             response.Shares = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioIdAndType(portfolio.Id, InstrumentTypes.share))
                 .Select(instrument => _mapper.Map<InstrumentInPortfolioDto>(instrument)).ToList();
             response.SharesAmount = response.Shares.Count();
@@ -175,7 +198,7 @@ namespace Parcus.Api.Controllers.v1
             response.Etf = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioIdAndType(portfolio.Id, InstrumentTypes.etf))
                 .Select(instrument => _mapper.Map<InstrumentInPortfolioDto>(instrument)).ToList();
             response.EtfAmount = response.Etf.Count();
-
+            */
             return Ok(response);
         }
 

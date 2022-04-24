@@ -5,9 +5,6 @@
         public static class Account
         {
             public const string Base = "Permissions.Account.Base";
-            public const string ChangePassword = "Permissions.Account.ChangePassword";
-
-
         }
         public static class Users
         {

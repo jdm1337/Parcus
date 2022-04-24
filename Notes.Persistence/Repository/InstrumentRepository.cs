@@ -2,11 +2,7 @@
 using Parcus.Application.Interfaces.IRepository;
 using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Persistence.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Parcus.Persistence.Repository
 {
@@ -14,6 +10,13 @@ namespace Parcus.Persistence.Repository
     {
         public InstrumentRepository(AppDbContext context, ILogger logger) : base(context, logger)
         {
+        }
+        public Task<Instrument> GetByFigi(string figi)
+        {
+            var instrument = _context.Instruments
+                                     .Where(i => i.Figi == figi)
+                                     .FirstOrDefault();
+            return Task.FromResult(instrument);
         }
     }
 }

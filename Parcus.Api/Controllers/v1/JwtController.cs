@@ -38,7 +38,7 @@ namespace Parcus.Api.Controllers.v1
         /// <summary>
         /// Обновление access и refresh токенов
         /// </summary>
-        [HttpPost]
+         [HttpPost]
          [Route("refresh-token")]
          public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
          {

@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Parcus.Domain.DTO.Entities;
-using Parcus.Domain.DTO.Incoming;
 using Parcus.Domain.Invest.InstrumentModels;
 
 namespace Parcus.Api.Profiles
 {
-    public class InstrumentInPortfolioProfile : Profile
+    public class InstrumentinPortfolioProfile: Profile
     {
-        public InstrumentInPortfolioProfile()
+        public InstrumentinPortfolioProfile()
         {
             CreateMap<InstrumentsInPortfolio, InstrumentInPortfolioDto>()
                 .ForMember(
@@ -16,11 +15,11 @@ namespace Parcus.Api.Profiles
                 )
                 .ForMember(
                     dest => dest.Tiker,
-                    from => from.MapFrom(x => x.Tiker)
+                    from => from.MapFrom(x => x.Instrument.Tiker)
                 )
                 .ForMember(
                     dest => dest.Name,
-                    from => from.MapFrom(x => x.Name)
+                    from => from.MapFrom(x => x.Instrument.Name)
                 )
                 .ForMember(
                     dest => dest.Amount,
@@ -39,10 +38,6 @@ namespace Parcus.Api.Profiles
                     from => from.MapFrom(x => x.CurrentValue)
                 )
                 .ForMember(
-                    dest => dest.CurrentPrice,
-                    from => from.MapFrom(x => x.CurrentPrice)
-                )
-                .ForMember(
                     dest => dest.Profit,
                     from => from.MapFrom(x => x.Profit)
                 )
@@ -50,19 +45,6 @@ namespace Parcus.Api.Profiles
                     dest => dest.DailyProfit,
                     from => from.MapFrom(x => x.DailyProfit)
                 );
-
-            CreateMap<AddTransactionRequest, InstrumentsInPortfolio>()
-                .ForMember(
-                    dest => dest.Figi,
-                    from => from.MapFrom(x => x.Figi)
-                )
-                .ForMember(
-                    dest => dest.Amount,
-                    from => from.MapFrom(x => x.Amount)
-                );
-                
-                
         }
-      
     }
 }

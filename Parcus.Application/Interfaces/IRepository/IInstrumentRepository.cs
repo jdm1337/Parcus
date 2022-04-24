@@ -9,6 +9,6 @@ namespace Parcus.Application.Interfaces.IRepository
 {
     public interface IInstrumentRepository: IGenericRepository<Instrument>
     {
-        
+        public Task<Instrument> GetByFigi(string figi);
     }
 }

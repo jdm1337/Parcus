@@ -21,6 +21,10 @@ namespace Parcus.Services.Services
             .BuildServiceProvider()
             .GetService<InvestApiClient>();
         }
+
+
+        
+        /*
         public async Task<Result<InstrumentTypes>> DefineTypeByFigi(string figi)
         {
             var result = new Result<InstrumentTypes>();
@@ -70,5 +74,7 @@ namespace Parcus.Services.Services
                 return result;
             }
         }
+        */
     }
+        
 }

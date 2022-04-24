@@ -13,6 +13,7 @@ namespace Parcus.Persistence.Repository
         {
         }
 
+
         public async Task<IEnumerable<InstrumentsInPortfolio>> GetByPortfolioId(int portfolioId)
         {
             
@@ -22,14 +23,7 @@ namespace Parcus.Persistence.Repository
             return instrumentInPortfolio;
         }
 
-        public async Task<IEnumerable<InstrumentsInPortfolio>> GetByPortfolioIdAndType(int portfolioId, InstrumentTypes type)
-        {
-            var instrumentInPortfolio = (from instrument in _context.InstrumentsInPortfolio
-                                         where (instrument.BrokeragePortfolioId == portfolioId && instrument.InstrumentType == type)
-                                         
-                                         select instrument);
-            return instrumentInPortfolio;
-        }
+        
 
         
 

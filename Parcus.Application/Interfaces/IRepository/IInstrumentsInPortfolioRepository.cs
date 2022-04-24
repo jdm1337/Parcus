@@ -6,7 +6,8 @@ namespace Parcus.Application.Interfaces.IRepository
     {
         
         public Task<IEnumerable<InstrumentsInPortfolio>> GetByPortfolioId(int portfolioId);
-        public Task<IEnumerable<InstrumentsInPortfolio>> GetByPortfolioIdAndType(int portfolioId, InstrumentTypes type);
+        
+       
         public Task<bool> UpdateAsync(InstrumentsInPortfolio instrument);
         
     }

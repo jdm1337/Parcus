@@ -11,7 +11,7 @@ namespace Parcus.Domain.Invest.Transactions
         public Transactions? TransactionType { get; set; }
 
 
-        public int? InstrumentsInPortfolioId { get; set; }   
+        
         public InstrumentsInPortfolio? Instrument { get; set; }
         public double? InstrumentPrice { get; set; }
         public int? Amount { get; set; }

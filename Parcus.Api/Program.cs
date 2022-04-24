@@ -14,10 +14,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Parcus.Persistence.DataSeed;
 using Parcus.Domain.Identity;
-using Parcus.Domain.Results;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Microsoft.AspNetCore.Diagnostics;
+using Hangfire;
+using Parcus.Api.Initial;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,10 +26,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string connection = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
 builder.Services.Configure<InvestApiSettings>(builder.Configuration.GetSection("InvestApi"));
 
+builder.Services.AddHangfire(x => 
+        x.UseSqlServerStorage("Data Source=DESKTOP-P5QBGMD\\SQLEXPRESS;Initial Catalog=ParcusDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+builder.Services.AddHangfireServer();
 builder.Services.AddTransient<DataSeeder>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connection));
@@ -43,6 +48,7 @@ builder.Services.AddTransient<ITokenService, TokenService>();
 #pragma warning restore CS0436 // Type conflicts with imported type
 builder.Services.AddTransient<IPortfolioOperationService, PortfolioOperationService>();
 builder.Services.AddTransient<IDataInstrumentService, DataInstrumentService>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -88,10 +94,13 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1",
         Title = "ParcusApi",
-        Description = "Parcus API - REST API для учета, анализа и управления <b>инвестиционным</b> портфелем.",
+        Description = "Parcus API - REST API для учета, анализа и управления инвестиционным портфелем. <br>" +
+        "Так же сервис представляет открытый доступ к получению информации по активам по <a href='https://en.wikipedia.org/wiki/Financial_Instrument_Global_Identifier'>figi</a> идентификатору. <br> <br>" +
+        "Специальные коды <br>" +
+        "<b>429</b> код - превышен лимит на запрос к ресурсу, timeout-1 минута",
         Contact = new OpenApiContact
         {
-            Name = "",
+            Name = "Taramaly Sergey",
 
             Email = "taramalys@gmail.com"
         },
@@ -118,19 +127,9 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
-SeedData(app);
 
-async Task<Result<IdentityResult>> SeedData(IHost app)
-{
-    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+StartApp.Invoke(app);
 
-    using (var scope = scopedFactory.CreateScope())
-    {
-        var service = scope.ServiceProvider.GetService<DataSeeder>();
-        
-        return await service.Seed();
-    }
-}
 // Configure the HTTP request pipeline.
 /*
 if (app.Environment.IsDevelopment())
@@ -166,6 +165,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/dashboard");
 
 app.MapControllers();
 

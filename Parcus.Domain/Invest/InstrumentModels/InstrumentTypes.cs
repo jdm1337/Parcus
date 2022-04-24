@@ -8,9 +8,9 @@ namespace Parcus.Domain.Invest.InstrumentModels
 {
     public enum InstrumentTypes
     {
-        share,
-        bond,
-        etf,
-        future
+        Share,
+        Bond,
+        Etf,
+        Future
     }
 }

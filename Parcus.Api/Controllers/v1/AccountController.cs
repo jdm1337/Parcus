@@ -40,10 +40,7 @@ namespace Parcus.Api.Controllers.v1
 
         
 
-        /// <summary>
-        /// Регистрация пользователя
-        /// </summary>
-       
+        //
         [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
@@ -71,9 +68,7 @@ namespace Parcus.Api.Controllers.v1
             return Ok(_mapper.Map<UserDto>(createdUser));
         }
 
-        /// <summary>
-        /// Идентификация пользователя
-        /// </summary>
+        
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
@@ -82,7 +77,7 @@ namespace Parcus.Api.Controllers.v1
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, loginRequest.Password))
             {
-                var userClaims = await _authService.GetUsersClaimsForTokenAsync(user);
+                var userClaims = await _authService.GetClaimsForTokenAsync(user);
                 var token = await _tokenService.CreateTokenAsync(userClaims);
                 var refreshToken = await _tokenService.GenerateRefreshTokenAsync();
                 _ = int.TryParse(_jwtSettings.RefreshTokenValidityInDays, out int refreshTokenValidityInDays);
@@ -100,11 +95,7 @@ namespace Parcus.Api.Controllers.v1
             }
             return BadRequest();
         }
-
-        /// <summary>
-        /// Смена пароля
-        /// </summary>
-        [Authorize(Permissions.Account.ChangePassword)]
+        [Authorize(Permissions.Account.Base)]
         [HttpPost]
         [Route("Password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
@@ -113,6 +104,7 @@ namespace Parcus.Api.Controllers.v1
 
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
+
             if (user == null) return NotFound();
 
             var matchPassword = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
@@ -126,9 +118,7 @@ namespace Parcus.Api.Controllers.v1
             return Ok(result);  
 
         }
-        /// <summary>
-        /// Получение данных пользователя
-        /// </summary>
+        
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("")]
@@ -144,10 +134,7 @@ namespace Parcus.Api.Controllers.v1
 
             return Ok(_mapper.Map<UserDto>(user));
         }
-        
-        /// <summary>
-        /// Получение портфелей пользователя
-        /// </summary>
+        //getportfolios response
         [HttpGet]
         [Authorize(Permissions.Account.Base)]
         [Route("Portfolios")]
@@ -171,10 +158,6 @@ namespace Parcus.Api.Controllers.v1
             return Ok(response);
         }
 
-
-        /// <summary>
-        /// Получение разрешений пользователя
-        /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("Permissions")]
@@ -187,13 +170,6 @@ namespace Parcus.Api.Controllers.v1
 
             var userPermissions = await _authService.GetPermissionsFromUserAsync(user);
             return Ok(userPermissions);
-        }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("test")]
-        public async Task<IActionResult> Test()
-        {
-            return Ok("Get out asshole");
         }
 
 

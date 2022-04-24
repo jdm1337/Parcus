@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Parcus.Persistence.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -73,9 +73,9 @@ namespace Parcus.Persistence.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sign = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sign = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -195,10 +195,10 @@ namespace Parcus.Persistence.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PortfolioBrokerId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -223,6 +223,7 @@ namespace Parcus.Persistence.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Isin = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: true),
                     Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Tiker = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -244,7 +245,8 @@ namespace Parcus.Persistence.Data.Migrations
                         name: "FK_Instruments_Currency_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currency",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,16 +255,15 @@ namespace Parcus.Persistence.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Figi = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    InstrumentType = table.Column<int>(type: "int", nullable: false),
+                    InstrumentId = table.Column<int>(type: "int", nullable: true),
                     Amount = table.Column<int>(type: "int", nullable: true),
                     AveragePrice = table.Column<double>(type: "float", nullable: true),
                     InvestedValue = table.Column<double>(type: "float", nullable: true),
                     CurrentValue = table.Column<double>(type: "float", nullable: true),
-                    CurrentPrice = table.Column<double>(type: "float", nullable: true),
                     Profit = table.Column<double>(type: "float", nullable: true),
                     DailyProfit = table.Column<double>(type: "float", nullable: true),
-                    BrokeragePortfolioId = table.Column<int>(type: "int", nullable: true)
+                    BrokeragePortfolioId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -273,6 +274,12 @@ namespace Parcus.Persistence.Data.Migrations
                         principalTable: "BrokeragePortfolios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InstrumentsInPortfolio_Instruments_InstrumentId",
+                        column: x => x.InstrumentId,
+                        principalTable: "Instruments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -283,8 +290,9 @@ namespace Parcus.Persistence.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TransactionType = table.Column<int>(type: "int", nullable: true),
-                    InstrumentsInPortfolioId = table.Column<int>(type: "int", nullable: true),
+                    InstrumentId = table.Column<int>(type: "int", nullable: true),
                     InstrumentPrice = table.Column<double>(type: "float", nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: true),
                     BrokeragePortfolioId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -294,10 +302,11 @@ namespace Parcus.Persistence.Data.Migrations
                         name: "FK_InvestTransactions_BrokeragePortfolios_BrokeragePortfolioId",
                         column: x => x.BrokeragePortfolioId,
                         principalTable: "BrokeragePortfolios",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_InvestTransactions_InstrumentsInPortfolio_InstrumentsInPortfolioId",
-                        column: x => x.InstrumentsInPortfolioId,
+                        name: "FK_InvestTransactions_InstrumentsInPortfolio_InstrumentId",
+                        column: x => x.InstrumentId,
                         principalTable: "InstrumentsInPortfolio",
                         principalColumn: "Id");
                 });
@@ -374,14 +383,19 @@ namespace Parcus.Persistence.Data.Migrations
                 column: "BrokeragePortfolioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InstrumentsInPortfolio_InstrumentId",
+                table: "InstrumentsInPortfolio",
+                column: "InstrumentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InvestTransactions_BrokeragePortfolioId",
                 table: "InvestTransactions",
                 column: "BrokeragePortfolioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InvestTransactions_InstrumentsInPortfolioId",
+                name: "IX_InvestTransactions_InstrumentId",
                 table: "InvestTransactions",
-                column: "InstrumentsInPortfolioId");
+                column: "InstrumentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -402,16 +416,10 @@ namespace Parcus.Persistence.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Instruments");
-
-            migrationBuilder.DropTable(
                 name: "InvestTransactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Currency");
 
             migrationBuilder.DropTable(
                 name: "InstrumentsInPortfolio");
@@ -420,10 +428,16 @@ namespace Parcus.Persistence.Data.Migrations
                 name: "BrokeragePortfolios");
 
             migrationBuilder.DropTable(
+                name: "Instruments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Broker");
+
+            migrationBuilder.DropTable(
+                name: "Currency");
         }
     }
 }

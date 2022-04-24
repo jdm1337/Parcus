@@ -12,7 +12,7 @@ namespace Parcus.Application.Interfaces.IServices
 {
     public interface IAuthService
     {
-        Task<List<Claim>> GetUsersClaimsForTokenAsync(User user);
+        Task<List<Claim>> GetClaimsForTokenAsync(User user);
         
         Task<string> GetUserIdFromRequest(IIdentity? identity);
         Task<List<string>> GetPermissionsFromUserAsync(User user);

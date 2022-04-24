@@ -15,7 +15,7 @@ namespace Parcus.Persistence.EntityTypeConfiguration
         {
             builder.HasIndex(acc => acc.Id).IsUnique();
             builder.HasMany(acc => acc.Instruments)
-                   .WithOne(instr =>instr.BrokeragePortfolio)
+                   .WithOne(i => i.BrokeragePortfolio)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(acc => acc.Transactions)

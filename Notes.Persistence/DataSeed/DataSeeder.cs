@@ -10,8 +10,6 @@ using Parcus.Persistence.Data;
 
 using System.Security.Claims;
 
-
-
 namespace Parcus.Persistence.DataSeed
 {
      public class DataSeeder
@@ -41,10 +39,10 @@ namespace Parcus.Persistence.DataSeed
                 Role adminRole = new Role 
                 { 
                     Name = _initializeSettings.Role,
-                    Description = "Main role"
+                    Description = "Администратор"
                 };
                 await _roleManager.CreateAsync(adminRole);
-
+                
                 adminRole = await _roleManager.FindByNameAsync(_initializeSettings.Role);
                 
                 await _roleManager.AddClaimAsync(adminRole,
@@ -68,7 +66,7 @@ namespace Parcus.Persistence.DataSeed
                 var commonRole = new Role()
                 {
                     Name = "CommonUser",
-                    Description = "Common user of application"
+                    Description = "Пользователь сервиса"
                 };
                 await _roleManager.CreateAsync(commonRole);
 
@@ -83,10 +81,9 @@ namespace Parcus.Persistence.DataSeed
                 await _roleManager.AddClaimAsync(commonRole,
                     new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
 
-
-
                 var createResult = await _userManager.CreateAsync(adminUser, _initializeSettings.Password);
                 var addResult = await _userManager.AddToRoleAsync(adminUser, _initializeSettings.Role);
+
                 if(createResult.Succeeded && addResult.Succeeded)
                 {
                     seedResult.Succeeded = true;

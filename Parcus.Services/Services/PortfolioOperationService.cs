@@ -2,56 +2,28 @@
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Invest.Brokers;
 using Parcus.Domain.Invest.InstrumentModels;
-using Parcus.Domain.Invest.InstrumentModels.Shares;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Parcus.Domain.Results;
-using Parcus.Persistence.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Parcus.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Parcus.Services.Services
 {
     public class PortfolioOperationService : IPortfolioOperationService
     {
         protected IUnitOfWork _unitOfWork;
-        public PortfolioOperationService(IUnitOfWork unitOfWork)
+        protected AppDbContext _context;
+        public PortfolioOperationService(IUnitOfWork unitOfWork, AppDbContext context)
         {
             _unitOfWork = unitOfWork;
-        }
-
-        public async Task<bool> AddBroker(BrokeragePortfolio brokeragePortfolio, string brokerName, double percentage)
-        {
-            var existBroker = (await _unitOfWork.Brokers.GetAllAsync()).Where(broker => broker.Name == brokerName && broker.Percentage == percentage).FirstOrDefault();
-
-            if (existBroker == null)
-            {
-                var newBroker = await _unitOfWork.Brokers.AddAsync(new Broker
-                {
-                    Name = brokerName,
-                    Percentage = percentage
-                });
-                if (newBroker == null)
-                {
-                    return false;
-                }
-                brokeragePortfolio.PortfolioBroker = newBroker;
-            }
-            else
-            {
-                brokeragePortfolio.PortfolioBroker = existBroker;
-            }
-            await _unitOfWork.Portfolios.UpdateAsync(brokeragePortfolio);
-            await _unitOfWork.CompleteAsync();
-            return true;
+            _context = context;
         }
 
         public async Task<Result<Broker>> AddBroker(BrokeragePortfolio brokeragePortfolio, Broker broker)
         {
             var result = new Result<Broker>();
+            //Edit Implementation
             var existBroker = (await _unitOfWork.Brokers.GetAllAsync())
                 .Where(b => b.Name == broker.Name && b.Percentage == broker.Percentage)
                 .FirstOrDefault();
@@ -105,17 +77,19 @@ namespace Parcus.Services.Services
         {
             var result = new ValidationResult();
 
-            if (transaction == null || transaction.Instrument.Amount < 1 || transaction.InstrumentPrice <= 0)  return result;
+            if (transaction == null || transaction.Amount < 1 || transaction.InstrumentPrice <= 0)  return result;
             
             if(transaction.TransactionType is Transactions.Sale)
             {
-                var instrumentInPortfolio = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioId(transaction.BrokeragePortfolio.Id))
-                    .Where(instrument => instrument.Figi == transaction?.Instrument?.Figi)
-                    .FirstOrDefault();
-                Console.WriteLine(result.Succeeded);
+                
+                var instrumentInPortfolio = await (_context.InstrumentsInPortfolio
+                    .Where(x => x.BrokeragePortfolioId == transaction.BrokeragePortfolioId)
+                    .Where(x => x.InstrumentId == transaction.Instrument.InstrumentId)
+                    .FirstOrDefaultAsync()); 
+                
                 if (instrumentInPortfolio == null) return result;
 
-                else if (instrumentInPortfolio.Amount < transaction.Instrument.Amount) return result;
+                else if (instrumentInPortfolio.Amount < transaction.Amount) return result;
             }
             result.Succeeded = true;
             return result;
@@ -130,16 +104,18 @@ namespace Parcus.Services.Services
 
             if (transaction == null) return result;
 
-            var instrumentInPortfolio = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioId(transaction.BrokeragePortfolio.Id))
-                    .Where(instrument => instrument.Figi == transaction?.Instrument?.Figi)
-                    .FirstOrDefault();
-            
+            var instrumentInPortfolio = await (_context.InstrumentsInPortfolio
+                    .Where(x => x.BrokeragePortfolioId == transaction.BrokeragePortfolioId)
+                    .Where(x => x.InstrumentId == transaction.Instrument.InstrumentId)
+                    .FirstOrDefaultAsync());
+
             if (transaction.TransactionType is Transactions.Buy)
             {
                 if(instrumentInPortfolio == null)
                 {
+                    transaction.Instrument.Amount = transaction.Amount;
                     transaction.Instrument.AveragePrice = transaction.InstrumentPrice;
-                    transaction.Instrument.InvestedValue = transaction.InstrumentPrice * transaction.Instrument.Amount;
+                    transaction.Instrument.InvestedValue = transaction.InstrumentPrice * transaction.Amount;
                     var addedInstrument = await _unitOfWork.InstrumentsInPortfolio.AddAsync(transaction.Instrument);
 
                     if (addedInstrument == null) return result;
@@ -149,16 +125,15 @@ namespace Parcus.Services.Services
                 }
                 else
                 {
-                    instrumentInPortfolio.Amount += transaction.Instrument.Amount;
-                    instrumentInPortfolio.InvestedValue += transaction.InstrumentPrice * transaction.Instrument.Amount;
+                    instrumentInPortfolio.Amount += transaction.Amount;
+                    instrumentInPortfolio.InvestedValue += transaction.InstrumentPrice * transaction.Amount;
                     instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
 
                     var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
 
                     if(!isUpdated) return result;
                     transaction.Instrument = instrumentInPortfolio;
-                    
-
+   
                 }
             }
             else
@@ -167,15 +142,14 @@ namespace Parcus.Services.Services
                 
                 else
                 {
-                    instrumentInPortfolio.Amount -= transaction.Instrument.Amount;
-                    instrumentInPortfolio.InvestedValue -= transaction.InstrumentPrice * transaction.Instrument.Amount;
+                    instrumentInPortfolio.Amount -= transaction.Amount;
+                    instrumentInPortfolio.InvestedValue -= transaction.InstrumentPrice * transaction.Amount;
                     instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
 
                     var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
 
                     if (!isUpdated) return result;
                     transaction.Instrument = instrumentInPortfolio;
-
                 }
             }
 
@@ -185,6 +159,7 @@ namespace Parcus.Services.Services
             await _unitOfWork.CompleteAsync();
             result.Succeeded = true;
             result.Item = savedTransaction;
+
             return result;
 
         }

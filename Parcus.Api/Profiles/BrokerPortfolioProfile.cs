@@ -4,9 +4,9 @@ using Parcus.Domain.Invest.Brokers;
 
 namespace Parcus.Api.Profiles
 {
-    public class BrokerPortfolio : Profile
+    public class BrokerPortfolioProfile : Profile
     {
-        public BrokerPortfolio()
+        public BrokerPortfolioProfile()
         {
             CreateMap<AddBrokerRequest, Broker>()
                .ForMember(

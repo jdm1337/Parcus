@@ -6,7 +6,6 @@ using Parcus.Domain.Identity;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Microsoft.AspNetCore.Identity;
-using Parcus.Domain.Invest.InstrumentModels.Shares;
 using Parcus.Domain.Invest.InstrumentModels;
 
 namespace Parcus.Persistence.Data
@@ -28,8 +27,10 @@ namespace Parcus.Persistence.Data
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-
             modelBuilder.ApplyConfiguration(new BrokeragePortfolioConfiguration());
+            modelBuilder.ApplyConfiguration(new InstrumentInPortfolioConfiguration());
+            modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
+            modelBuilder.ApplyConfiguration(new InstrumentConfiguration());
 
             base.OnModelCreating(modelBuilder);
             

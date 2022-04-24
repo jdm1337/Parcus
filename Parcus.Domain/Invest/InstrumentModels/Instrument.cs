@@ -11,12 +11,15 @@ namespace Parcus.Domain.Invest.InstrumentModels
     {
         public int Id { get; set; }
         public string? Isin { get; set; }
+        public InstrumentTypes? Type { get; set; }
         public string? Figi { get; set; }
         public string? Name { get; set; }
         public string? Tiker { get; set; }
         public string? Country { get; set; }
+        public int? CurrencyId { get; set; }
         public Currency? Currency { get; set; }
         public double? CurrentPrice { get; set; } = 0;
+        public ICollection<InstrumentsInPortfolio>? instrumentsInPortfolios { get; set; }
 
         //shares extra fields
         public double? Dividends { get; set; } = 0;
@@ -28,7 +31,6 @@ namespace Parcus.Domain.Invest.InstrumentModels
         public DateTime? CancelDate { get; set; }
         public double? Denomination { get; set; } = 0;
         public int? PayingPeriod { get; set; } = 0;
-
 
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parcus.Services.Services.Extensions
+namespace Parcus.Services.Extensions
 {
     public static class TransactionEnumExtenstion
     {
