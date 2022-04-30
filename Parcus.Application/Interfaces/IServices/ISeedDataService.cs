@@ -1,4 +1,4 @@
-﻿using Parcus.Domain.Invest.InstrumentModels;
+﻿using Microsoft.AspNetCore.Identity;
 using Parcus.Domain.Results;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Parcus.Application.Interfaces.IServices
 {
-    public interface IDataInstrumentService
+     public interface ISeedDataService
     {
-        
-        
-        
+        Task SeedInstrumentInfoAsync();
+        Task<Result<IdentityResult>> SeedInitIdentityAsync();
     }
 }

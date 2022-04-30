@@ -19,35 +19,70 @@ using System.Reflection;
 using Microsoft.AspNetCore.Diagnostics;
 using Hangfire;
 using Parcus.Api.Initial;
+using Hangfire.Dashboard;
+using Hangfire.SqlServer;
+using Parcus.Api.Authentication.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 
 // Add services to the container.
-string connection = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
+string dbConnectionString = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
+
+TokenValidationParameters parameters = new TokenValidationParameters()
+{
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ClockSkew = TimeSpan.Zero,
+
+    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+};
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
 builder.Services.Configure<InvestApiSettings>(builder.Configuration.GetSection("InvestApi"));
 
-builder.Services.AddHangfire(x => 
-        x.UseSqlServerStorage("Data Source=DESKTOP-P5QBGMD\\SQLEXPRESS;Initial Catalog=ParcusDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+builder.Services.AddTransient<IHangfireInjectService, HangfireInjectService>();
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    
+    .UseSqlServerStorage(dbConnectionString, new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true,
+    })
+    );
+
+JobStorage.Current = new SqlServerStorage(dbConnectionString);
+
 builder.Services.AddHangfireServer();
-builder.Services.AddTransient<DataSeeder>();
+builder.Services.AddTransient<ISeedDataService, SeedDataService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connection));
+        options.UseSqlServer(dbConnectionString));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 #pragma warning disable CS0436 // Type conflicts with imported type
 builder.Services.AddTransient<ITokenService, TokenService>();
 #pragma warning restore CS0436 // Type conflicts with imported type
 builder.Services.AddTransient<IPortfolioOperationService, PortfolioOperationService>();
-builder.Services.AddTransient<IDataInstrumentService, DataInstrumentService>();
+builder.Services.AddTransient<IPortfolioStateService, PortfolioStateService>();
+builder.Services.AddTransient<IInstrumentStateService, InstrumentStateService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -61,20 +96,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-    };
+    options.TokenValidationParameters = parameters;
 });
-
 
 builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
@@ -82,11 +105,7 @@ builder.Services.AddIdentity<User, Role>()
 builder.Services.AddCors();
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 builder.Services.AddEndpointsApiExplorer();
-
-
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -126,23 +145,10 @@ builder.Services.AddApiVersioning(options =>
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+
 var app = builder.Build();
 
-StartApp.Invoke(app);
-
-// Configure the HTTP request pipeline.
-/*
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
-    });
-}
-*/
-
+await StartApp.Invoke(app); // Invoke startup actions 
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -166,7 +172,15 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseHangfireDashboard("/dashboard");
+var options = new DashboardOptions
+{
+    Authorization = new IDashboardAuthorizationFilter[]
+        {
+            new HangfireDashboardJwtAuthorizationFilter(parameters, builder.Configuration["Initialize:Role"])
+        }
+};
+
+app.UseHangfireDashboard("/hangfire", options);
 
 app.MapControllers();
 

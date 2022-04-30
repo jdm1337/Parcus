@@ -66,7 +66,6 @@ namespace Parcus.Api.Authentication.Handlers
                 foreach (var role in userRoles)
                 {
                     var roleClaims = await _roleManager.GetClaimsAsync(role);
-                Console.WriteLine("123");
                     var permissions = roleClaims.Where(x => x.Type == CustomClaimTypes.Permission &&
                                                             x.Value == requirement.Permission &&
                                                             x.Issuer == "LOCAL AUTHORITY")

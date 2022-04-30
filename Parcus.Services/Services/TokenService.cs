@@ -17,7 +17,6 @@ namespace Parcus.Services.Services
         private readonly JwtSettings _jwtSettings;
         private readonly UserManager<User> _userManager;
 
-
         public TokenService(
             IOptionsMonitor<JwtSettings> optionsMonitor,
             UserManager<User> userManager)
@@ -73,7 +72,6 @@ namespace Parcus.Services.Services
                 Console.WriteLine(ex.Message);
                 return null;
             }
-
         }
         public async Task<User> GetUserFromToken(string? token)
         {

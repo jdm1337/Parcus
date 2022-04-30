@@ -22,7 +22,7 @@ namespace Parcus.Api.Controllers.v1
     {
         private readonly IAuthService _authService;
         private readonly IPortfolioOperationService _portfolioOperationService;
-        private readonly IDataInstrumentService _dataInstrumentService;
+        
         private readonly UserManager<User> _userManager;
         protected AppDbContext _context;
         public PortfoliosController(
@@ -31,13 +31,11 @@ namespace Parcus.Api.Controllers.v1
             IMapper mapper,
             IPortfolioOperationService portfolioOperationService,
             IAuthService authService,
-            IDataInstrumentService findInstrumentService,
             AppDbContext context) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _authService = authService;
             _portfolioOperationService = portfolioOperationService;
-            _dataInstrumentService = findInstrumentService;
             _context = context;
         }
 
@@ -152,7 +150,6 @@ namespace Parcus.Api.Controllers.v1
         [Route("GetInstruments/{id}")]
         public async Task<IActionResult> GetInstruments(string id)
         {
-            Console.WriteLine("WORK");
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -169,16 +166,16 @@ namespace Parcus.Api.Controllers.v1
                                     .Where(i => i.Instrument.Type == InstrumentTypes.Share)
                                     .Select(x => _mapper.Map<InstrumentInPortfolioDto>(x))
                                     .ToListAsync();
-
             response.SharesAmount = response.Shares.Count();
+
             response.Bonds = await _context.InstrumentsInPortfolio
                                     .Include(i => i.Instrument)
                                     .Where(i => i.BrokeragePortfolioId == portfolio.Id)
                                     .Where(i => i.Instrument.Type == InstrumentTypes.Bond)
                                     .Select(x => _mapper.Map<InstrumentInPortfolioDto>(x))
                                     .ToListAsync();
-
             response.BondsAmount = response.Bonds.Count();
+
             response.Etf = await _context.InstrumentsInPortfolio
                                     .Include(i => i.Instrument)
                                     .Where(i => i.BrokeragePortfolioId == portfolio.Id)
@@ -186,19 +183,7 @@ namespace Parcus.Api.Controllers.v1
                                     .Select(x => _mapper.Map<InstrumentInPortfolioDto>(x))
                                     .ToListAsync();
             response.EtfAmount = response.Etf.Count();
-            /*
-            response.Shares = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioIdAndType(portfolio.Id, InstrumentTypes.share))
-                .Select(instrument => _mapper.Map<InstrumentInPortfolioDto>(instrument)).ToList();
-            response.SharesAmount = response.Shares.Count();
 
-            response.Bonds = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioIdAndType(portfolio.Id, InstrumentTypes.bond))
-                .Select(instrument => _mapper.Map<InstrumentInPortfolioDto>(instrument)).ToList();
-            response.BondsAmount = response.Bonds.Count();
-
-            response.Etf = (await _unitOfWork.InstrumentsInPortfolio.GetByPortfolioIdAndType(portfolio.Id, InstrumentTypes.etf))
-                .Select(instrument => _mapper.Map<InstrumentInPortfolioDto>(instrument)).ToList();
-            response.EtfAmount = response.Etf.Count();
-            */
             return Ok(response);
         }
 

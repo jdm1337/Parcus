@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-
+using Parcus.Application.Interfaces.IServices;
 using Parcus.Domain.Claims;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
@@ -12,26 +12,35 @@ using System.Security.Claims;
 
 namespace Parcus.Persistence.DataSeed
 {
-     public class DataSeeder
-    {
+     public class SeedDataService : ISeedDataService
+     {
         private readonly AppDbContext _appDbContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly InitializeSettings _initializeSettings;
+        private readonly IInstrumentStateService _instrumentStateService;
 
-
-        public DataSeeder(
+        public SeedDataService(
+            IInstrumentStateService instrumentStateService,
             IOptionsMonitor<InitializeSettings> optionsMonitor,
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
             AppDbContext appDbContext )
         {
+            _instrumentStateService = instrumentStateService;
             _initializeSettings = optionsMonitor.CurrentValue;
             _userManager = userManager;
             _roleManager = roleManager;
             _appDbContext = appDbContext;
         }
-        public async Task<Result<IdentityResult>> Seed()
+        public async Task SeedInstrumentInfoAsync()
+        {
+            if (!_appDbContext.Instruments.Any())
+            {
+                 await _instrumentStateService.SeedInfoAsync();
+            }
+        }
+        public async Task<Result<IdentityResult>> SeedInitIdentityAsync()
         {
             var seedResult = new Result<IdentityResult>();
             if (!_appDbContext.Users.Any())
@@ -41,21 +50,13 @@ namespace Parcus.Persistence.DataSeed
                     Name = _initializeSettings.Role,
                     Description = "Администратор"
                 };
-                await _roleManager.CreateAsync(adminRole);
-                
-                adminRole = await _roleManager.FindByNameAsync(_initializeSettings.Role);
-                
-                await _roleManager.AddClaimAsync(adminRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Roles.AddPermission));
-                await _roleManager.AddClaimAsync(adminRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Account.Base));
-                await _roleManager.AddClaimAsync(adminRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Add));
-                await _roleManager.AddClaimAsync(adminRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Get));
-                await _roleManager.AddClaimAsync(adminRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
 
+                await _roleManager.CreateAsync(adminRole);
+
+                adminRole = await _roleManager.FindByNameAsync(adminRole.Name);
+                
+                await AddPermissionsToAdminAsync(adminRole);
+                
                 var adminUser = new User()
                 {
                     Email = _initializeSettings.Email,
@@ -72,15 +73,8 @@ namespace Parcus.Persistence.DataSeed
 
                 commonRole = await _roleManager.FindByNameAsync("CommonUser");
 
-                await _roleManager.AddClaimAsync(commonRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Account.Base));
-                await _roleManager.AddClaimAsync(commonRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Add));
-                await _roleManager.AddClaimAsync(commonRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Get));
-                await _roleManager.AddClaimAsync(commonRole,
-                    new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
-
+                await AddPermissionsToCommonUserAsync(commonRole);
+                
                 var createResult = await _userManager.CreateAsync(adminUser, _initializeSettings.Password);
                 var addResult = await _userManager.AddToRoleAsync(adminUser, _initializeSettings.Role);
 
@@ -90,6 +84,31 @@ namespace Parcus.Persistence.DataSeed
                 }
             }
             return seedResult ;
+        }
+
+        private async Task AddPermissionsToAdminAsync(Role role)
+        {
+            await _roleManager.AddClaimAsync(role,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Roles.AddPermission));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Account.Base));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Add));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Get));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
+        }
+        private async Task AddPermissionsToCommonUserAsync(Role role)
+        {
+            await _roleManager.AddClaimAsync(role,
+                    new Claim(CustomClaimTypes.Permission, Permissions.Account.Base));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Add));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.Get));
+            await _roleManager.AddClaimAsync(role,
+                new Claim(CustomClaimTypes.Permission, Permissions.Portfolios.GetInstruments));
         }
     }
 }

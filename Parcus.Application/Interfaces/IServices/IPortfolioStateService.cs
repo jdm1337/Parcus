@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Parcus.Application.Interfaces.IServices
 {
-    public interface ITreasuresService
+    public interface IPortfolioStateService
     {
+        void CalculateFields();
     }
 }

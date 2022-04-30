@@ -4,7 +4,7 @@ using Parcus.Domain.DTO.Incoming;
 using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Invest.PortfolioModels;
 
-namespace Parcus.Api.Profiles
+namespace Parcus.Services.Profiles
 {
     public class PortfolioProfile : Profile
     {
@@ -39,6 +39,16 @@ namespace Parcus.Api.Profiles
                    dest => dest.Name,
                    from => from.MapFrom(x => x.Name)
                );
+
+            CreateMap<IEnumerable<PortfolioDto>, GetPortfoliosResponse>()
+                .ForMember(
+                    dest => dest.Count,
+                    from => from.MapFrom(x => x.Count())
+                )
+                .ForMember(
+                    dest => dest.Portfolios,
+                    from => from.MapFrom(x => x.ToList())
+                );
 
         }
     }

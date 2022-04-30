@@ -21,5 +21,6 @@ namespace Parcus.Services.Extensions
                 return (Transactions)thisEnum;
             }
         }
+        
     }
 }

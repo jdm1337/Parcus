@@ -2,7 +2,7 @@
 using Parcus.Domain.DTO.Incoming;
 using Parcus.Domain.Invest.Brokers;
 
-namespace Parcus.Api.Profiles
+namespace Parcus.Services.Profiles
 {
     public class BrokerPortfolioProfile : Profile
     {

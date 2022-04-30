@@ -4,7 +4,7 @@ using Parcus.Domain.Invest.Transactions;
 using Parcus.Services.Extensions;
 
 
-namespace Parcus.Api.Profiles
+namespace Parcus.Services.Profiles
 {
     public class InvestTransactionProfile : Profile
     {

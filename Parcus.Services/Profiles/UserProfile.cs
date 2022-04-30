@@ -2,7 +2,7 @@
 using Parcus.Domain.DTO.Entities;
 using Parcus.Domain.Identity;
 
-namespace Parcus.Api.Profiles
+namespace Parcus.Services.Profiles
 {
     public class UserProfile : Profile
     {
