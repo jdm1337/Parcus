@@ -29,28 +29,8 @@ namespace Parcus.Api.Authentication.Handlers
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
-            
-            var request = _contextAccessor.HttpContext.Request;
-            var auth = request.Headers.Authorization;
-            string[] authTypeAndToken;
-            try
-            {
-                authTypeAndToken = auth.ToString().Split(" ");
-                if(authTypeAndToken.Length != 2)
-                {
-                    return;
-                }
-            }
-            catch
-            {
-                return;
-            }
-            
-           
-            var token = authTypeAndToken[1];
-
-            var user = await _tokenService.GetUserFromToken(token);
-
+            var userIdClaim = context.User.Claims.Where(u => u.Type.Equals("id")).FirstOrDefault();
+            var user = await _userManager.FindByIdAsync(userIdClaim?.Value);
             
             if (user == null)
             {
@@ -62,14 +42,13 @@ namespace Parcus.Api.Authentication.Handlers
               
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
-            
                 foreach (var role in userRoles)
                 {
                     var roleClaims = await _roleManager.GetClaimsAsync(role);
-                    var permissions = roleClaims.Where(x => x.Type == CustomClaimTypes.Permission &&
-                                                            x.Value == requirement.Permission &&
-                                                            x.Issuer == "LOCAL AUTHORITY")
-                                                .Select(x => x.Value);
+                    var permissions = roleClaims
+                        .Where(x => x.Type == CustomClaimTypes.Permission &&
+                                    x.Value == requirement.Permission &&
+                                    x.Issuer == "LOCAL AUTHORITY");
 
                     if (permissions.Any())
                     {
@@ -77,7 +56,6 @@ namespace Parcus.Api.Authentication.Handlers
                         return;
                     }
                 }
-           
         }
     }
 }
