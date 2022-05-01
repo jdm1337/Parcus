@@ -22,6 +22,8 @@ namespace Parcus.Api.Controllers.v1
         private readonly JwtSettings _jwtSettings;
         private readonly IAuthService _authService;
         private readonly ITokenService _tokenService;
+
+        private const string CommonRoleName = "CommonUser";
         public AccountController(
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
@@ -63,6 +65,9 @@ namespace Parcus.Api.Controllers.v1
             {
                 return BadRequest();
             }
+
+            await _userManager.AddToRoleAsync(newUser, CommonRoleName);
+
             var createdUser = (await _userManager.FindByEmailAsync(newUser.Email));
 
             return Ok(_mapper.Map<UserDto>(createdUser));
