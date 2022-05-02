@@ -7,11 +7,9 @@ namespace Parcus.Api.Initial
 {
     public static class StartApp
     {
-        
-        public static async Task<Result<bool>> Invoke(WebApplication app)
+        public static async Task<Result<bool>> Invoke(IServiceScopeFactory scopedFactory)
         {
             var result = new Result<bool>();
-            var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
             using (var scope = scopedFactory.CreateScope())
             {
@@ -19,17 +17,11 @@ namespace Parcus.Api.Initial
                 var instrumentStateService = scope.ServiceProvider.GetService<IInstrumentStateService>();
                 var hangfireInjectService = scope.ServiceProvider.GetService<IHangfireInjectService>();
 
-                
                 await seedDataService.SeedInitIdentityAsync();
                 await seedDataService.SeedInstrumentInfoAsync();
 
                 hangfireInjectService.Initial();
 
-
-
-
-
-                // TODO : Implement update method and them here 
             }
             result.Succeeded = true;
             return result;

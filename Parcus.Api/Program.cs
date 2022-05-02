@@ -22,10 +22,7 @@ using Parcus.Api.Initial;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
 using Parcus.Api.Authentication.Filters;
-
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 // Add services to the container.
 string dbConnectionString = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
@@ -74,6 +71,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IDashboardAuthorizationFilter, HangfireAuthorizationFilter>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -148,8 +147,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
-await StartApp.Invoke(app); // Invoke startup actions 
+var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+await StartApp.Invoke(serviceScopeFactory); // Invoke startup actions 
+
+app.UseRouting();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -176,14 +184,21 @@ var options = new DashboardOptions
 {
     Authorization = new IDashboardAuthorizationFilter[]
         {
-            new HangfireDashboardJwtAuthorizationFilter(parameters, builder.Configuration["Initialize:Role"])
+            new HangfireAuthorizationFilter(serviceScopeFactory)
         }
 };
-
-app.UseHangfireDashboard("/hangfire", options);
-
+app.UseHangfireServer();
+app.UseHangfireDashboard(
+                pathMatch: "/hangfire",
+                options: new DashboardOptions()
+                {
+                    Authorization = new IDashboardAuthorizationFilter[] 
+                    {
+                        new HangfireAuthorizationFilter(serviceScopeFactory)
+                    }
+                });
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
 
 
