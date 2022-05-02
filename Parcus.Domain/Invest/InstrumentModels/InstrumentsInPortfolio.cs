@@ -20,8 +20,6 @@ namespace Parcus.Domain.Invest.InstrumentModels
         public BrokeragePortfolio? BrokeragePortfolio { get; set; }
 
         public int? UserId { get; set; }
-        
-
         public ICollection<InvestTransaction>? Transactions { get; set; }
     }
 }

@@ -22,7 +22,6 @@
             public const string Add = "Permissions.Portfolios.Add";
             public const string Get = "Permissions.Portfolios.Get";
             public const string GetInstruments = "Permissions.Portfolios.GetInstruments";
-
         }
         public static class Roles
         {
@@ -34,8 +33,6 @@
             public const string AddPermission = "Permissions.Roles.AddPermission";
             public const string GetPermissions = "Permissions.Roles.GetPermissions";
             public const string DeletePermission = "Permissions.Roles.DeletePermission";
-
-
         }
         public static class Jwt
         {

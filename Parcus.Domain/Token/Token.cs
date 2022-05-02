@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Parcus.Domain.Token
 {
-    // implementing multiple clients for api by without logging every changing device
+    
     public class Token
     {
     }

@@ -35,9 +35,10 @@ namespace Parcus.Api.Controllers.v1
             _tokenService = tokenService;
         }
 
-        /// <summary>
-        /// Обновление access и refresh токенов
-        /// </summary>
+         /// <summary>
+         /// Обновление access и refresh токенов
+         /// </summary>
+         [AllowAnonymous]
          [HttpPost]
          [Route("refresh-token")]
          public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
@@ -45,7 +46,7 @@ namespace Parcus.Api.Controllers.v1
              string? accessToken = refreshTokenRequest.AccessToken;
              string? refreshToken = refreshTokenRequest.RefreshToken;
 
-             var principal = await _tokenService.GetPrincipalFromExpiredToken(accessToken);
+             var principal = await _tokenService.GetPrincipalFromExpiredTokenAsync(accessToken);
              if (principal == null)
              {
                  return BadRequest("Invalid access token or refresh token");
@@ -55,7 +56,6 @@ namespace Parcus.Api.Controllers.v1
              var emailClaim = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-
              var user = await _userManager.FindByEmailAsync(emailClaim.Value);
 
              if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
@@ -75,27 +75,29 @@ namespace Parcus.Api.Controllers.v1
              });
          }
 
-        /// <summary>
-        /// Отзыв access токена
-        /// </summary>
-        [Authorize(Permissions.Jwt.RevokeAccessToken)]
+         /// <summary>
+         /// Отзыв access токена
+         /// </summary>
+         [Authorize(Permissions.Jwt.RevokeAccessToken)]
          [HttpPost]
          [Route("revoke/{id}")]
          public async Task<IActionResult> Revoke(string id)
          {
              var user = await _userManager.FindByIdAsync(id);
 
-             if (user == null) return BadRequest("Invalid userId");
+             if (user == null) 
+                return BadRequest("Invalid userId");
 
              user.RefreshToken = null;
              await _userManager.UpdateAsync(user);
 
              return NoContent();
          }
-        /// <summary>
-        /// Отзыв access токенов
-        /// </summary>
-        [Authorize(Permissions.Jwt.RevokeAccessToken)]
+
+         /// <summary>
+         /// Отзыв access токенов
+         /// </summary>
+         [Authorize(Permissions.Jwt.RevokeAccessToken)]
          [HttpPost]
          [Route("revoke-all")]
          public async Task<IActionResult> RevokeAll()
@@ -106,7 +108,6 @@ namespace Parcus.Api.Controllers.v1
                  user.RefreshToken = null;
                  await _userManager.UpdateAsync(user);
              }
-
              return NoContent();
          }
      }

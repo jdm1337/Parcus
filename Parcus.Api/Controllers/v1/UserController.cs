@@ -12,7 +12,7 @@ using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
 
 namespace Parcus.Api.Controllers.v1
-{
+{ 
     public class UsersController : BaseController
     {
         private readonly UserManager<User> _userManager;
@@ -29,6 +29,7 @@ namespace Parcus.Api.Controllers.v1
             _roleManager = roleManager;
             _authService = authService;
         }
+
         /// <summary>
         /// Получение разрешений пользователя по id
         /// </summary>
@@ -39,13 +40,15 @@ namespace Parcus.Api.Controllers.v1
         {
             var user = await _userManager.FindByIdAsync(id);
 
-            if(user == null) return NotFound();
+            if(user == null) 
+                return NotFound();
 
             return Ok(new GetPermissionsFromUserResponse
             {
                 Permissions = await _authService.GetPermissionsFromUserAsync(user)
             });
         }
+
         /// <summary>
         /// Добавление пользователя к роли
         /// </summary>
@@ -64,8 +67,8 @@ namespace Parcus.Api.Controllers.v1
 
             await _userManager.AddToRoleAsync(user, role.Name);
             return Ok();
-
         }
+
         /// <summary>
         /// Получение пользователей
         /// </summary>
@@ -78,8 +81,8 @@ namespace Parcus.Api.Controllers.v1
             {
                 Users = _userManager.Users
             });
-            
         }
+
         /// <summary>
         /// Удаление пользователя
         /// </summary>
@@ -91,11 +94,13 @@ namespace Parcus.Api.Controllers.v1
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null) return BadRequest();
+            if (user == null) 
+                return BadRequest();
 
             var result = await _userManager.DeleteAsync(user);
 
-            if (!result.Succeeded) return BadRequest();
+            if (!result.Succeeded) 
+                return BadRequest();
 
             return Ok();
         }

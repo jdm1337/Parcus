@@ -40,47 +40,51 @@ namespace Parcus.Api.Controllers.v1
             _tokenService = tokenService;
         }
 
-        
-
-        //
+        /// <summary>
+        /// Регистрация новых пользователей
+        /// </summary>
         [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationRequest)
         {
             var existingUser = await _userManager.FindByEmailAsync(registrationRequest.Email);
+
             if (existingUser != null)
-            {
                 return BadRequest();
-            }
+            
             var newUser = new User
             {
                 Email = registrationRequest.Email,
                 UserName = registrationRequest.UserName,
                 EmailConfirmed = true, //TODO: build fuctionallity to send email
             };
+
             var isCreated = await _userManager.CreateAsync(newUser, registrationRequest.Password);
 
             if (!isCreated.Succeeded)
-            {
                 return BadRequest();
-            }
-
+            
             await _userManager.AddToRoleAsync(newUser, CommonRoleName);
 
-            var createdUser = (await _userManager.FindByEmailAsync(newUser.Email));
+            var createdUser = await _userManager.FindByEmailAsync(newUser.Email);
+            if (createdUser == null)
+                return BadRequest();
 
             return Ok(_mapper.Map<UserDto>(createdUser));
         }
 
-        
+        /// <summary>
+        /// Логин
+        /// </summary>
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
-        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, loginRequest.Password))
+            var validPassword = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
+            if (user != null && validPassword)
             {
                 var userClaims = await _authService.GetClaimsForTokenAsync(user);
                 var token = await _tokenService.CreateTokenAsync(userClaims);
@@ -100,30 +104,40 @@ namespace Parcus.Api.Controllers.v1
             }
             return BadRequest();
         }
+
+        /// <summary>
+        /// Изменение пароля
+        /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpPost]
         [Route("Password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {
-            if(request.NewPassword.Equals(request.PasswordCheck)) return BadRequest("Passwords don't match.");
+            if(request.NewPassword.Equals(request.PasswordCheck)) 
+                return BadRequest("Passwords don't match.");
 
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null) return NotFound();
+            if (user == null) 
+                return NotFound();
 
             var matchPassword = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
 
-            if (!matchPassword) return BadRequest("Invalid password.");
+            if (!matchPassword) 
+                return BadRequest("Invalid password.");
 
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
-            if (!result.Succeeded) return BadRequest();
+            if (!result.Succeeded) 
+                return BadRequest();
 
             return Ok(result);  
-
         }
-        
+
+        /// <summary>
+        /// Получение информации об аккаунте
+        /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("")]
@@ -133,15 +147,16 @@ namespace Parcus.Api.Controllers.v1
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
-            {
                 return NotFound();
-            }
-
+            
             return Ok(_mapper.Map<UserDto>(user));
         }
-        //getportfolios response
-        [HttpGet]
+
+        /// <summary>
+        /// Получение списка портфелей
+        /// </summary>
         [Authorize(Permissions.Account.Base)]
+        [HttpGet]
         [Route("Portfolios")]
         public async Task<IActionResult> GetPortfolios()
         {
@@ -163,6 +178,9 @@ namespace Parcus.Api.Controllers.v1
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получение разрешений у пользователя
+        /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("Permissions")]
@@ -176,7 +194,5 @@ namespace Parcus.Api.Controllers.v1
             var userPermissions = await _authService.GetPermissionsFromUserAsync(user);
             return Ok(userPermissions);
         }
-
-
     }
 }

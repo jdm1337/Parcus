@@ -26,20 +26,16 @@ namespace Parcus.Api.Authentication.Handlers
             _contextAccessor = httpContextAccessor;
             _tokenService = tokenService;
         }
-
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             var userIdClaim = context.User.Claims.Where(u => u.Type.Equals("id")).FirstOrDefault();
             var user = await _userManager.FindByIdAsync(userIdClaim?.Value);
             
             if (user == null)
-            {
                 return;
-            }
-            
+           
             // Get all the roles the user belongs to and check if any of the roles has the permission required
-            // for the authorization to succeed.
-              
+            // for the authorization to succeed.  
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
                 foreach (var role in userRoles)

@@ -11,9 +11,6 @@ namespace Parcus.Domain.DTO.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreatedDate { get; set; }
-
-        //public List<InstrumentInPortfolioDto>? Instruments { get;  set; }
-
         public int? UserId { get; set; }
     }
 }

@@ -29,7 +29,5 @@ namespace Parcus.Api.Authentication.Providers
             return FallbackPolicyProvider.GetPolicyAsync(policyName);
         }
         public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => Task.FromResult<AuthorizationPolicy>(null);
-
-
     }
 }

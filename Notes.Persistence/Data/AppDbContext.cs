@@ -18,8 +18,6 @@ namespace Parcus.Persistence.Data
         public virtual DbSet<InvestTransaction> InvestTransactions { get; set; }
         public virtual DbSet<InstrumentsInPortfolio> InstrumentsInPortfolio { get; set; }
         public virtual DbSet<Instrument> Instruments { get; set; }
-
-     
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         {
            
@@ -33,7 +31,6 @@ namespace Parcus.Persistence.Data
             modelBuilder.ApplyConfiguration(new InstrumentConfiguration());
 
             base.OnModelCreating(modelBuilder);
-            
         }
     }
 }

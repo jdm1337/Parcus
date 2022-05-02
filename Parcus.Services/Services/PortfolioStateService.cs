@@ -37,7 +37,6 @@ namespace Parcus.Services.Services
                     Profit = CalculateProfit(x),
                 })
                .ToList();
-
             _context.InstrumentsInPortfolio.BulkUpdate(instrumentInPortfolioList, options =>
             {
                 options.ColumnInputExpression = instrument => new { instrument.Id, instrument.Amount, instrument.InvestedValue, instrument.CurrentValue, instrument.Profit };

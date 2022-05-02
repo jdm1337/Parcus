@@ -13,11 +13,9 @@ namespace Parcus.Api.Authentication.Filters
     {
         private IServiceScopeFactory _serviceScopeFactory;
         private const string AllowedRole = "Administrators";
-
         public HangfireAuthorizationFilter(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
-
         }
         public bool Authorize([NotNull] DashboardContext context)
         {
@@ -25,15 +23,13 @@ namespace Parcus.Api.Authentication.Filters
             var authorizationHeader = httpContext.Request.Headers.Authorization;
 
             if (authorizationHeader.IsNullOrEmpty())
-            {
                 return false;
-            }
+            
             var tokenWithBearerPrefix = authorizationHeader.ToString().Split(' ');
 
             if (tokenWithBearerPrefix.Length != 2)
-            {
                 return false;
-            }
+            
             var accessToken = tokenWithBearerPrefix[1];
 
             using (var scope = _serviceScopeFactory.CreateScope())
@@ -41,22 +37,19 @@ namespace Parcus.Api.Authentication.Filters
                 var tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
                 var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
 
-                var user = tokenService.GetUserFromToken(accessToken).Result;
-                if(user == null)
-                {
-                    return false;
-                }
+                var user = tokenService.GetUserFromTokenAsync(accessToken).Result;
 
+                if(user == null)
+                    return false;
+                
                 var userRoles = userManager.GetRolesAsync(user).Result;
 
                 var isAdmin = userRoles.Where(x => x.Equals(AllowedRole)).Any();
 
                 if (isAdmin)
-                {
                     return true;
-                }
+                
                 return false;
-
             }
         }
     }

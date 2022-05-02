@@ -49,7 +49,6 @@ namespace Parcus.Services.Profiles
                     dest => dest.Portfolios,
                     from => from.MapFrom(x => x.ToList())
                 );
-
         }
     }
 }

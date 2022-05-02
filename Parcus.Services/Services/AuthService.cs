@@ -21,8 +21,6 @@ namespace Parcus.Services.Services
         private readonly JwtSettings _jwtSettings;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-
-
         public AuthService(
             IOptionsMonitor<JwtSettings> optionsMonitor,
             UserManager<User> userManager,
@@ -32,7 +30,6 @@ namespace Parcus.Services.Services
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
         public async Task<string> GetUserIdFromRequest(IIdentity userIdentity)
         {
             var claimsIdentity = userIdentity as ClaimsIdentity;
@@ -43,7 +40,6 @@ namespace Parcus.Services.Services
 
             return userId; 
         }
-
         public async Task<List<Claim>> GetClaimsForTokenAsync(User user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);

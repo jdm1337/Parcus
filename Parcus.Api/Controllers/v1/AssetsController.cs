@@ -17,9 +17,9 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
+        [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("{figi}")]
-        [Authorize(Permissions.Account.Base)]
         public async Task<IActionResult> GetInstrumentData(string figi)
         {
             return Ok();
@@ -30,9 +30,9 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
+        [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("DividentYield/{figi}")]
-        [Authorize(Permissions.Account.Base)]
         public async Task<IActionResult> GetDividentYield(string figi)
         {
             return Ok();
@@ -43,10 +43,9 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
-
+        [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("LastPrice/{figi}")]
-        [Authorize(Permissions.Account.Base)]
         public async Task<IActionResult> GetLastPrice(string figi)
         {
             return Ok(figi);
@@ -56,9 +55,9 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
+        [Authorize(Permissions.Account.Base)]
         [HttpGet]
         [Route("OrderBook/{figi}")]
-        [Authorize(Permissions.Account.Base)]
         public async Task<IActionResult> GetOrderBook(string figi)
         {
             return Ok(figi);

@@ -9,14 +9,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-
 namespace Parcus.Services.Services
 {
      public class TokenService : ITokenService
     {
         private readonly JwtSettings _jwtSettings;
         private readonly UserManager<User> _userManager;
-
         public TokenService(
             IOptionsMonitor<JwtSettings> optionsMonitor,
             UserManager<User> userManager)
@@ -39,15 +37,15 @@ namespace Parcus.Services.Services
 
             return token;
         }
-
         public async Task<string> GenerateRefreshTokenAsync()
         {
             var randomNumber = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
+
             return Convert.ToBase64String(randomNumber);
         }
-        public async Task<ClaimsPrincipal?> GetPrincipalFromExpiredToken(string? token)
+        public async Task<ClaimsPrincipal?> GetPrincipalFromExpiredTokenAsync(string? token)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -55,7 +53,7 @@ namespace Parcus.Services.Services
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
-                ValidateLifetime = false
+                ValidateLifetime = true
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -73,7 +71,7 @@ namespace Parcus.Services.Services
                 return null;
             }
         }
-        public async Task<User> GetUserFromToken(string? token)
+        public async Task<User> GetUserFromTokenAsync(string? token)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -97,6 +95,7 @@ namespace Parcus.Services.Services
                 {
                     throw new SecurityTokenException("Invalid token");
                 }
+
                 return await _userManager.FindByEmailAsync(emailClaim.Value);
             }
             catch(Exception ex)

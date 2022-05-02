@@ -14,8 +14,7 @@ namespace Parcus.Application.Interfaces.IServices
 {
     public interface IPortfolioOperationService
     {
-        Task<Result<Broker>> AddBroker(BrokeragePortfolio brokeragePortfolio, Broker broker);
-        
+        Task<Result<Broker>> AddBroker(BrokeragePortfolio brokeragePortfolio, Broker broker);      
         Task<Result<InvestTransaction>> AddTransactionAsync(InvestTransaction transaction);
     }
 }
