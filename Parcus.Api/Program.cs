@@ -22,26 +22,10 @@ using Parcus.Api.Initial;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
 using Parcus.Api.Authentication.Filters;
-
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 // Add services to the container.
 string dbConnectionString = builder.Configuration["Data:CommandAPIConnection:ConnectionString"];
-
-TokenValidationParameters parameters = new TokenValidationParameters()
-{
-    ValidateIssuer = true,
-    ValidateAudience = true,
-    ValidateLifetime = true,
-    ValidateIssuerSigningKey = true,
-    ClockSkew = TimeSpan.Zero,
-
-    ValidAudience = builder.Configuration["JWT:ValidAudience"],
-    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-};
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<InitializeSettings>(builder.Configuration.GetSection("Initialize"));
@@ -74,6 +58,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IDashboardAuthorizationFilter, HangfireAuthorizationFilter>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -96,7 +82,18 @@ builder.Services.AddAuthentication(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = parameters;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    }; ;
 });
 
 builder.Services.AddIdentity<User, Role>()
@@ -148,8 +145,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
-await StartApp.Invoke(app); // Invoke startup actions 
+var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+await StartApp.Invoke(serviceScopeFactory); // Invoke startup actions 
+
+app.UseRouting();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -176,14 +182,21 @@ var options = new DashboardOptions
 {
     Authorization = new IDashboardAuthorizationFilter[]
         {
-            new HangfireDashboardJwtAuthorizationFilter(parameters, builder.Configuration["Initialize:Role"])
+            new HangfireAuthorizationFilter(serviceScopeFactory)
         }
 };
-
-app.UseHangfireDashboard("/hangfire", options);
-
+app.UseHangfireServer();
+app.UseHangfireDashboard(
+                pathMatch: "/hangfire",
+                options: new DashboardOptions()
+                {
+                    Authorization = new IDashboardAuthorizationFilter[] 
+                    {
+                        new HangfireAuthorizationFilter(serviceScopeFactory)
+                    }
+                });
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
 
 

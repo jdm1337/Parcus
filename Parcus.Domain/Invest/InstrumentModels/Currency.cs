@@ -13,7 +13,6 @@ namespace Parcus.Domain.Invest.InstrumentModels.Currencies
         public string? Name { get; set; }
         public string? Sign { get; set; }
 
-        
         public ICollection<Instrument>? Instruments { get; set; }
     }
 }

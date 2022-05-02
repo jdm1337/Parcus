@@ -5,8 +5,7 @@ using Tinkoff.InvestApi.V1;
 namespace Parcus.Services.Profiles
 {
     public class InstrumentProfile : Profile
-    {
-        
+    { 
         public InstrumentProfile()
         {
             CreateMap<Share, Domain.Invest.InstrumentModels.Instrument>()

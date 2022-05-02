@@ -29,7 +29,6 @@ namespace Parcus.Api.Initial
             UpdateInstrumentsStatementJob();
             RecurringJob.Trigger(UpdateInstrumentsStatementJobId);
         }
-
         public void UpdateInstrumentsStatementJob()
         {
             RecurringJob.AddOrUpdate(UpdateInstrumentsStatementJobId, () => UpdateInstrumentsAndCalcPortfolio(), Cron.MinuteInterval(UpdatePriceInterval));
@@ -40,5 +39,4 @@ namespace Parcus.Api.Initial
             _portfolioStateService.CalculateFields();
         }
     }
-
 }

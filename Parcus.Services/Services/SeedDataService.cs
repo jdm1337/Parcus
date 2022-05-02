@@ -36,9 +36,8 @@ namespace Parcus.Persistence.DataSeed
         public async Task SeedInstrumentInfoAsync()
         {
             if (!_appDbContext.Instruments.Any())
-            {
-                 await _instrumentStateService.SeedInfoAsync();
-            }
+                await _instrumentStateService.SeedInfoAsync();
+            
         }
         public async Task<Result<IdentityResult>> SeedInitIdentityAsync()
         {
@@ -54,7 +53,7 @@ namespace Parcus.Persistence.DataSeed
                 await _roleManager.CreateAsync(adminRole);
 
                 adminRole = await _roleManager.FindByNameAsync(adminRole.Name);
-                
+
                 await AddPermissionsToAdminAsync(adminRole);
                 
                 var adminUser = new User()
@@ -83,7 +82,7 @@ namespace Parcus.Persistence.DataSeed
                     seedResult.Succeeded = true;
                 }
             }
-            return seedResult ;
+            return seedResult;
         }
 
         private async Task AddPermissionsToAdminAsync(Role role)

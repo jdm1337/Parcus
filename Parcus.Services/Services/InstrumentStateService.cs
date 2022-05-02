@@ -30,7 +30,6 @@ namespace Parcus.Services.Services
                 .AddInvestApiClient((_, x) => x.AccessToken = _investApiSettings.ReadonlyToken)
                 .BuildServiceProvider()
                 .GetService<InvestApiClient>();
-
         }
         public async Task SeedInfoAsync()
         {
@@ -69,15 +68,12 @@ namespace Parcus.Services.Services
                     Tiker = x.Ticker,
                     Country = x.CountryOfRiskName,
                 });
-
             await _context.Instruments.BulkInsertAsync(shares);
             await _context.Instruments.BulkInsertAsync(bonds);
             await _context.Instruments.BulkInsertAsync(etfs);
         }
-
         public void UpdatePrice()
         {
-            Console.WriteLine("update price");
             var instrumentList = _context.Instruments
                 .Select(x => new Domain.Invest.InstrumentModels.Instrument
                         {
@@ -91,7 +87,7 @@ namespace Parcus.Services.Services
             var lastPriceResp = _investApiClient.MarketData.GetLastPrices(request);
 
             var lastPriceList = lastPriceResp.LastPrices;
-            
+
             for (int i = 0; i < lastPriceList.Count; i++)
             {
                 try
@@ -107,11 +103,7 @@ namespace Parcus.Services.Services
             {
                 options.ColumnInputExpression = instrument => new { instrument.CurrentPrice };
                 options.ColumnPrimaryKeyExpression = instrument => instrument.Figi;
-            });
-            
-           
-        }
-
-        
+            }); 
+        }     
     }
 }

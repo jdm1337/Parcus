@@ -19,7 +19,6 @@ namespace Parcus.Services.Services
             _unitOfWork = unitOfWork;
             _context = context;
         }
-
         public async Task<Result<Broker>> AddBroker(BrokeragePortfolio brokeragePortfolio, Broker broker)
         {
             var result = new Result<Broker>();
@@ -45,6 +44,7 @@ namespace Parcus.Services.Services
 
             await _unitOfWork.Portfolios.UpdateAsync(brokeragePortfolio);
             await _unitOfWork.CompleteAsync();
+
             result.Succeeded = true;
             result.Item = brokeragePortfolio.PortfolioBroker;
             return result;
@@ -56,53 +56,52 @@ namespace Parcus.Services.Services
         {
             var result = new Result<InvestTransaction>();
 
-            if(transaction == null)  return result;
+            if(transaction == null)  
+                return result;
 
             var validationResult = await ValidateTransaction(transaction);
 
-            if (!validationResult.Succeeded) return result;
+            if (!validationResult.Succeeded) 
+                return result;
             
             var provideTransactionResult = await ProvideTransaction(transaction);
 
-            if (!provideTransactionResult.Succeeded) return result;
+            if (!provideTransactionResult.Succeeded) 
+                return result;
             
             result.Item = transaction;
             result.Succeeded = true;
             return result;
-
-
         }
-
         public async Task<ValidationResult> ValidateTransaction(InvestTransaction transaction)
         {
             var result = new ValidationResult();
 
-            if (transaction == null || transaction.Amount < 1 || transaction.InstrumentPrice <= 0)  return result;
+            if (transaction == null || transaction.Amount < 1 || transaction.InstrumentPrice <= 0)  
+                return result;
             
             if(transaction.TransactionType is Transactions.Sale)
             {
-                
                 var instrumentInPortfolio = await (_context.InstrumentsInPortfolio
                     .Where(x => x.BrokeragePortfolioId == transaction.BrokeragePortfolioId)
                     .Where(x => x.InstrumentId == transaction.Instrument.InstrumentId)
                     .FirstOrDefaultAsync()); 
                 
-                if (instrumentInPortfolio == null) return result;
+                if (instrumentInPortfolio == null) 
+                    return result;
 
-                else if (instrumentInPortfolio.Amount < transaction.Amount) return result;
+                else if (instrumentInPortfolio.Amount < transaction.Amount) 
+                    return result;
             }
             result.Succeeded = true;
             return result;
-
-
-
         }
-
         public async Task<Result<InvestTransaction>> ProvideTransaction(InvestTransaction transaction)
         {
             var result = new Result<InvestTransaction>();
 
-            if (transaction == null) return result;
+            if (transaction == null) 
+                return result;
 
             var instrumentInPortfolio = await (_context.InstrumentsInPortfolio
                     .Where(x => x.BrokeragePortfolioId == transaction.BrokeragePortfolioId)
@@ -154,7 +153,8 @@ namespace Parcus.Services.Services
             }
 
             var savedTransaction = await _unitOfWork.InvestTransactions.AddAsync(transaction);
-            if (savedTransaction == null) return result;
+            if (savedTransaction == null) 
+                return result;
 
             await _unitOfWork.CompleteAsync();
             result.Succeeded = true;
