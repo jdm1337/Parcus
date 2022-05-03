@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Parcus.Application.Interfaces.IRepository
 {
-    public interface IUsersRepository : IGenericRepository<User>
+    public interface IRolesRepository : IGenericRepository<Role>
     {
-        Task<PagedList<UserDto>> GetUsers(UserParameters paginationParameters);
+        Task<PagedList<RoleDto>> GetRoles(RoleParameters paginationParameters);
     }
 }
