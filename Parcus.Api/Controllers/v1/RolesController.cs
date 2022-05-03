@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Claims;
 using Parcus.Domain.DTO.Incoming;
 using Parcus.Domain.Identity;
+using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 using System.Security.Claims;
 
@@ -47,6 +49,29 @@ namespace Parcus.Api.Controllers.v1
                 return Ok();
             }
             return BadRequest();
+        }
+
+        /// <summary>
+        /// Получение ролей
+        /// </summary>
+        [Authorize(Permissions.Roles.GetRoles)]
+        [HttpGet]
+        [Route("Select")]
+        public async Task<IActionResult> Permission([FromQuery]RoleParameters parameters)
+        {
+            var users = await _unitOfWork.Roles.GetRoles(parameters);
+            var responseMetadata = new
+            {
+                users.TotalCount,
+                users.PageSize,
+                users.CurrentPage,
+                users.TotalPages,
+                users.HasNext,
+                users.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(responseMetadata));
+
+            return Ok(users);
         }
 
         /// <summary>

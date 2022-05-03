@@ -22,7 +22,7 @@ namespace Parcus.Persistence.Repository
 
         public async Task<PagedList<UserDto>> GetUsers(UserParameters paginationParameters)
         {
-            var userDtoList = await _context.Users
+            var usersDtoList = await _context.Users
                 .OrderBy(on => on.Id)
                 .Select(x => new UserDto
                 {
@@ -32,7 +32,7 @@ namespace Parcus.Persistence.Repository
                 })
                 .ToListAsync();
 
-            return PagedList<UserDto>.ToPagedList(userDtoList,
+            return PagedList<UserDto>.ToPagedList(usersDtoList,
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize);
         }

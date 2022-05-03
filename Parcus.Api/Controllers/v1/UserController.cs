@@ -89,10 +89,7 @@ namespace Parcus.Api.Controllers.v1
                 users.HasPrevious
             };
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(responseMetadata));
-            return Ok(new UserSelectResponse
-            {
-                Users = users
-            });
+            return Ok(users);
         }
         /// <summary>
         /// Удаление пользователя
