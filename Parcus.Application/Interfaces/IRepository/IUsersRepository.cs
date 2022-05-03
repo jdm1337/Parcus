@@ -1,4 +1,6 @@
-﻿using Parcus.Domain.Identity;
+﻿using Parcus.Domain.DTO.Entities;
+using Parcus.Domain.Identity;
+using Parcus.Domain.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,6 @@ namespace Parcus.Application.Interfaces.IRepository
 {
     public interface IUsersRepository : IGenericRepository<User>
     {
-       
+        Task<PagedList<UserDto>> GetUsers(UserParameters paginationParameters);
     }
 }

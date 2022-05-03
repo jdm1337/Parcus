@@ -120,7 +120,7 @@ namespace Parcus.Api.Controllers.v1
             var permission = new Claim(CustomClaimTypes.Permission, request.PermissionName);
             var result = await _roleManager.AddClaimAsync(role, permission);
 
-            if (result.Succeeded) 
+            if (!result.Succeeded) 
                 return BadRequest();
 
             return Ok();
@@ -150,7 +150,6 @@ namespace Parcus.Api.Controllers.v1
 
             await _roleManager.RemoveClaimAsync(role, permission);
             return Ok();
-
         }
     }
 }

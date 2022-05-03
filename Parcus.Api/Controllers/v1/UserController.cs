@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Newtonsoft.Json;
 using Parcus.Api.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.DTO.Incoming;
 using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Identity;
+using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 
 namespace Parcus.Api.Controllers.v1
@@ -75,14 +76,24 @@ namespace Parcus.Api.Controllers.v1
         [Authorize(Permissions.Users.GetUsers)]
         [HttpGet]
         [Route("Select")]
-        public async Task<IActionResult> Select()
+        public async Task<IActionResult> GetUsers([FromQuery]UserParameters parameters)
         {
+            var users = await _unitOfWork.Users.GetUsers(parameters);
+            var responseMetadata = new
+            {
+                users.TotalCount,
+                users.PageSize,
+                users.CurrentPage,
+                users.TotalPages,
+                users.HasNext,
+                users.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(responseMetadata));
             return Ok(new UserSelectResponse
             {
-                Users = _userManager.Users
+                Users = users
             });
         }
-
         /// <summary>
         /// Удаление пользователя
         /// </summary>

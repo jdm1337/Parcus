@@ -1,9 +1,9 @@
-﻿using Parcus.Domain.Identity;
+﻿using Parcus.Domain.DTO.Entities;
 
 namespace Parcus.Domain.DTO.Outgoing
 {
     public class UserSelectResponse
     {
-        public IQueryable<User> Users { get; set; }
+        public IEnumerable<UserDto> Users { get; set; }
     }
 }
