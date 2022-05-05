@@ -101,6 +101,7 @@ builder.Services.AddIdentity<User, Role>()
                 .AddDefaultTokenProviders();
 builder.Services.AddCors();
 builder.Services.AddControllers();
+builder.Services.AddRazorPages();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -117,16 +118,12 @@ builder.Services.AddSwaggerGen(options =>
         Contact = new OpenApiContact
         {
             Name = "Taramaly Sergey",
-
             Email = "taramalys@gmail.com"
         },
-
-
     });
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-   
 });
 builder.Services.AddApiVersioning(options =>
 {
@@ -138,7 +135,6 @@ builder.Services.AddApiVersioning(options =>
 
     options.DefaultApiVersion = ApiVersion.Default;
 
-
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -149,34 +145,33 @@ var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
 }
 
 await StartApp.Invoke(serviceScopeFactory); // Invoke startup actions 
 
+app.UseStaticFiles();
 app.UseRouting();
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-    options.RoutePrefix = string.Empty;
-});
-app.UseDeveloperExceptionPage();
 
-app.UseExceptionHandler(c => c.Run(async context =>
+app.UseSwagger();
+
+app.UseSwaggerUI(c =>
 {
-    var exception = context.Features
-        .Get<IExceptionHandlerPathFeature>()
-        .Error;
-    var response = new { error = exception.Message };
-    await context.Response.WriteAsJsonAsync(response);
-}));
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ParcusApi");
+    c.RoutePrefix = "docs";
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapRazorPages();
 
 var options = new DashboardOptions
 {
@@ -187,14 +182,14 @@ var options = new DashboardOptions
 };
 app.UseHangfireServer();
 app.UseHangfireDashboard(
-                pathMatch: "/hangfire",
-                options: new DashboardOptions()
-                {
-                    Authorization = new IDashboardAuthorizationFilter[] 
-                    {
-                        new HangfireAuthorizationFilter(serviceScopeFactory)
-                    }
-                });
+      pathMatch: "/hangfire",
+      options: new DashboardOptions()
+      {
+          Authorization = new IDashboardAuthorizationFilter[] 
+          {
+              new HangfireAuthorizationFilter(serviceScopeFactory)
+          }
+      });
 app.MapControllers();
 
 await app.RunAsync();
