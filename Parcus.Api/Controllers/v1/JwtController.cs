@@ -80,7 +80,7 @@ namespace Parcus.Api.Controllers.v1
          /// </summary>
          [Authorize(Permissions.Jwt.RevokeAccessToken)]
          [HttpPost]
-         [Route("revoke/{id}")]
+         [Route("{id}/revoke")]
          public async Task<IActionResult> Revoke(string id)
          {
              var user = await _userManager.FindByIdAsync(id);

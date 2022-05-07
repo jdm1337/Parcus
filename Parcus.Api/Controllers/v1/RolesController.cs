@@ -79,7 +79,7 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         [Authorize(Permissions.Roles.Delete)]
         [HttpDelete]
-        [Route("Delete/{roleName}")]
+        [Route("{roleName}/Delete")]
         public async Task<IActionResult> Delete(string roleName)
         {
             var role = await _roleManager.FindByNameAsync(roleName);
@@ -99,7 +99,7 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         [Authorize(Permissions.Roles.GetPermissions)]
         [HttpGet]
-        [Route("Permissions/{roleName}")]
+        [Route("{roleName}/Permissions")]
         public async Task<IActionResult> Permission(string roleName)
         {
             var role = await _roleManager.FindByNameAsync(roleName);

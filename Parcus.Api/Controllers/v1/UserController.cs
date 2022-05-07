@@ -36,7 +36,7 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         [Authorize(Permissions.Users.GetPermissions)]
         [HttpGet]
-        [Route("Permissions/{id}")]
+        [Route("{id}/Permissions")]
         public async Task<IActionResult> Permission(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

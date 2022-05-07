@@ -32,7 +32,7 @@ namespace Parcus.Api.Controllers.v1
         /// <returns></returns>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
-        [Route("DividentYield/{figi}")]
+        [Route("{figi}/DividentYield")]
         public async Task<IActionResult> GetDividentYield(string figi)
         {
             return Ok();
@@ -45,7 +45,7 @@ namespace Parcus.Api.Controllers.v1
         /// <returns></returns>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
-        [Route("LastPrice/{figi}")]
+        [Route("{figi}/LastPrice")]
         public async Task<IActionResult> GetLastPrice(string figi)
         {
             return Ok(figi);
@@ -57,7 +57,7 @@ namespace Parcus.Api.Controllers.v1
         /// <returns></returns>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
-        [Route("OrderBook/{figi}")]
+        [Route("{figi}/OrderBook")]
         public async Task<IActionResult> GetOrderBook(string figi)
         {
             return Ok(figi);
