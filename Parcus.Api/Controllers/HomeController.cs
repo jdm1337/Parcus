@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Parcus.Api.Controllers
 {
-    //[Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class HomeController : Controller
     {
         public IActionResult Index()

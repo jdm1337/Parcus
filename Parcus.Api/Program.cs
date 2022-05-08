@@ -99,6 +99,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.LoginPath = "/account/login";
     options.AccessDeniedPath = "/account/accessdenied";
+    options.Cookie.Name = "ParcusInvest.Cookies";
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
 });
 

@@ -48,7 +48,10 @@ namespace Parcus.Api.Controllers
             var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
 
             if (user == null || !validPassword)
+            {
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                return View(model);
+            }
            
             await Authenticate(model.Email);
 
@@ -63,7 +66,7 @@ namespace Parcus.Api.Controllers
             await _userManager.UpdateAsync(user);
 
             HttpContext.Response.Cookies.Append("access-token", new JwtSecurityTokenHandler().WriteToken(token));
-            HttpContext.Response.Cookies.Append("access-token", refreshToken);
+            HttpContext.Response.Cookies.Append("refresh-token", refreshToken);
 
             return RedirectToAction("Index", "Home");
             

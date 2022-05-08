@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -71,7 +72,7 @@
               <!-- Sidebar user panel (optional) -->
               <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="info">
-                  <a href="#" class="d-block">@User?.Claims.Where(x => x.Type == "Email")?.FirstOrDefault()?.Value</a>
+                  <a href="#" class="d-block">@User.Claims.Where(x => x.Type == ClaimsIdentity.DefaultNameClaimType).FirstOrDefault().Value</a>
                 </div>
               </div>
 
@@ -105,8 +106,6 @@
                       </p>
                     </a>
                   </li>
-
-
                   <li class="nav-item">
                     <a href="~/hangfire" class="nav-link">
                       <i class="nav-icon fas fa-digital-tachograph"></i>
@@ -119,9 +118,6 @@
                       <p>Документация</p>
                     </a>
                   </li>
-                
-                  
-                  
                 </ul>
               </nav>
               <!-- /.sidebar-menu -->
@@ -173,6 +169,8 @@
 
     <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
+
+
 <!-- jQuery UI 1.11.4 -->
 <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
