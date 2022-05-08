@@ -93,15 +93,22 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-    }; ;
+    };
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "account/login";
+    options.AccessDeniedPath = "account/accessdenied";
+    options.ExpireTimeSpan = TimeSpan.FromHours(1);
 });
+
 
 builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 builder.Services.AddCors();
 builder.Services.AddControllers();
-builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -171,7 +178,9 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 var options = new DashboardOptions
 {
@@ -190,7 +199,6 @@ app.UseHangfireDashboard(
               new HangfireAuthorizationFilter(serviceScopeFactory)
           }
       });
-app.MapControllers();
 
 await app.RunAsync();
 
