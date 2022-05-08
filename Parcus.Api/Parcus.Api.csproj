@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Folder Include="wwwroot\dist\img\credit\" />
   </ItemGroup>
     
 

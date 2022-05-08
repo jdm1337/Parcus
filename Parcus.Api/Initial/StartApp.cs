@@ -17,10 +17,10 @@ namespace Parcus.Api.Initial
                 var instrumentStateService = scope.ServiceProvider.GetService<IInstrumentStateService>();
                 var hangfireInjectService = scope.ServiceProvider.GetService<IHangfireInjectService>();
 
-                await seedDataService.SeedInitIdentityAsync();
-                await seedDataService.SeedInstrumentInfoAsync();
+                //await seedDataService.SeedInitIdentityAsync();
+                //await seedDataService.SeedInstrumentInfoAsync();
 
-                hangfireInjectService.Initial();
+                //hangfireInjectService.Initial();
 
             }
             result.Succeeded = true;
