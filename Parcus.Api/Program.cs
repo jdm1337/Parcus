@@ -97,8 +97,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(options =>
 {
-    options.LoginPath = "account/login";
-    options.AccessDeniedPath = "account/accessdenied";
+    options.LoginPath = "/account/login";
+    options.AccessDeniedPath = "/account/accessdenied";
     options.ExpireTimeSpan = TimeSpan.FromHours(1);
 });
 
