@@ -1,8 +1,7 @@
-﻿@model Parcus.Api.Views.Users.UsersModel
+﻿@model Parcus.Api.Models.UsersViewModel;
+
 @{
 }
-
-
 
 <div class="row">
           <div class="col-12">
@@ -13,94 +12,43 @@
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
+              <div class="card-body table-responsive p-0" >
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>User</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Reason</th>
+                      <th>Имя пользователя</th>
+                      <th>Email</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>175</td>
-                      <td>Mike Doe</td>
-                      <td>11-7-2014</td>
-                      <td><span class="tag tag-danger">Denied</span></td>
-                      <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr><td>@user.UserId</td><td>@user.UserName</td><td>@user.Email</td></tr>
+                        }       
                   </tbody>
                 </table>
               </div>
               <!-- /.card-body -->
     </div>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a href="~/Users/Index?PageNumber=@(Model.PageViewModel.PageNumber - 1)"
+       
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a href="~/Users/Index?pagenumber=@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}
             <!-- /.card -->
 </div>
-<script src="~/plugins/jquery/jquery.min.js"></script>
 
-<script>
-    function get_cookie ( cookie_name )
-    {
-        var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
- 
-        if ( results )
-            return ( unescape ( results[2] ) );
-        else
-            return null;
-    }
-    function refresh_token(){
-        let accessToken = get_cookie("access-token");
-        let refreshToken = get_cookie("refresh-token");
-
-        $.ajax({
-            url: '/api/v1/Jwt/refresh-token',
-            method: 'POST',
-            headers: {
-                'Content-Type':'application/json'
-            },
-            data: JSON.stringify({
-                "accessToken": accessToken,
-                "refreshToken": refreshToken
-            }),
-            dataType: 'json',
-            error: function(XMLHttpRequest, textstatus, errorThrown){
-                console.log("refresh-error")
-            },
-            success: function(data) {
-                console.log("succeses")
-            }
-        });
-    }
-
-    let accessToken = get_cookie("access-token");
-    console.log("Here");
-    $(document).ready(function(){
-        $.ajax({
-            url: '/api/v1/Users/Select',
-            headers: {
-                'Authorization':'Bearer ' + accessToken,
-                'Content-Type':'application/json'
-            },
-            dataType: 'json',
-            statusCode: {
-                401: function() {
-                    console.log("fuck")
-                    refresh_token();
-                    
-                }
-            },
-            error: function(XMLHttpRequest, textstatus, errorThrown){
-                console.log("oops")
-            },
-            success: function(data) {
-                console.log("succeses")
-            }
-    // какие-то действия с полученными данными data
-  })
-  
-  });
-</script>
         

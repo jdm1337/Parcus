@@ -57,16 +57,14 @@ namespace Parcus.Api.Controllers
 
             var userClaims = await _authService.GetClaimsForTokenAsync(user);
             var token = await _tokenService.CreateTokenAsync(userClaims);
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync();
+            
             _ = int.TryParse(_jwtSettings.RefreshTokenValidityInDays, out int refreshTokenValidityInDays);
 
-            user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
 
             await _userManager.UpdateAsync(user);
-
+            
             HttpContext.Response.Cookies.Append("access-token", new JwtSecurityTokenHandler().WriteToken(token));
-            HttpContext.Response.Cookies.Append("refresh-token", refreshToken);
 
             return RedirectToAction("Index", "Home");
             

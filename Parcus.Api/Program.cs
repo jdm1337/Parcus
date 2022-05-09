@@ -133,6 +133,8 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
 });
+builder.Services.AddSession();
+
 builder.Services.AddApiVersioning(options =>
 {
     // Provides to the client the different Api version that we have.
@@ -163,6 +165,9 @@ if (app.Environment.IsDevelopment())
 await StartApp.Invoke(serviceScopeFactory); // Invoke startup actions 
 
 app.UseStaticFiles();
+
+app.UseSession();
+
 app.UseRouting();
 
 app.UseSwagger();
@@ -182,6 +187,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 var options = new DashboardOptions
 {

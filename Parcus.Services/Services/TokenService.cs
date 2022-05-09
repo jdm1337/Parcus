@@ -39,11 +39,28 @@ namespace Parcus.Services.Services
         }
         public async Task<string> GenerateRefreshTokenAsync()
         {
-            var randomNumber = new byte[64];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
+            Random rand = new Random();
 
-            return Convert.ToBase64String(randomNumber);
+            // Choosing the size of string
+            // Using Next() string
+            int randValue;
+            StringBuilder refreshToken = new StringBuilder();
+            char letter;
+            for (int i = 0; i < 64; i++)
+            {
+
+                // Generating a random number.
+                randValue = rand.Next(0, 26);
+
+                // Generating random character by converting
+                // the random number into character.
+                letter = Convert.ToChar(randValue + 65);
+
+                // Appending the letter to string.
+                refreshToken.Append(letter);
+            }
+            return refreshToken.ToString();
+            
         }
         public async Task<ClaimsPrincipal?> GetPrincipalFromExpiredTokenAsync(string? token)
         {
@@ -53,7 +70,7 @@ namespace Parcus.Services.Services
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
-                ValidateLifetime = true
+                ValidateLifetime = false
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
