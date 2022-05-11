@@ -8,7 +8,7 @@ using Parcus.Domain.Identity;
 
 namespace Parcus.Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Administrators,DemoUser")]
     public class RolesController : Controller
     {
         private readonly RoleManager<Role> _roleManager;

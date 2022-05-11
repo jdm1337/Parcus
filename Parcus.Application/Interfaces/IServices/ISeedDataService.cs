@@ -11,6 +11,6 @@ namespace Parcus.Application.Interfaces.IServices
      public interface ISeedDataService
     {
         Task SeedInstrumentInfoAsync();
-        Task<Result<IdentityResult>> SeedInitIdentityAsync();
+        Task SeedInitIdentityAsync();
     }
 }

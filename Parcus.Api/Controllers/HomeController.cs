@@ -6,7 +6,7 @@ using Parcus.Api.Models;
 
 namespace Parcus.Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators")]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators,DemoUser")]
     public class HomeController : Controller
     {
         private readonly AppDbContext _appDbContext;

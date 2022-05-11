@@ -11,7 +11,7 @@ using Parcus.Persistence.Data;
 
 namespace Parcus.Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators,DemoUser")]
     public class UsersController : Controller
     {
         protected IUnitOfWork _unitOfWork;

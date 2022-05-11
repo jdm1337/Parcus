@@ -70,6 +70,12 @@ namespace Parcus.Api.Controllers
             return RedirectToAction("Index", "Home");
             
         }
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
 
         private async Task Authenticate(string email, string role)
         { 
