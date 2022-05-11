@@ -39,10 +39,6 @@
     
     <ProjectReference Include="..\Parcus.Services\Parcus.Services.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\dist\img\credit\" />
-  </ItemGroup>
     
 
 </Project>
