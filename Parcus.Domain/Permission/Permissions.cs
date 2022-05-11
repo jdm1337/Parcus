@@ -30,6 +30,7 @@
             public const string Delete = "Permissions.Roles.Delete";
             
             public const string GetRole = "Permissions.Roles.GetRole";
+            public const string GetRoles = "Permissions.Roles.GetRoles";
             public const string AddPermission = "Permissions.Roles.AddPermission";
             public const string GetPermissions = "Permissions.Roles.GetPermissions";
             public const string DeletePermission = "Permissions.Roles.DeletePermission";

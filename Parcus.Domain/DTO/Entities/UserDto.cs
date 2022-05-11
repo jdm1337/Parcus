@@ -8,7 +8,7 @@ namespace Parcus.Domain.DTO.Entities
 {
     public class UserDto
     {
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
     }

@@ -10,8 +10,8 @@ namespace Parcus.Application.Interfaces.IUnitOfWorkConfiguration
 {
     public interface IUnitOfWork
     {
-        // Interfaces of repositories adding here.
         IUsersRepository Users { get; }
+        IRolesRepository Roles { get; }
         IPortfoliosRepository Portfolios { get; }
         IBrokersRepository Brokers { get; }
         IInstrumentRepository Instruments { get; }

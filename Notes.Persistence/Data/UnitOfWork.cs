@@ -17,6 +17,7 @@ namespace Parcus.Persistence.Data
 
         //Repository of each entities keeping here.
         public IUsersRepository Users { get; private set; }
+        public IRolesRepository Roles { get; private set; }
         public IPortfoliosRepository Portfolios { get; private set; }
         public IBrokersRepository Brokers { get; private set; }
         public IInstrumentRepository Instruments { get; private set; }
@@ -29,6 +30,7 @@ namespace Parcus.Persistence.Data
             _logger = loggerFactory.CreateLogger("db_logs");
 
             Users = new UsersRepository(context, _logger);
+            Roles = new RolesRepository(context, _logger);
             Portfolios = new PortfoliosRepository(context, _logger);
             Brokers = new BrokersRepository(context, _logger);
             Instruments = new InstrumentRepository(context, _logger);

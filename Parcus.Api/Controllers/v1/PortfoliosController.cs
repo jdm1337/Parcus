@@ -144,7 +144,7 @@ namespace Parcus.Api.Controllers.v1
         /// </summary>
         [Authorize(Permissions.Portfolios.GetInstruments)]
         [HttpGet]
-        [Route("GetInstruments/{id}")]
+        [Route("{id}/GetInstruments")]
         public async Task<IActionResult> GetInstruments(string id)
         {
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);

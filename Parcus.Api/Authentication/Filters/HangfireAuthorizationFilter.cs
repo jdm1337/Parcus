@@ -19,18 +19,7 @@ namespace Parcus.Api.Authentication.Filters
         }
         public bool Authorize([NotNull] DashboardContext context)
         {
-            var httpContext = context.GetHttpContext();
-            var authorizationHeader = httpContext.Request.Headers.Authorization;
-
-            if (authorizationHeader.IsNullOrEmpty())
-                return false;
-            
-            var tokenWithBearerPrefix = authorizationHeader.ToString().Split(' ');
-
-            if (tokenWithBearerPrefix.Length != 2)
-                return false;
-            
-            var accessToken = tokenWithBearerPrefix[1];
+            var accessToken = context.GetHttpContext().Request.Cookies["access-token"];
 
             using (var scope = _serviceScopeFactory.CreateScope())
             {
