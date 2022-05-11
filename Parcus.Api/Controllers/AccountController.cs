@@ -45,6 +45,7 @@ namespace Parcus.Api.Controllers
                 return View(model);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
 
             if (user == null || !validPassword)
@@ -53,7 +54,7 @@ namespace Parcus.Api.Controllers
                 return View(model);
             }
            
-            await Authenticate(model.Email);
+            await Authenticate(model.Email, role);
 
             var userClaims = await _authService.GetClaimsForTokenAsync(user);
             var token = await _tokenService.CreateTokenAsync(userClaims);
@@ -70,11 +71,12 @@ namespace Parcus.Api.Controllers
             
         }
 
-        private async Task Authenticate(string email)
+        private async Task Authenticate(string email, string role)
         { 
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, email)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, role )
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));

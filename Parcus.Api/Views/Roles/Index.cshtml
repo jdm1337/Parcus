@@ -1,4 +1,59 @@
-﻿@page
-@model Parcus.Api.Views.Roles.IndexModel
+﻿
+@model Parcus.Api.Models.RolesViewModel
 @{
 }
+<div class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Cписок ролей</h1>
+                  </div><!-- /.col -->
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="~/home">Главная</a></li>
+                      <li class="breadcrumb-item active">Роли</li>
+                    </ol>
+                  </div><!-- /.col -->
+                </div><!-- /.row -->
+              </div><!-- /.container-fluid -->
+</div>
+<div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Роли</h3>
+
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" >
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Роль</th>
+                      <th>Описание</th>
+                    </tr>
+                  </thead>
+                  <tbody> 
+                        @foreach (var role in Model.Roles)
+                        {
+                        <tr>
+                            <td>
+                                @role.Id
+                            </td>
+                            <td>
+                                @role.Name
+                            </td>
+                            <td>
+                                @role.Description
+                            </td>
+                        </tr>
+                        }       
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+    </div>
+
+</div>

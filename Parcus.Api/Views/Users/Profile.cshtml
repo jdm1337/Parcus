@@ -40,6 +40,12 @@
                     <b>Идентификатор(Id)</b> <a class="float-right">@Model.Id</a>
                   </li>
                 </ul>
+                <form action="~/users/delete/@Model.Id" method="post">
+                    <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                  </div>
+                </form>
+                
               </div>
               <!-- /.card-body -->
             </div>

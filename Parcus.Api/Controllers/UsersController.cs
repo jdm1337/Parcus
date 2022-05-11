@@ -46,7 +46,7 @@ namespace Parcus.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile(int id)
         {
-            var user = await _userManager.FindByIdAsync("1");
+            var user = await _userManager.FindByIdAsync(Convert.ToString(id));
             if (user == null)
                 return NotFound();
 
@@ -74,6 +74,17 @@ namespace Parcus.Api.Controllers
                 Permissions = permissions
             });
         }
-        
+        [Authorize(Roles ="Administrators")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user==null)
+                return NotFound();
+
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
