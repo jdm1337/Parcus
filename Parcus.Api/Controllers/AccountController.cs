@@ -45,10 +45,15 @@ namespace Parcus.Api.Controllers
                 return View(model);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
+            if(user == null)
+            {
+                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                return View(model);
+            }
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
 
-            if (user == null || !validPassword)
+            if (!validPassword)
             {
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
                 return View(model);
@@ -77,6 +82,12 @@ namespace Parcus.Api.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AccessDenied()
+        {
+            return View();
+        }
+
         private async Task Authenticate(string email, string role)
         { 
             var claims = new List<Claim>
@@ -87,6 +98,7 @@ namespace Parcus.Api.Controllers
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
+
 
     }
 }

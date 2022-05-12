@@ -20,7 +20,7 @@ namespace Parcus.Api.Initial
                 await seedDataService.SeedInitIdentityAsync();
                 await seedDataService.SeedInstrumentInfoAsync();
 
-                //hangfireInjectService.Initial();
+                hangfireInjectService.Initial();
 
             }
             result.Succeeded = true;
