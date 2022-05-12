@@ -75,7 +75,7 @@
               <!-- Sidebar user panel (optional) -->
               <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="info">
-                  <a href="#" class="d-block">@User.Claims.Where(x => x.Type == ClaimsIdentity.DefaultNameClaimType).FirstOrDefault().Value</a>
+                  <a href="#" class="d-block">@User?.Claims?.Where(x => x.Type == ClaimsIdentity.DefaultNameClaimType).FirstOrDefault()?.Value </a>
                 </div>
               </div>
 
