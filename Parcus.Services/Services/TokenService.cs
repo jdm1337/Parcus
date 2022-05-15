@@ -22,41 +22,37 @@ namespace Parcus.Services.Services
             _jwtSettings = optionsMonitor.CurrentValue;
             _userManager = userManager;
         }
-        public async Task<JwtSecurityToken> CreateTokenAsync(List<Claim> authClaims)
+        public async Task<JwtSecurityToken> GenerateAccessTokenAsync(User user)
         {
+            var userClaims = await GetUserClaimsAsync(user);
+
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
-            _ = int.TryParse(_jwtSettings.TokenValidityInMinutes, out int tokenValidityInMinutes);
-            var token = new JwtSecurityToken(
+            var accessTokenValidityInMinutes = Convert.ToInt32(_jwtSettings.AccessTokenValidityInMinutes);
+
+            var jwtSecurityToken = new JwtSecurityToken(
                issuer: _jwtSettings.ValidIssuer,
                audience: _jwtSettings.ValidAudience,
-               expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
-               claims: authClaims,
-               
+               expires: DateTime.Now.AddMinutes(accessTokenValidityInMinutes),
+               claims: userClaims,
+
                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                );
 
-            return token;
+            return jwtSecurityToken;
+
         }
+        
         public async Task<string> GenerateRefreshTokenAsync()
         {
             Random rand = new Random();
 
-            // Choosing the size of string
-            // Using Next() string
             int randValue;
             StringBuilder refreshToken = new StringBuilder();
             char letter;
             for (int i = 0; i < 64; i++)
-            {
-
-                // Generating a random number.
+            {     
                 randValue = rand.Next(0, 26);
-
-                // Generating random character by converting
-                // the random number into character.
                 letter = Convert.ToChar(randValue + 65);
-
-                // Appending the letter to string.
                 refreshToken.Append(letter);
             }
             return refreshToken.ToString();
@@ -120,6 +116,22 @@ namespace Parcus.Services.Services
                 Console.WriteLine(ex.Message);
                 return null;
             }
+        }
+        private async Task<List<Claim>> GetUserClaimsAsync(User user)
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
+                {
+                    new Claim("id", Convert.ToString(user.Id) ),
+                    new Claim(ClaimTypes.Email, user.Email),
+                };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+            return authClaims;
         }
     }
 }

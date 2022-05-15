@@ -20,6 +20,8 @@ namespace Parcus.Api.Authentication.Filters
         public bool Authorize([NotNull] DashboardContext context)
         {
             var accessToken = context.GetHttpContext().Request.Cookies["access-token"];
+            if(accessToken == null)
+                return false;
 
             using (var scope = _serviceScopeFactory.CreateScope())
             {

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Parcus.Domain.Claims;
 using Parcus.Api.Authentication.Requirments;
-using Parcus.Application.Interfaces.IServices;
 
 using Parcus.Domain.Identity;
 
@@ -12,19 +11,14 @@ namespace Parcus.Api.Authentication.Handlers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ITokenService _tokenService;
         
         public PermissionAuthorizationHandler(
             UserManager<User> userManager,
-            RoleManager<Role> roleManager,
-            IHttpContextAccessor httpContextAccessor,
-            ITokenService tokenService)
+            RoleManager<Role> roleManager
+            )
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _contextAccessor = httpContextAccessor;
-            _tokenService = tokenService;
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
@@ -38,6 +32,7 @@ namespace Parcus.Api.Authentication.Handlers
             // for the authorization to succeed.  
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
+
                 foreach (var role in userRoles)
                 {
                     var roleClaims = await _roleManager.GetClaimsAsync(role);

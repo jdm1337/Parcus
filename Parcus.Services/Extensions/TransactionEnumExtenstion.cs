@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Parcus.Services.Extensions
 {
-    public static class TransactionEnumExtenstion
+    public static class TransactionEnumExtenstions
     {
-        public static Transactions GetTransactType(this Transactions thisEnum, string stringType)
+        public static Transactions GetTransactType(this Transactions transactionEnum, string stringType)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace Parcus.Services.Extensions
             }
             catch (Exception ex)
             {
-                return (Transactions)thisEnum;
+                return (Transactions)transactionEnum;
             }
         }
         

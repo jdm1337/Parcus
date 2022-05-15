@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Parcus.Services.Extensions
 {
-    public static class DatetimeExtension
+    public static class DatetimeExtensions
     {
         public static DateTime ParseGivenTime(this DateTime dateTime, string datetime)
         {

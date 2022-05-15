@@ -34,9 +34,10 @@ namespace Parcus.Services.Services
         {
             var claimsIdentity = userIdentity as ClaimsIdentity;
             var userId = claimsIdentity.FindFirst("id")?.Value;
-
+            
             var user = await _userManager.FindByIdAsync(userId);
-            if(user == null) { return null; }
+            if(user == null)  
+                return null; 
 
             return userId; 
         }
@@ -48,7 +49,6 @@ namespace Parcus.Services.Services
                 {
                     new Claim("id", Convert.ToString(user.Id) ),
                     new Claim(ClaimTypes.Email, user.Email),
-
                 };
 
             foreach (var userRole in userRoles)

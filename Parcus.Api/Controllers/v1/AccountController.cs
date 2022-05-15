@@ -11,6 +11,7 @@ using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
 using Parcus.Domain.Settings;
+using Parcus.Services.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Parcus.Api.Controllers.v1
@@ -86,20 +87,15 @@ namespace Parcus.Api.Controllers.v1
             var validPassword = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
             if (user != null && validPassword)
             {
-                var userClaims = await _authService.GetClaimsForTokenAsync(user);
-                var token = await _tokenService.CreateTokenAsync(userClaims);
+                var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
                 var refreshToken = await _tokenService.GenerateRefreshTokenAsync();
-                _ = int.TryParse(_jwtSettings.RefreshTokenValidityInDays, out int refreshTokenValidityInDays);
 
-                user.RefreshToken = refreshToken;
-                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
-
-                await _userManager.UpdateAsync(user);
+                await _userManager.UpdateRefreshTokenFieldsAsync(user, refreshToken, Convert.ToInt32(_jwtSettings.AccessTokenValidityInMinutes));
                 return Ok(new LoginResponse
                 {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
                     RefreshToken = refreshToken,
-                    Expiration = token.ValidTo
+                    Expiration = accessToken.ValidTo
                 });
             }
             return BadRequest();
