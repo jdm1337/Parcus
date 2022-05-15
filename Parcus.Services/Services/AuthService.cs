@@ -1,18 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Settings;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+
 using System.Security.Claims;
-using System.Security.Cryptography;
+
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Parcus.Services.Services
 {
@@ -30,6 +27,8 @@ namespace Parcus.Services.Services
             _userManager = userManager;
             _roleManager = roleManager;
         }
+
+
         public async Task<string> GetUserIdFromRequest(IIdentity userIdentity)
         {
             var claimsIdentity = userIdentity as ClaimsIdentity;
@@ -41,23 +40,8 @@ namespace Parcus.Services.Services
 
             return userId; 
         }
-        public async Task<List<Claim>> GetClaimsForTokenAsync(User user)
-        {
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim>
-                {
-                    new Claim("id", Convert.ToString(user.Id) ),
-                    new Claim(ClaimTypes.Email, user.Email),
-                };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-            return authClaims;
-        }
-        public async Task<List<string>> GetPermissionsFromUserAsync(User user)
+        
+        public async Task<List<string>> GetUserPermissionsAsync(User user)
         {
             List<string> permissions = new List<string>();
             var userRoleNames = await _userManager.GetRolesAsync(user);

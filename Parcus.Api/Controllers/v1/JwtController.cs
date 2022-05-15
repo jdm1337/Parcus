@@ -10,6 +10,7 @@ using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Permission;
 using Parcus.Domain.Settings;
+using Parcus.Services.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -41,37 +42,28 @@ namespace Parcus.Api.Controllers.v1
          [AllowAnonymous]
          [HttpPost]
          [Route("refresh-token")]
-         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
+         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
          {
-             string? accessToken = refreshTokenRequest.AccessToken;
-             string? refreshToken = refreshTokenRequest.RefreshToken;
 
-             var principal = await _tokenService.GetPrincipalFromExpiredTokenAsync(accessToken);
-             if (principal == null)
-             {
-                 return BadRequest("Invalid access token or refresh token");
-             }
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-             var emailClaim = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-             var user = await _userManager.FindByEmailAsync(emailClaim.Value);
+             var user = await _tokenService.GetUserFromTokenAsync(request.AccessToken);
 
-             if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+             if (user == null)
+                return BadRequest("Invalid access token or refresh token");
+             
+             if (user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
              {
                  return BadRequest("Invalid access token or refresh token");
              }
 
-             var newAccessToken = await _tokenService.CreateTokenAsync(principal.Claims.ToList());
-             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync();
+             var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
+             var refreshToken = await _tokenService.GenerateRefreshTokenAsync();
 
-             user.RefreshToken = newRefreshToken;
-             await _userManager.UpdateAsync(user);
+             await _userManager.UpdateRefreshTokenFieldsAsync(user, refreshToken, Convert.ToInt32(_jwtSettings.RefreshTokenValidityInDays));
+
              return new ObjectResult(new RefreshTokenResponse
              {
-                 AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                 RefreshToken = newRefreshToken
+                 AccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
+                 RefreshToken = refreshToken
              });
          }
 

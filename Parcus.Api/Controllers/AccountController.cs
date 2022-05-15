@@ -15,19 +15,14 @@ namespace Parcus.Api.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly JwtSettings _jwtSettings;
         private readonly IAuthService _authService;
         private readonly ITokenService _tokenService;
-        public AccountController(UserManager<User> userManager,
-            RoleManager<Role> roleManager,
-            IOptionsMonitor<JwtSettings> optionsMonitor,
+        public AccountController(
+            UserManager<User> userManager,
             IAuthService authService,
             ITokenService tokenService)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
-            _jwtSettings = optionsMonitor.CurrentValue;
             _authService = authService;
             _tokenService = tokenService;
         }
@@ -50,7 +45,6 @@ namespace Parcus.Api.Controllers
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
                 return View(model);
             }
-            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
 
             if (!validPassword)
@@ -58,22 +52,15 @@ namespace Parcus.Api.Controllers
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
                 return View(model);
             }
-           
-            await Authenticate(model.Email, role);
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            await AuthenticateAsync(model.Email, role);
 
-            var userClaims = await _authService.GetClaimsForTokenAsync(user);
-            var token = await _tokenService.CreateTokenAsync(userClaims);
-            
-            _ = int.TryParse(_jwtSettings.RefreshTokenValidityInDays, out int refreshTokenValidityInDays);
+            var token = await _tokenService.GenerateAccessTokenAsync(user);
 
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays);
-
-            await _userManager.UpdateAsync(user);
-            
             HttpContext.Response.Cookies.Append("access-token", new JwtSecurityTokenHandler().WriteToken(token));
-
-            return RedirectToAction("Index", "Home");
             
+
+            return RedirectToAction("Index", "Home");  
         }
         [HttpGet]
         public async Task<IActionResult> Logout()
@@ -87,9 +74,8 @@ namespace Parcus.Api.Controllers
         {
             return View();
         }
-
-        private async Task Authenticate(string email, string role)
-        { 
+        public async Task AuthenticateAsync(string email, string role)
+        {
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, email),
@@ -103,7 +89,5 @@ namespace Parcus.Api.Controllers
                 );
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
-
-
     }
 }

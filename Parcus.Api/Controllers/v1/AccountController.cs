@@ -187,7 +187,7 @@ namespace Parcus.Api.Controllers.v1
 
             if (user == null) { return BadRequest(); }
 
-            var userPermissions = await _authService.GetPermissionsFromUserAsync(user);
+            var userPermissions = await _authService.GetUserPermissionsAsync(user);
             return Ok(userPermissions);
         }
     }

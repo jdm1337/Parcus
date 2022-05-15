@@ -7,7 +7,6 @@ using Parcus.Api.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.DTO.Incoming;
-using Parcus.Domain.DTO.Outgoing;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
@@ -46,7 +45,7 @@ namespace Parcus.Api.Controllers.v1
 
             return Ok(new GetPermissionsFromUserResponse
             {
-                Permissions = await _authService.GetPermissionsFromUserAsync(user)
+                Permissions = await _authService.GetUserPermissionsAsync(user)
             });
         }
 
