@@ -59,7 +59,7 @@ namespace Parcus.Services.Services
             if(transaction == null)  
                 return result;
 
-            var validationResult = await ValidateTransaction(transaction);
+            var validationResult = await ValidateTransactionAsync(transaction);
 
             if (!validationResult.Succeeded) 
                 return result;
@@ -73,14 +73,19 @@ namespace Parcus.Services.Services
             result.Succeeded = true;
             return result;
         }
-        public async Task<ValidationResult> ValidateTransaction(InvestTransaction transaction)
+        public async Task<ValidationResult> ValidateTransactionAsync(InvestTransaction transaction)
         {
             var result = new ValidationResult();
 
-            if (transaction == null || transaction.Amount < 1 || transaction.InstrumentPrice <= 0)  
+            if (transaction == null || 
+                transaction.InstrumentAmount < 1 || 
+                transaction.InstrumentPrice <= 0 ||
+                transaction.Date == null ||
+                transaction.Type == null)
+
                 return result;
             
-            if(transaction.TransactionType is Transactions.Sale)
+            if(transaction.Type is Transactions.Sale)
             {
                 var instrumentInPortfolio = await (_context.InstrumentsInPortfolio
                     .Where(x => x.BrokeragePortfolioId == transaction.BrokeragePortfolioId)
@@ -90,7 +95,7 @@ namespace Parcus.Services.Services
                 if (instrumentInPortfolio == null) 
                     return result;
 
-                else if (instrumentInPortfolio.Amount < transaction.Amount) 
+                else if (instrumentInPortfolio.Amount < transaction.InstrumentAmount) 
                     return result;
             }
             result.Succeeded = true;
@@ -108,48 +113,44 @@ namespace Parcus.Services.Services
                     .Where(x => x.InstrumentId == transaction.Instrument.InstrumentId)
                     .FirstOrDefaultAsync());
 
-            if (transaction.TransactionType is Transactions.Buy)
+            if (transaction.Type is Transactions.Buy)
             {
                 if(instrumentInPortfolio == null)
                 {
-                    transaction.Instrument.Amount = transaction.Amount;
+                    transaction.Instrument.Amount = transaction.InstrumentAmount;
                     transaction.Instrument.AveragePrice = transaction.InstrumentPrice;
-                    transaction.Instrument.InvestedValue = transaction.InstrumentPrice * transaction.Amount;
+                    transaction.Instrument.InvestedValue = transaction.InstrumentPrice * transaction.InstrumentAmount;
                     var addedInstrument = await _unitOfWork.InstrumentsInPortfolio.AddAsync(transaction.Instrument);
 
                     if (addedInstrument == null) return result;
                     transaction.Instrument = addedInstrument;
-                    
-
                 }
                 else
                 {
-                    instrumentInPortfolio.Amount += transaction.Amount;
-                    instrumentInPortfolio.InvestedValue += transaction.InstrumentPrice * transaction.Amount;
+                    instrumentInPortfolio.Amount += transaction.InstrumentAmount;
+                    instrumentInPortfolio.InvestedValue += transaction.InstrumentPrice * transaction.InstrumentAmount;
                     instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
 
                     var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
 
-                    if(!isUpdated) return result;
+                    if(!isUpdated) 
+                        return result;
                     transaction.Instrument = instrumentInPortfolio;
    
                 }
             }
             else
             {
-                if (instrumentInPortfolio == null) return result;
+                instrumentInPortfolio.Amount -= transaction.InstrumentAmount;
+                instrumentInPortfolio.InvestedValue -= transaction.InstrumentPrice * transaction.InstrumentAmount;
+                instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
+
+                var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
+
+                if (!isUpdated)
+                    return result;
+                transaction.Instrument = instrumentInPortfolio;
                 
-                else
-                {
-                    instrumentInPortfolio.Amount -= transaction.Amount;
-                    instrumentInPortfolio.InvestedValue -= transaction.InstrumentPrice * transaction.Amount;
-                    instrumentInPortfolio.AveragePrice = instrumentInPortfolio.InvestedValue / instrumentInPortfolio.Amount;
-
-                    var isUpdated = await _unitOfWork.InstrumentsInPortfolio.UpdateAsync(instrumentInPortfolio);
-
-                    if (!isUpdated) return result;
-                    transaction.Instrument = instrumentInPortfolio;
-                }
             }
 
             var savedTransaction = await _unitOfWork.InvestTransactions.AddAsync(transaction);

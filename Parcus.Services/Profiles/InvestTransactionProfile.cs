@@ -18,15 +18,15 @@ namespace Parcus.Services.Profiles
                     from => from.MapFrom(x => x.Price)
                     )
                 .ForMember(
-                    dest => dest.Amount,
+                    dest => dest.InstrumentAmount,
                     from => from.MapFrom(x => x.Amount)
                     )
                 .ForMember(
-                    dest => dest.TransactionDate,
+                    dest => dest.Date,
                     from => from.MapFrom(x => date.ParseGivenTime(x.TransactionDate))
                     )
                 .ForMember(
-                    dest => dest.TransactionType,
+                    dest => dest.Type,
                     from => from.MapFrom(x => transactions.GetTransactType(x.TransactionType))
                     )
                 .ForMember(

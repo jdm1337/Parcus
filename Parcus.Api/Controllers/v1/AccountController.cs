@@ -185,7 +185,8 @@ namespace Parcus.Api.Controllers.v1
             var userId = await _authService.GetUserIdFromRequest(this.User.Identity);
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null) { return BadRequest(); }
+            if (user == null) 
+                return BadRequest(); 
 
             var userPermissions = await _authService.GetUserPermissionsAsync(user);
             return Ok(userPermissions);

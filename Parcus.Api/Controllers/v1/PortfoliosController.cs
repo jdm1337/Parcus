@@ -123,12 +123,12 @@ namespace Parcus.Api.Controllers.v1
                 BrokeragePortfolioId = userPortfolio.Id
             };
 
-            // datetime "2009-05-08 14:40:52,531"
+            // datetime format "2009-05-08 14:40:52,531"
             
             var investTransaction = _mapper.Map<InvestTransaction>(addTransactionRequest);
             investTransaction.Instrument = instrumentInPortfolio;
 
-            if(investTransaction.TransactionDate == null || investTransaction.TransactionType == null) 
+            if(investTransaction.Date == null || investTransaction.Type == null) 
                 return BadRequest("Invalid transaction.");
 
             var transactionResult = await _portfolioOperationService.AddTransactionAsync(investTransaction);
