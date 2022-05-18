@@ -128,9 +128,6 @@ namespace Parcus.Api.Controllers.v1
             var investTransaction = _mapper.Map<InvestTransaction>(addTransactionRequest);
             investTransaction.Instrument = instrumentInPortfolio;
 
-            if(investTransaction.Date == null || investTransaction.Type == null) 
-                return BadRequest("Invalid transaction.");
-
             var transactionResult = await _portfolioOperationService.AddTransactionAsync(investTransaction);
            
             if (!transactionResult.Succeeded)

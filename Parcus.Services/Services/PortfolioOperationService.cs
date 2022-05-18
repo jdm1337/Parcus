@@ -1,7 +1,6 @@
 ﻿using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Invest.Brokers;
-using Parcus.Domain.Invest.InstrumentModels;
 using Parcus.Domain.Invest.PortfolioModels;
 using Parcus.Domain.Invest.Transactions;
 using Parcus.Domain.Results;
@@ -164,7 +163,5 @@ namespace Parcus.Services.Services
             return result;
 
         }
-
-
     }
 }
