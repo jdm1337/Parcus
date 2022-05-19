@@ -11,7 +11,7 @@ using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 using System.Security.Claims;
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 {
     public class RolesController : BaseController
     {

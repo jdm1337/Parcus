@@ -1,7 +1,7 @@
 ﻿using Parcus.Domain.DTO.Entities;
 using Parcus.Domain.Pagination;
 
-namespace Parcus.Api.Models
+namespace Parcus.Web.Models
 {
     public class UsersViewModel
     {

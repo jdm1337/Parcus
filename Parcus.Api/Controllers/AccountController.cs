@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Parcus.Api.Models;
+using Parcus.Web.Models;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Parcus.Api.Controllers
+namespace Parcus.Web.Controllers
 {
     public class AccountController : Controller
     {

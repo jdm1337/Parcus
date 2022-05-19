@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Permission;
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 {
     public class AssetsController : BaseController
     {

@@ -4,7 +4,7 @@ using Hangfire.Storage;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Persistence.Data;
 
-namespace Parcus.Api.Initial
+namespace Parcus.Web.Initial
 {
     public class HangfireInjectService : IHangfireInjectService
     {

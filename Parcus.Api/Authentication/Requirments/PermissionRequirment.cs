@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Parcus.Api.Authentication.Requirments
+namespace Parcus.Web.Authentication.Requirments
 {
     internal class PermissionRequirement : IAuthorizationRequirement
     {

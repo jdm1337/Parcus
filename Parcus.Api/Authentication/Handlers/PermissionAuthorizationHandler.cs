@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Parcus.Domain.Claims;
-using Parcus.Api.Authentication.Requirments;
+using Parcus.Web.Authentication.Requirments;
 
 using Parcus.Domain.Identity;
 
-namespace Parcus.Api.Authentication.Handlers
+namespace Parcus.Web.Authentication.Handlers
 {
     internal class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {

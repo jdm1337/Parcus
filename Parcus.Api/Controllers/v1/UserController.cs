@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Parcus.Api.Models.DTO.Outgoing;
+using Parcus.Web.Models.DTO.Outgoing;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.DTO.Incoming;
@@ -11,7 +11,7 @@ using Parcus.Domain.Identity;
 using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 { 
     public class UsersController : BaseController
     {

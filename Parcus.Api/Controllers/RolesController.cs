@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Parcus.Api.Models;
+using Parcus.Web.Models;
 using Parcus.Domain.Identity;
 
-namespace Parcus.Api.Controllers
+namespace Parcus.Web.Controllers
 {
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Administrators,DemoUser")]
     public class RolesController : Controller

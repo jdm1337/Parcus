@@ -6,7 +6,7 @@ using Parcus.Application.Interfaces.IServices;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 {
     public class TestController : BaseController
     {

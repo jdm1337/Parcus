@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Parcus.Api.Views.Account
+namespace Parcus.Web.Views.Account
 {
     public class LoginModel : PageModel
     {

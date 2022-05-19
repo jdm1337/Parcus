@@ -4,8 +4,8 @@ using Parcus.Persistence.Data;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Parcus.Api.Authentication.Handlers;
-using Parcus.Api.Authentication.Providers;
+using Parcus.Web.Authentication.Handlers;
+using Parcus.Web.Authentication.Providers;
 using Parcus.Domain.Settings;
 using Parcus.Application.Interfaces.IServices;
 using Parcus.Services.Services;
@@ -18,10 +18,10 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Microsoft.AspNetCore.Diagnostics;
 using Hangfire;
-using Parcus.Api.Initial;
+using Parcus.Web.Initial;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
-using Parcus.Api.Authentication.Filters;
+using Parcus.Web.Authentication.Filters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using Parcus.Api.Authentication.Requirments;
+using Parcus.Web.Authentication.Requirments;
 
-namespace Parcus.Api.Authentication.Providers
+namespace Parcus.Web.Authentication.Providers
 {
     internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {

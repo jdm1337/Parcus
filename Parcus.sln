@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Domain", "Parcus.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Application", "Parcus.Application\Parcus.Application.csproj", "{D753C5CB-5FB1-4B39-BE2A-5BED4C990665}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Api", "Parcus.Api\Parcus.Api.csproj", "{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Web", "Parcus.Api\Parcus.Web.csproj", "{1E0A5FE8-0679-4E53-B348-71B4A8074BB7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Services", "Parcus.Services\Parcus.Services.csproj", "{3D60B036-080B-4ABD-B5BE-83AD54741189}"
 EndProject

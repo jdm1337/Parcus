@@ -1,4 +1,4 @@
-﻿namespace Parcus.Api.Models
+﻿namespace Parcus.Web.Models
 {
     public class PageViewModel
     {

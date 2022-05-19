@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Parcus.Api.Views.Roles
+namespace Parcus.Web.Views.Roles
 {
     public class IndexModel : PageModel
     {

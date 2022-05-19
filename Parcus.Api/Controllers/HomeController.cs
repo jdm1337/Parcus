@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Parcus.Persistence.Data;
-using Parcus.Api.Models;
+using Parcus.Web.Models;
 
-namespace Parcus.Api.Controllers
+namespace Parcus.Web.Controllers
 {
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators,DemoUser")]
     public class HomeController : Controller

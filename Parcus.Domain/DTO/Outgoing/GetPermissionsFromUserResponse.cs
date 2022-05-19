@@ -1,4 +1,4 @@
-﻿namespace Parcus.Api.Models.DTO.Outgoing
+﻿namespace Parcus.Web.Models.DTO.Outgoing
 {
     public class GetPermissionsFromUserResponse
     {

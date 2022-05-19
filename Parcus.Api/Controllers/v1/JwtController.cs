@@ -14,7 +14,7 @@ using Parcus.Services.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 {
     public class JwtController : BaseController
     {

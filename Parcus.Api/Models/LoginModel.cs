@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Parcus.Api.Models
+namespace Parcus.Web.Models
 {
     public class LoginModel
     {

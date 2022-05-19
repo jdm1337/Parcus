@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Parcus.Api.Models;
+using Parcus.Web.Models;
 using Parcus.Application.Interfaces.IUnitOfWorkConfiguration;
 using Parcus.Domain.Identity;
 using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 using Parcus.Persistence.Data;
 
-namespace Parcus.Api.Controllers
+namespace Parcus.Web.Controllers
 {
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators,DemoUser")]
     public class UsersController : Controller

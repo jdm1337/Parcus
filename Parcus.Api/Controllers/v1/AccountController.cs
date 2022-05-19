@@ -14,7 +14,7 @@ using Parcus.Domain.Settings;
 using Parcus.Services.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 {
     public class AccountController : BaseController
     {

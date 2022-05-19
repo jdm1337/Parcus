@@ -3,7 +3,7 @@ using Parcus.Application.Interfaces.IServices;
 using Parcus.Domain.Results;
 
 
-namespace Parcus.Api.Initial
+namespace Parcus.Web.Initial
 {
     public static class StartApp
     {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Parcus.Api.Views.Users
+namespace Parcus.Web.Views.Users
 {
     public class UsersModel : PageModel
     {

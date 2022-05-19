@@ -16,7 +16,7 @@ using Parcus.Domain.Invest.Transactions;
 using Parcus.Domain.Permission;
 using Parcus.Persistence.Data;
 
-namespace Parcus.Api.Controllers.v1
+namespace Parcus.Web.Controllers.v1
 {
     public class PortfoliosController : BaseController
     {

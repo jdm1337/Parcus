@@ -7,7 +7,7 @@ using Parcus.Domain.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Parcus.Api.Authentication.Filters
+namespace Parcus.Web.Authentication.Filters
 {
     public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
     {
