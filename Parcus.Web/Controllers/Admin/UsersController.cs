@@ -9,10 +9,10 @@ using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 using Parcus.Persistence.Data;
 
-namespace Parcus.Web.Controllers
+namespace Parcus.Web.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators,DemoUser")]
-    public class UsersController : Controller
+    [Authorize(Roles ="Administrators,DemoUser")]
+    public class UsersController : BaseAdminController
     {
         protected IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;

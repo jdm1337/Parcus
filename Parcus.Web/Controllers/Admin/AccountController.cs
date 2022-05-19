@@ -9,10 +9,11 @@ using Parcus.Domain.Identity;
 using Parcus.Domain.Settings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Parcus.Web.Controllers
+namespace Parcus.Web.Controllers.Admin
 {
-    public class AccountController : Controller
+    public class AccountController : BaseAdminController
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
@@ -27,12 +28,14 @@ namespace Parcus.Web.Controllers
             _tokenService = tokenService;
         }
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
@@ -74,7 +77,7 @@ namespace Parcus.Web.Controllers
         {
             return View();
         }
-        public async Task AuthenticateAsync(string email, string role)
+        private async Task AuthenticateAsync(string email, string role)
         {
             var claims = new List<Claim>
             {
