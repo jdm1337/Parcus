@@ -16,6 +16,7 @@ namespace Parcus.Web.Controllers.Admin
         {
             _roleManager = roleManager;
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var roles = await _roleManager.Roles.ToListAsync();

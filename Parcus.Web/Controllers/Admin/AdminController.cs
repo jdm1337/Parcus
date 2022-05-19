@@ -7,6 +7,7 @@ using Parcus.Web.Models;
 namespace Parcus.Web.Controllers.Admin
 {
     [Authorize(Roles ="Administrators,DemoUser")]
+    [Route("[controller]/[action]")]
     public class AdminController : BaseAdminController
     {
         private readonly AppDbContext _appDbContext;
@@ -14,6 +15,7 @@ namespace Parcus.Web.Controllers.Admin
         {
             _appDbContext = appDbContext;
         }
+        [HttpGet]
         public IActionResult Index()
         {
             var usersCount = _appDbContext.Users.Count();

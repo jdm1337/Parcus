@@ -63,13 +63,13 @@ namespace Parcus.Web.Controllers.Admin
             HttpContext.Response.Cookies.Append("access-token", new JwtSecurityTokenHandler().WriteToken(token));
             
 
-            return RedirectToAction("Index", "Home");  
+            return RedirectToAction("Admin", "Index");  
         }
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Home", "Index");
         }
 
         [HttpGet]

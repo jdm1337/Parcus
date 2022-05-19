@@ -29,7 +29,7 @@ namespace Parcus.Web.Controllers.Admin
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index([FromQuery] UserParameters parameters)
         {
             var users = await _unitOfWork.Users.GetUsers(parameters);
@@ -43,7 +43,7 @@ namespace Parcus.Web.Controllers.Admin
             return View(viewModel);
         }
         
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Profile(int id)
         {
             var user = await _userManager.FindByIdAsync(Convert.ToString(id));
@@ -75,7 +75,7 @@ namespace Parcus.Web.Controllers.Admin
             });
         }
         [Authorize(Roles ="Administrators")]
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

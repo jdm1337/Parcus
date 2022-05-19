@@ -10,7 +10,7 @@
                   </div><!-- /.col -->
                   <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                      <li class="breadcrumb-item"><a href="home">Главная</a></li>
+                      <li class="breadcrumb-item"><a href="~/admin/index">Главная</a></li>
                       <li class="breadcrumb-item active">Пользователи</li>
                     </ol>
                   </div><!-- /.col -->
@@ -44,7 +44,7 @@
                                 @user.UserId
                             </td>
                             <td>
-                                <a href="~/Users/Profile/@user.UserId"
+                                <a href="~/admin/users/profile/@user.UserId"
                                     class="">
                                     @user.UserName
                                 </a>
@@ -61,7 +61,7 @@
     </div>
 @if (Model.PageViewModel.HasPreviousPage)
 {
-    <a href="~/Users/Index?PageNumber=@(Model.PageViewModel.PageNumber - 1)"
+    <a href="~/admin/Users/Index?PageNumber=@(Model.PageViewModel.PageNumber - 1)"
        style="margin-top: 10px"
        class="btn btn-outline-dark">
         <i class="glyphicon glyphicon-chevron-left"></i>
@@ -74,7 +74,7 @@
         if (Model.PageViewModel.HasPreviousPage)
             marginLeft = 10;
 
-        <a href="~/Users/Index?pagenumber=@(Model.PageViewModel.PageNumber + 1)"
+        <a href="~/admin/Users/Index?pagenumber=@(Model.PageViewModel.PageNumber + 1)"
        style="margin-left: @(marginLeft)px;margin-top: 10px"
        class="btn btn-outline-dark">
         Вперед
