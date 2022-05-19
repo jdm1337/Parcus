@@ -63,7 +63,7 @@ namespace Parcus.Web.Controllers.Admin
             HttpContext.Response.Cookies.Append("access-token", new JwtSecurityTokenHandler().WriteToken(token));
             
 
-            return RedirectToAction("Admin", "Index");  
+            return RedirectToAction("index", "admin");  
         }
         [HttpGet]
         public async Task<IActionResult> Logout()
