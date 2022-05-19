@@ -6,16 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using Parcus.Web.Models;
 using Parcus.Domain.Identity;
 
-namespace Parcus.Web.Controllers
+namespace Parcus.Web.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Administrators,DemoUser")]
-    public class RolesController : Controller
+    [Authorize(Roles = "Administrators,DemoUser")]
+    public class RolesController : BaseAdminController
     {
         private readonly RoleManager<Role> _roleManager;
         public RolesController(RoleManager<Role> roleManager)
         {
             _roleManager = roleManager;
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var roles = await _roleManager.Roles.ToListAsync();

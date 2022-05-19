@@ -9,10 +9,10 @@ using Parcus.Domain.Pagination;
 using Parcus.Domain.Permission;
 using Parcus.Persistence.Data;
 
-namespace Parcus.Web.Controllers
+namespace Parcus.Web.Controllers.Admin
 {
-    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles ="Administrators,DemoUser")]
-    public class UsersController : Controller
+    [Authorize(Roles ="Administrators,DemoUser")]
+    public class UsersController : BaseAdminController
     {
         protected IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
@@ -29,7 +29,7 @@ namespace Parcus.Web.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index([FromQuery] UserParameters parameters)
         {
             var users = await _unitOfWork.Users.GetUsers(parameters);
@@ -43,7 +43,7 @@ namespace Parcus.Web.Controllers
             return View(viewModel);
         }
         
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Profile(int id)
         {
             var user = await _userManager.FindByIdAsync(Convert.ToString(id));
@@ -75,7 +75,7 @@ namespace Parcus.Web.Controllers
             });
         }
         [Authorize(Roles ="Administrators")]
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
