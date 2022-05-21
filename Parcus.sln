@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Services", "Parcus.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcus.Persistence", "Parcus.Persistence\Parcus.Persistence.csproj", "{D3D5BA92-E9BA-4FE7-8EA6-9EF8F4D6E05A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{569507BC-E0A5-4F43-8DCF-A5C0943EBD12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcus.IntegrationTests", "Parcus.IntegrationTests\Parcus.IntegrationTests.csproj", "{10659634-3238-4522-BFCC-73B8ABEB39D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{D3D5BA92-E9BA-4FE7-8EA6-9EF8F4D6E05A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3D5BA92-E9BA-4FE7-8EA6-9EF8F4D6E05A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3D5BA92-E9BA-4FE7-8EA6-9EF8F4D6E05A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10659634-3238-4522-BFCC-73B8ABEB39D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10659634-3238-4522-BFCC-73B8ABEB39D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10659634-3238-4522-BFCC-73B8ABEB39D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10659634-3238-4522-BFCC-73B8ABEB39D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{1E0A5FE8-0679-4E53-B348-71B4A8074BB7} = {D811E685-DA01-41C0-A792-4A4D09566E4F}
 		{3D60B036-080B-4ABD-B5BE-83AD54741189} = {BFD6CC79-A074-425D-8C4E-9106A358023B}
 		{D3D5BA92-E9BA-4FE7-8EA6-9EF8F4D6E05A} = {BFD6CC79-A074-425D-8C4E-9106A358023B}
+		{10659634-3238-4522-BFCC-73B8ABEB39D1} = {569507BC-E0A5-4F43-8DCF-A5C0943EBD12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CB3F72B-11FA-491E-9998-24E68D2FF241}

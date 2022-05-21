@@ -44,6 +44,9 @@
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).IntegrationTests"/>
+	</ItemGroup>
     
 
 </Project>

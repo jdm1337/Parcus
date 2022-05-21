@@ -8,7 +8,10 @@ namespace Parcus.Web.Controllers.v1
 {
     public class AssetsController : BaseController
     {
-        public AssetsController(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+
+        public AssetsController(
+            IUnitOfWork unitOfWork,
+            IMapper mapper) : base(unitOfWork, mapper)
         {
         }
 

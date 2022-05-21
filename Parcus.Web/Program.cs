@@ -16,7 +16,6 @@ using Parcus.Persistence.DataSeed;
 using Parcus.Domain.Identity;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Microsoft.AspNetCore.Diagnostics;
 using Hangfire;
 using Parcus.Web.Initial;
 using Hangfire.Dashboard;
