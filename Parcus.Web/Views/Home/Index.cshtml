@@ -1,8 +1,94 @@
 ﻿@model Parcus.Web.Models.HomeViewModel
 
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Parcus";
     Layout = null;
 }
 
-<h1>Main Page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  
+  
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Add a gray background color and some padding to the footer */
+    .main-footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+      height: 125px;
+    } 
+    .lead{
+        margin-left:5em
+    }
+ 
+  }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="~/">ParcusInvest</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="~/">Home</a></li>
+        <li><a href="https://github.com/jdm1337/Parcus">Github</a></li>
+        <li><a href="~/docs">Documentation</a></li>
+        <li><a href="https://t.me/jdm137">Contact</a></li>
+      </ul> 
+    </div>
+  </div>
+</nav>
+
+
+<section class="jumbotron text-center">
+			<div class="container">
+				<h1 class="jumbotron-heading">ParcusInvest</h1>
+				<p class="lead text-muted">Rest-service providing the ability to create and work with investment portfolios using Tinkoff API</p>
+			</div>
+		</section>  
+<div class="container">
+			<h3 class="mt-5">What is this service for?</h3>
+
+			<p class="lead">The service was created for front-end and mobile developers who want to write a personal investment application with the ability to authorize and store user data. The service also provides the opportunity to obtain up-to-date information on securities, as well as obtaining analytical data on the portfolio.</p>
+			
+
+            <h3 class="mt-5">How to use?</h3>
+            <p class="lead">The service assumes the following use case:</p>
+            <ul>
+                <li class="lead">Authorization by using bearer tokens</li>
+                <li class="lead">Adding portfolios and assets to them</li>
+                <li class="lead">using the capabilities of the service to obtain analytics depending on the user's tasks</li>
+            </ul>
+            <h3 class="mt-5">Detailed information</h3>
+             <p class="lead">For detailed information on using the service, you can refer to the <a href="~/docs">documentation</a>. If you have any questions or found a bug, feel free to email taramalys@gmail.com.</p>
+
+</div>
+
+<footer class="main-footer">
+            <strong>Copyright &copy; 2022 ParcusInvest.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+            </div>
+        </footer>
+
+</body>
+
+</html>
