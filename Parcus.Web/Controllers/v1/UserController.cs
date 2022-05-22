@@ -31,7 +31,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение разрешений пользователя по id
+        /// Get user permissions by id
         /// </summary>
         [Authorize(Permissions.Users.GetPermissions)]
         [HttpGet]
@@ -50,7 +50,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Добавление пользователя к роли
+        /// Add user to a role
         /// </summary>
         [Authorize(Permissions.Users.AddToRole)]
         [HttpPost]
@@ -70,7 +70,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение пользователей
+        /// Get users
         /// </summary>
         [Authorize(Permissions.Users.GetUsers)]
         [HttpGet]
@@ -91,7 +91,7 @@ namespace Parcus.Web.Controllers.v1
             return Ok(users);
         }
         /// <summary>
-        /// Удаление пользователя
+        /// Delete user
         /// </summary>
         [Authorize(Permissions.Users.Delete)]
         [HttpDelete]
@@ -113,7 +113,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Обновление информации о пользователе
+        /// Updating user information
         /// </summary>
         [Authorize(Permissions.Users.Update)]
         [HttpPost]

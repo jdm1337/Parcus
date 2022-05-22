@@ -36,10 +36,10 @@ namespace Parcus.Web.Controllers.v1
             _tokenService = tokenService;
         }
 
-         /// <summary>
-         /// Обновление access и refresh токенов
-         /// </summary>
-         [AllowAnonymous]
+        /// <summary>
+        /// Update access and refresh tokens
+        /// </summary>
+        [AllowAnonymous]
          [HttpPost]
          [Route("refresh-token")]
          public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
@@ -67,10 +67,10 @@ namespace Parcus.Web.Controllers.v1
              });
          }
 
-         /// <summary>
-         /// Отзыв access токена
-         /// </summary>
-         [Authorize(Permissions.Jwt.RevokeAccessToken)]
+        /// <summary>
+        /// Revoke of access token
+        /// </summary>
+        [Authorize(Permissions.Jwt.RevokeAccessToken)]
          [HttpPost]
          [Route("{id}/revoke")]
          public async Task<IActionResult> Revoke(string id)
@@ -86,10 +86,10 @@ namespace Parcus.Web.Controllers.v1
              return NoContent();
          }
 
-         /// <summary>
-         /// Отзыв access токенов
-         /// </summary>
-         [Authorize(Permissions.Jwt.RevokeAccessToken)]
+        /// <summary>
+        /// Revoke of access tokens
+        /// </summary>
+        [Authorize(Permissions.Jwt.RevokeAccessToken)]
          [HttpPost]
          [Route("revoke-all")]
          public async Task<IActionResult> RevokeAll()

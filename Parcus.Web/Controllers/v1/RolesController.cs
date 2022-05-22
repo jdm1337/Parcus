@@ -26,7 +26,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Создание роли
+        /// Create role
         /// </summary>
         [Authorize(Permissions.Roles.Create)]
         [HttpPost]
@@ -52,7 +52,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение ролей
+        /// Get roles
         /// </summary>
         [Authorize(Permissions.Roles.GetRoles)]
         [HttpGet]
@@ -75,7 +75,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Удаление роли
+        /// Delete role
         /// </summary>
         [Authorize(Permissions.Roles.Delete)]
         [HttpDelete]
@@ -95,7 +95,7 @@ namespace Parcus.Web.Controllers.v1
             return Ok();
         }
         /// <summary>
-        /// Получение разрешений роли
+        /// Get role permissions
         /// </summary>
         [Authorize(Permissions.Roles.GetPermissions)]
         [HttpGet]
@@ -121,7 +121,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Добавление разрешения к роли
+        /// Add a permission to a role
         /// </summary>
         [Authorize(Permissions.Roles.AddPermission)]
         [HttpPost]
@@ -152,7 +152,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Удаление разрешение у роли
+        /// Delete permission from a role
         /// </summary>
         [Authorize(Permissions.Roles.DeletePermission)]
         [HttpDelete]

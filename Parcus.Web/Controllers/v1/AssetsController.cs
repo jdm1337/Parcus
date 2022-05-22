@@ -20,7 +20,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение данных по активу 
+        /// Get data on an asset 
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
@@ -37,7 +37,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение дивидендных выплат по активу 
+        /// Get dividend payments on an asset
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
@@ -54,7 +54,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение последних цен по активам  
+        /// Get the latest asset prices 
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>
@@ -71,7 +71,7 @@ namespace Parcus.Web.Controllers.v1
             return Ok(figi);
         }
         /// <summary>
-        /// Получение исторических свечей по активу
+        /// Get historical candles for an asset
         /// </summary>
         /// <param name="figi"></param>
         /// <returns></returns>

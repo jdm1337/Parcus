@@ -42,7 +42,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Регистрация новых пользователей
+        /// Registration of new users
         /// </summary>
         [AllowAnonymous]
         [HttpPost]
@@ -76,7 +76,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Логин
+        /// Login
         /// </summary>
         [AllowAnonymous]
         [HttpPost]
@@ -102,7 +102,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Изменение пароля
+        /// Change password
         /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpPost]
@@ -132,7 +132,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение информации об аккаунте
+        /// Get account data
         /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
@@ -149,7 +149,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение списка портфелей
+        /// Get a list of portfolios
         /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]
@@ -175,7 +175,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение разрешений у пользователя
+        /// Get permissions from a user
         /// </summary>
         [Authorize(Permissions.Account.Base)]
         [HttpGet]

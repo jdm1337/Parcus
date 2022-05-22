@@ -40,7 +40,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Добавление инвестиционного портфеля
+        /// Add an investment portfolio
         /// </summary>
         [Authorize(Permissions.Portfolios.Add)]
         [HttpPost]
@@ -71,7 +71,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Добавление брокера
+        /// Add a Broker
         /// </summary>
         [Authorize(Permissions.Portfolios.Add)]
         [HttpPost]
@@ -98,7 +98,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Добавление транзакции по портфелю
+        /// Add a Portfolio Transaction
         /// </summary>
         [Authorize(Permissions.Portfolios.Add)]
         [HttpPost]
@@ -137,7 +137,7 @@ namespace Parcus.Web.Controllers.v1
         }
 
         /// <summary>
-        /// Получение активов портфеля
+        /// Get of portfolio assets
         /// </summary>
         [Authorize(Permissions.Portfolios.GetInstruments)]
         [HttpGet]

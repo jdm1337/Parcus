@@ -113,18 +113,15 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    options.SwaggerDoc(builder.Configuration["Swagger:Version"], new OpenApiInfo
     {
-        Version = "v1",
-        Title = "ParcusApi",
-        Description = "Parcus API - REST API для учета, анализа и управления инвестиционным портфелем. <br>" +
-        "Так же сервис представляет открытый доступ к получению информации по активам по <a href='https://en.wikipedia.org/wiki/Financial_Instrument_Global_Identifier'>figi</a> идентификатору. <br> <br>" +
-        "Специальные коды <br>" +
-        "<b>429</b> код - превышен лимит на запрос к ресурсу, timeout-1 минута",
+        Version = builder.Configuration["Swagger:Version"],
+        Title = builder.Configuration["Swagger:Title"],
+        Description = builder.Configuration["Swagger:Description"],
         Contact = new OpenApiContact
         {
-            Name = "Taramaly Sergey",
-            Email = "taramalys@gmail.com"
+            Name = builder.Configuration["Swagger:ContactName"],
+            Email = builder.Configuration["Swagger:ContactEmail"]
         },
     });
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
