@@ -1,0 +1,42 @@
+{
+    "Logging": {
+      "LogLevel": {
+        "Default": "Information",
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "AllowedHosts": "*",
+    "Data": {
+      "CommandAPIConnection": {
+        "ConnectionString": "YOUR_CONNECTIONSTRING_TO_SQLSERVER_DATABASE"
+      }
+    },
+    "JWT": {
+      "ValidAudience": "http://localhost:4200",
+      "ValidIssuer": "http://localhost:5000",
+      "Secret": "YOUR_SECRETKEY_FOR_ENCRYPT_JWT_TOKEN",
+      "AccessTokenValidityInMinutes": 1,
+      "RefreshTokenValidityInDays": 7
+    },
+    "Initialize": {
+      "Email": "admin@admin.com",
+      "Username": "Admin",
+      "Password": "AdminPassword_123!",
+      "Role": "Administrators"
+    },
+    "Hangfire": {
+      "AccessedRoleName": "Administrators"
+    },
+  
+    "InvestApi": {
+      "ReadonlyToken": "YOUR_INVEST_API_TOKEN"
+    },
+    "Swagger": {
+      "Version": "v1",
+      "Title": "ParcusApi",
+      "Description": "Parcus API - REST API for accounting, analysis and investment portfolio management. <br> The service also provides open access to obtaining information about assets by the identifier <a href='https://en.wikipedia.org/wiki/Financial_Instrument_Global_Identifier'>figi</a>.",
+      "ContactName": "Taramaly Sergey",
+      "ContactEmail": "taramalys@gmail.com"
+    }
+  
+  }
