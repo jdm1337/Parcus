@@ -18,8 +18,8 @@ For information about using the API, you can refer to the following sources.
 
 * [Documentation of API](https://parcusinvest.somee.com/docs/index.html)
 
-The service is not supposed to start when cloning the repository because of security reasons, however, after adding the demo [appsettings file](docs/startup/appsettings.json) and filling it with valid data in your case in Parcus Web folder, application can be launched.
-Important parameters to set in [appsettings file](docs/startup/appsettings.json).
+The service is not supposed to start when cloning the repository because of security reasons, however, after adding the demo [appsettings file](docs/startup/applicationsettings.json) and filling it with valid data in your case in Parcus Web folder, application can be launched.
+Important parameters to set in [appsettings file](docs/startup/applicationsettings.json).
 ```
 "ConnectionString": "YOUR_CONNECTIONSTRING_TO_SQLSERVER_DATABASE"
 "Secret": "YOUR_SECRETKEY_FOR_ENCRYPT_JWT_TOKEN"
